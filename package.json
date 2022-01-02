@@ -1,0 +1,66 @@
+{
+  "name": "@bare-ts/lib",
+  "version": "0.0.0",
+  "description": "TypeScript library for BARE, a compact and simple binary-serialization format",
+  "keywords": [
+    "bare",
+    "binary format",
+    "decoder",
+    "encoder",
+    "serialization",
+    "schema"
+  ],
+  "author": "Victorien Elvinger (victorien.elvinger.fr)",
+  "license": "Apache-2.0",
+  "homepage": "https://baremessages.org",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bare-ts/lib"
+  },
+  "bugs": {
+    "url": "https://github.com/bare-ts/lib/issues"
+  },
+  "engines": {
+    "node": ">= 12"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "es2015": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "browser": {
+    "assert": "./dist/util/assert.js"
+  },
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist/*.cjs",
+    "dist/*.d.ts",
+    "dist/*.js",
+    "dist/**/*.d.ts",
+    "dist/**/*.js"
+  ],
+  "scripts": {
+    "build": "tsc -b src && node ./scripts/build.js",
+    "clean": "rm -rf dist coverage",
+    "prepublishOnly": "npm run clean && npm run test",
+    "test": "npm run build && tsc -b tests && oletus tests/**/*.test.js"
+  },
+  "size-limit": [
+    {
+      "path": "./dist/index.js",
+      "limit": "10 kB"
+    }
+  ],
+  "devDependencies": {
+    "@types/node": "^17.0.6",
+    "esbuild": "^0.14.10",
+    "oletus": "^3.2.0",
+    "prettier": "^2.5.1",
+    "typescript": "^4.5.4",
+    "validate-commit-message": "^3.2.0"
+  }
+}
