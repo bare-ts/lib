@@ -15,7 +15,7 @@
   "homepage": "https://baremessages.org",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bare-ts/lib"
+    "url": "git+https://github.com/bare-ts/lib.git"
   },
   "bugs": {
     "url": "https://github.com/bare-ts/lib/issues"
@@ -40,14 +40,19 @@
     "dist/*.cjs",
     "dist/*.d.ts",
     "dist/*.js",
+    "dist/**/*.cjs",
     "dist/**/*.d.ts",
     "dist/**/*.js"
   ],
+  "directories": {
+    "test": "tests"
+  },
   "scripts": {
-    "build": "tsc -b src && node ./scripts/build.js",
+    "build": "sh ./scripts/build.sh",
     "clean": "rm -rf dist coverage",
-    "prepublishOnly": "npm run clean && npm run test",
-    "test": "npm run build && tsc -b tests && oletus tests/**/*.test.js"
+    "prepublishOnly": "npm run clean && npm test",
+    "test": "npm run build && tsc -b tests && oletus tests/**/*.test.js",
+    "test:coverage": "c8 --reporter=lcovonly npm test"
   },
   "size-limit": [
     {
@@ -57,10 +62,10 @@
   ],
   "devDependencies": {
     "@types/node": "^17.0.6",
-    "esbuild": "^0.14.10",
+    "esbuild": "~0.14.10",
     "oletus": "^3.2.0",
-    "prettier": "^2.5.1",
-    "typescript": "^4.5.4",
+    "prettier": "~2.5.1",
+    "typescript": "~4.5.4",
     "validate-commit-message": "^3.2.0"
   }
 }
