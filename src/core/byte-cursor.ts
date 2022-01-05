@@ -91,12 +91,9 @@ export class ByteCursor {
         const len = bytes.length
         if (len !== 0) {
             this.reserve(len)
-            const writableArea = new Uint8Array(
-                this.view.buffer,
-                this.offset,
-                len
-            )
-            writableArea.set(bytes)
+            const bufferOffset = this.view.byteOffset + this.offset
+            const buffer = new Uint8Array(this.view.buffer)
+            buffer.set(bytes, bufferOffset)
             this.offset += len
         }
     }

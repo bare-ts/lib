@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased
+
+* Fix write offset when byteOffset > 0
+
+    A ByteCursor may be instantiated with an array of bytes such that
+    the array's byteOffset is greater than 0.
+    The previous ByteCursor.write implementation did not take care of adding this byteOffset to the    ByteCursor's offset.
+
+    The following code no longer fail:
+
+    ```js
+    const bytes = Uint8Array.of(42, 24).subarray(1)
+    assert(bytes.byteOffset === 1)
+
+    const bc = ByteCursor(bytes, ...)
+    bc.write(Uint8Array.of(24))
+    assert.deepEqual(Array.from(bytes), [42, 24]) // Previously failed
+    ```
+
 ## 0.1.0 (2022-01-02)
 
 * `ByteCursor` abstraction to read and write safely a buffer of bytes

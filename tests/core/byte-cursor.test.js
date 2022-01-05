@@ -1,5 +1,6 @@
 import * as bare from "@bare-ts/lib"
 import { default as test } from "oletus"
+import { toBytes } from "../codec/_util.js"
 
 test("ByteCursor", (t) => {
     const config = bare.Config({
@@ -70,4 +71,25 @@ test("ByteCursor.reserve", (t) => {
         },
         "un-growable buffer"
     )
+})
+
+test("ByteCursor.read", (t) => {
+    let bc = new bare.ByteCursor(Uint8Array.of(42), bare.Config({}))
+    let read = bc.read(1)
+    t.deepEqual(Array.from(read), [42])
+
+    bc = new bare.ByteCursor(Uint8Array.of(42, 24).subarray(1), bare.Config({}))
+    read = bc.read(1)
+    t.deepEqual(Array.from(read), [24])
+})
+
+test("ByteCursor.write", (t) => {
+    let bc = new bare.ByteCursor(new ArrayBuffer(1), bare.Config({}))
+    bc.write(Uint8Array.of(42))
+    t.deepEqual(toBytes(bc), [42])
+
+    const bytes = Uint8Array.of(42, 0)
+    bc = new bare.ByteCursor(bytes.subarray(1), bare.Config({}))
+    bc.write(Uint8Array.of(24))
+    t.deepEqual(Array.from(bytes), [42, 24])
 })
