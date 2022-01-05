@@ -22,3 +22,5 @@ export default function assert(
         throw e
     }
 }
+
+export const ok = assert

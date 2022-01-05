@@ -19,6 +19,8 @@
     assert.deepEqual(Array.from(bytes), [42, 24]) // Previously failed
     ```
 
+* Smaller CommonJS bundle
+
 ## 0.1.0 (2022-01-02)
 
 * `ByteCursor` abstraction to read and write safely a buffer of bytes

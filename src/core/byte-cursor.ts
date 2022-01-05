@@ -1,4 +1,4 @@
-import assert from "assert"
+import { ok as assert } from "assert"
 import { BareError } from "../core/bare-error.js"
 import type { Config } from "./config.js"
 

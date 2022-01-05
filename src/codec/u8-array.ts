@@ -1,4 +1,4 @@
-import assert from "assert"
+import { ok as assert } from "assert"
 import type { ByteCursor } from "../core/index.js"
 import { decodeUintSafe, encodeUintSafe } from "./primitive.js"
 

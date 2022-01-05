@@ -1,4 +1,4 @@
-import assert from "assert"
+import { ok as assert } from "assert"
 import { isU32 } from "../util/validator.js"
 
 const TOO_LARGE_NUMBER = "too large number"
