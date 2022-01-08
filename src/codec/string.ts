@@ -131,20 +131,17 @@ function encodeUtf8Js(bc: ByteCursor, s: string): void {
 
 function utf8ByteLength(s: string): number {
     const sLen = s.length
-    let result = 0
-    let i = 0
-    while (i < sLen) {
+    let result = sLen
+    for (let i = 0; i < sLen; i++) {
         const codePoint = s.codePointAt(i) as number | 0 // i is a valid index
-        i++
-        if (codePoint < 128) {
+        if (codePoint >= 128) {
             result++
-        } else if (codePoint < 0x800) {
-            result += 2
-        } else if (codePoint < 0x10_000) {
-            result += 3
-        } else {
-            result += 4
-            i++ // surrogate pair encoded as two ucs2 chars
+            if (codePoint >= 0x800) {
+                result++
+                if (codePoint >= 0x10_000) {
+                    i++ // surrogate pair encoded as two ucs2 chars
+                }
+            }
         }
     }
     return result

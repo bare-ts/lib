@@ -21,6 +21,8 @@
 
 * Smaller CommonJS bundle
 
+* Improve byte-length computation of small string
+
 ## 0.1.0 (2022-01-02)
 
 * `ByteCursor` abstraction to read and write safely a buffer of bytes
