@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.1.1 (2022-01-09)
+
 * Fix write offset when byteOffset > 0
 
     A ByteCursor may be instantiated with an array of bytes such that
