@@ -33,7 +33,7 @@ This project adheres to [Semantic Versioning][semver].
 
     Previously, you had to specify the length of the fixed-array to encode.
     If the given length was different of the actual array's length,
-    then an assertion was thrown ("umatched length").
+    then an assertion was thrown ("unmatched length").
 
     It is no longer possible to specify the length.
     As a consequence, the fixed-array writers can no longer assert the length.
@@ -52,6 +52,12 @@ This project adheres to [Semantic Versioning][semver].
     bare.decodeU8FixedArray(bc, 2)
     ```
 
+* BREAKING CHANGE: ByteCursor no longer accept ArrayBuffer
+
+    ```js
+    new ByteCursor(new ArrayBuffer(5), config) // Now fails
+    new ByteCursor(new Uint8Array(5), config) // Update to this
+    ```
 
 ## 0.1.1 (2022-01-09)
 

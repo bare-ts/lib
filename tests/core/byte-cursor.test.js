@@ -13,11 +13,6 @@ test("ByteCursor", (t) => {
         offset: 0,
     }
     t.throws(
-        () => void new bare.ByteCursor(new ArrayBuffer(5), config),
-        expectedError,
-        "too large buffer"
-    )
-    t.throws(
         () => void new bare.ByteCursor(new Uint8Array(5), config),
         expectedError,
         "too large buffer"
@@ -25,7 +20,7 @@ test("ByteCursor", (t) => {
 })
 
 test("ByteCursor.check", (t) => {
-    const bc = new bare.ByteCursor(new ArrayBuffer(5), bare.Config({}))
+    const bc = new bare.ByteCursor(new Uint8Array(5), bare.Config({}))
     t.doesNotThrow(() => bc.check(5), "enough bytes")
     t.throws(
         () => bc.check(6),
@@ -40,7 +35,7 @@ test("ByteCursor.check", (t) => {
 
 test("ByteCursor.reserve", (t) => {
     let bc = new bare.ByteCursor(
-        new ArrayBuffer(0),
+        new Uint8Array(0),
         bare.Config({
             initialBufferLength: 10,
             maxBufferLength: 10,
@@ -84,7 +79,7 @@ test("ByteCursor.read", (t) => {
 })
 
 test("ByteCursor.write", (t) => {
-    let bc = new bare.ByteCursor(new ArrayBuffer(1), bare.Config({}))
+    let bc = new bare.ByteCursor(new Uint8Array(1), bare.Config({}))
     bc.write(Uint8Array.of(42))
     t.deepEqual(toBytes(bc), [42])
 

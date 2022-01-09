@@ -11,16 +11,14 @@ export class ByteCursor {
 
     declare view: DataView
 
-    constructor(bytes: ArrayBuffer | Uint8Array, config: Config) {
-        this.config = config
-        this.offset = 0
-        this.view =
-            bytes instanceof Uint8Array
-                ? new DataView(bytes.buffer, bytes.byteOffset, bytes.length)
-                : new DataView(bytes)
-        if (this.view.byteLength > config.maxBufferLength) {
+    constructor(bytes: Uint8Array, config: Config) {
+        const buffer = bytes.buffer
+        if (bytes.length > config.maxBufferLength) {
             throw new BareError(0, TOO_LARGE_BUFFER)
         }
+        this.config = config
+        this.offset = 0
+        this.view = new DataView(buffer, bytes.byteOffset, bytes.length)
     }
 
     /**
@@ -37,8 +35,8 @@ export class ByteCursor {
      * @param min number of bytes to reserve
      */
     reserve(min: number): void {
-        const { config, offset, view } = this
-        if (offset + min > view.byteLength) {
+        if (this.offset + min > this.view.byteLength) {
+            const { config, view } = this
             /*
             |           newBytes                                        |
                                 |       newView                         |
@@ -48,7 +46,7 @@ export class ByteCursor {
             |<----------------------maxBufferLength--------------------------->|
             */
             const bytes = new Uint8Array(view.buffer)
-            const minExtraLength = min + offset - view.byteLength
+            const minExtraLength = min + this.offset - view.byteLength
             assert(
                 bytes.length === view.byteOffset + view.byteLength,
                 "un-growable buffer"
