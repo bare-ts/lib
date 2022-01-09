@@ -3,17 +3,7 @@ import type { ByteCursor } from "../core/index.js"
 import { readUintSafe, writeUintSafe } from "./primitive.js"
 
 export function readString(bc: ByteCursor): string {
-    const strBytesLen = readUintSafe(bc)
-    const strBytes = bc.read(strBytesLen)
-    try {
-        return strBytesLen < bc.config.textDecoderThreshold
-            ? decodeUtf8Js(strBytes)
-            : UTF8_DECODER.decode(strBytes)
-    } catch (cause) {
-        throw new BareError(bc.offset - strBytesLen, "invalid UTF-8 string", {
-            cause,
-        })
-    }
+    return readFixedString(bc, readUintSafe(bc))
 }
 
 export function writeString(bc: ByteCursor, x: string): void {
@@ -29,7 +19,30 @@ export function writeString(bc: ByteCursor, x: string): void {
     }
 }
 
-function decodeUtf8Js(bytes: Uint8Array): string {
+export function readFixedString(bc: ByteCursor, byteLen: number): string {
+    const strBytes = bc.read(byteLen)
+    try {
+        return byteLen < bc.config.textDecoderThreshold
+            ? readUtf8Js(strBytes)
+            : UTF8_DECODER.decode(strBytes)
+    } catch (cause) {
+        throw new BareError(bc.offset - byteLen, "invalid UTF-8 string", {
+            cause,
+        })
+    }
+}
+
+export function writeFixedString(bc: ByteCursor, x: string): void {
+    if (x.length < bc.config.textEncoderThreshold) {
+        const byteLen = utf8ByteLength(x)
+        bc.reserve(byteLen)
+        writeUtf8Js(bc, x)
+    } else {
+        bc.write(UTF8_ENCODER.encode(x))
+    }
+}
+
+function readUtf8Js(bytes: Uint8Array): string {
     const bytesLen = bytes.length
     let result = ""
     let i = 0
@@ -161,7 +174,7 @@ const UTF8_DECODER = new TextDecoder("utf-8", { fatal: true })
 const UTF8_ENCODER = new TextEncoder()
 
 interface EncodeResult {
-    readonly red: number
+    readonly read: number
     readonly written: number
 }
 

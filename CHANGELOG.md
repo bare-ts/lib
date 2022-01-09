@@ -4,6 +4,16 @@ This project adheres to [Semantic Versioning][semver].
 
 ## Unreleased
 
+* Add a reader and a writer for fixed-strings
+
+    Users have now access to two new functions that enable to read and
+    write fixed-length strings.
+
+    ```js
+    bare.readFixedString(bc, /* string's length in bytes */ 4)
+    bare.writeFixedString(bc, "bare")
+    ```
+
 * BREAKING CHANGE: rename all decode/encode into read/write
 
     read/write feel more low-level than decode/encode.
