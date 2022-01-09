@@ -34,11 +34,11 @@ test("bare.readFixedData", (t) => {
 
 test("bare.writeFixedData", (t) => {
     let bc = fromBytes()
-    bare.writeFixedData(bc, Uint8Array.of(42, 21).buffer, 2)
+    bare.writeFixedData(bc, Uint8Array.of(42, 21).buffer)
     t.deepEqual(toBytes(bc), [42, 21])
 
     bc = fromBytes()
     const data = Uint8Array.of(0, 0, 42, 21, 0, 0)
-    bare.writeFixedData(bc, data.subarray(2, 4), 2)
+    bare.writeFixedData(bc, data.subarray(2, 4))
     t.deepEqual(toBytes(bc), [42, 21], "writed subarray")
 })

@@ -47,16 +47,6 @@ test("bare.readU8FixedArray", (t) => {
 
 test("bare.writeU8FixedArray", (t) => {
     const bc = fromBytes()
-    bare.writeU8ClampedFixedArray(bc, Uint8ClampedArray.of(0x31, 0x42), 2)
+    bare.writeU8ClampedFixedArray(bc, Uint8ClampedArray.of(0x31, 0x42))
     t.deepEqual(toBytes(bc), [0x31, 0x42])
-    t.throws(
-        () =>
-            bare.writeU8ClampedFixedArray(
-                bc,
-                Uint8ClampedArray.of(0x31, 0x42),
-                1
-            ),
-        { name: "AssertionError" },
-        "unmatched length"
-    )
 })

@@ -9,21 +9,13 @@ export function readI8Array(bc: ByteCursor): Int8Array {
 
 export function writeI8Array(bc: ByteCursor, x: Int8Array): void {
     writeUintSafe(bc, x.length)
-    writeI8FixedArray(bc, x, x.length)
+    writeI8FixedArray(bc, x)
 }
 
 export function readI8FixedArray(bc: ByteCursor, len: number): Int8Array {
     return new Int8Array(readFixedData(bc, len))
 }
 
-export function writeI8FixedArray(
-    bc: ByteCursor,
-    x: Int8Array,
-    len: number
-): void {
-    writeU8FixedArray(
-        bc,
-        new Uint8Array(x.buffer, x.byteOffset, x.byteLength),
-        len
-    )
+export function writeI8FixedArray(bc: ByteCursor, x: Int8Array): void {
+    writeU8FixedArray(bc, new Uint8Array(x.buffer, x.byteOffset, x.byteLength))
 }

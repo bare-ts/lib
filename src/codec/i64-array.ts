@@ -1,4 +1,3 @@
-import { ok as assert } from "assert"
 import type { ByteCursor } from "../core/index.js"
 import { IS_LITTLE_ENDIAN_PLATFORM } from "../util/util.js"
 import { readFixedData } from "./data.js"
@@ -33,25 +32,15 @@ export const writeI64FixedArray = IS_LITTLE_ENDIAN_PLATFORM
 export function writeI64Array(bc: ByteCursor, x: BigInt64Array): void {
     writeUintSafe(bc, x.length)
     if (x.length !== 0) {
-        writeI64FixedArray(bc, x, x.length)
+        writeI64FixedArray(bc, x)
     }
 }
 
-function writeI64FixedArrayLE(
-    bc: ByteCursor,
-    x: BigInt64Array,
-    len: number
-): void {
-    assert(x.length === len)
+function writeI64FixedArrayLE(bc: ByteCursor, x: BigInt64Array): void {
     bc.write(new Uint8Array(x.buffer, x.byteOffset, x.byteLength))
 }
 
-function writeI64FixedArrayBE(
-    bc: ByteCursor,
-    x: BigInt64Array,
-    len: number
-): void {
-    assert(x.length === len)
+function writeI64FixedArrayBE(bc: ByteCursor, x: BigInt64Array): void {
     bc.reserve(x.length * I64_BYTE_COUNT)
     for (let i = 0; i < x.length; i++) writeI64(bc, x[i])
 }

@@ -19,6 +19,30 @@ This project adheres to [Semantic Versioning][semver].
     bare.writeU8(bc, 42) // Now
     ```
 
+* BREAKING CHANGE: length can no longer be specified for fixed-array writers
+
+    Previously, you had to specify the length of the fixed-array to encode.
+    If the given length was different of the actual array's length,
+    then an assertion was thrown ("umatched length").
+
+    It is no longer possible to specify the length.
+    As a consequence, the fixed-array writers can no longer assert the length.
+
+    Fixed-array writers now have the same signature as other writers.
+
+    ```js
+    bare.readerU8FixedArray(bc, Uint8Array.of(42, 24), 2) // Previously
+    bare.writeU8FixedArray(bc, Uint8Array.of(42, 24)) // Now
+    ```
+
+    Note that fixed-array readers still require the specification of the
+    length:
+
+    ```js
+    bare.decodeU8FixedArray(bc, 2)
+    ```
+
+
 ## 0.1.1 (2022-01-09)
 
 * Fix write offset when byteOffset > 0

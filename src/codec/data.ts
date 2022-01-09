@@ -18,10 +18,6 @@ export function readFixedData(bc: ByteCursor, len: number): ArrayBuffer {
     return readU8FixedArray(bc, len).buffer
 }
 
-export function writeFixedData(
-    bc: ByteCursor,
-    x: ArrayBuffer,
-    len: number
-): void {
-    writeU8FixedArray(bc, new Uint8Array(x), len)
+export function writeFixedData(bc: ByteCursor, x: ArrayBuffer): void {
+    writeU8FixedArray(bc, new Uint8Array(x))
 }

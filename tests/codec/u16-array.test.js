@@ -44,11 +44,6 @@ test("bare.readU16FixedArray", (t) => {
 
 test("bare.writeU16FixedArray", (t) => {
     const bc = fromBytes()
-    bare.writeU16FixedArray(bc, Uint16Array.of(0x31, 0x42), 2)
+    bare.writeU16FixedArray(bc, Uint16Array.of(0x31, 0x42))
     t.deepEqual(toBytes(bc), [0x31, 0, 0x42, 0])
-    t.throws(
-        () => bare.writeU16FixedArray(bc, Uint16Array.of(0x31, 0x42), 1),
-        { name: "AssertionError" },
-        "unmatched length"
-    )
 })

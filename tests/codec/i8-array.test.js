@@ -44,11 +44,6 @@ test("bare.readI8FixedArray", (t) => {
 
 test("bare.writeI8FixedArray", (t) => {
     const bc = fromBytes()
-    bare.writeI8FixedArray(bc, Int8Array.of(0x31, 0x42), 2)
+    bare.writeI8FixedArray(bc, Int8Array.of(0x31, 0x42))
     t.deepEqual(toBytes(bc), [0x31, 0x42])
-    t.throws(
-        () => bare.writeI8FixedArray(bc, Int8Array.of(0x31, 0x42), 1),
-        { name: "AssertionError" },
-        "unmatched length"
-    )
 })

@@ -38,22 +38,12 @@ export const writeF32FixedArray = IS_LITTLE_ENDIAN_PLATFORM
     ? writeF32FixedArrayLE
     : writeF32FixedArrayBE
 
-function writeF32FixedArrayLE(
-    bc: ByteCursor,
-    x: Float32Array,
-    len: number
-): void {
-    assert(x.length === len)
+function writeF32FixedArrayLE(bc: ByteCursor, x: Float32Array): void {
     assert(!x.every(Number.isNaN), NAN_NOT_ALLOWED)
     bc.write(new Uint8Array(x.buffer, x.byteOffset, x.byteLength))
 }
 
-function writeF32FixedArrayBE(
-    bc: ByteCursor,
-    val: Float32Array,
-    len: number
-): void {
-    assert(val.length === len)
+function writeF32FixedArrayBE(bc: ByteCursor, val: Float32Array): void {
     bc.reserve(val.length * 4)
     for (let i = 0; i < val.length; i++) writeF32(bc, val[i])
 }
@@ -65,7 +55,7 @@ export function readF32Array(bc: ByteCursor): Float32Array {
 export function writeF32Array(bc: ByteCursor, x: Float32Array): void {
     writeUintSafe(bc, x.length)
     if (x.length !== 0) {
-        writeF32FixedArray(bc, x, x.length)
+        writeF32FixedArray(bc, x)
     }
 }
 
@@ -93,22 +83,12 @@ export const writeF64FixedArray = IS_LITTLE_ENDIAN_PLATFORM
     ? writeF64FixedArrayLE
     : writeF64FixedArrayBE
 
-function writeF64FixedArrayLE(
-    bc: ByteCursor,
-    x: Float64Array,
-    len: number
-): void {
-    assert(x.length === len)
+function writeF64FixedArrayLE(bc: ByteCursor, x: Float64Array): void {
     assert(!x.every(Number.isNaN), NAN_NOT_ALLOWED)
     bc.write(new Uint8Array(x.buffer, x.byteOffset, x.byteLength))
 }
 
-function writeF64FixedArrayBE(
-    bc: ByteCursor,
-    x: Float64Array,
-    len: number
-): void {
-    assert(x.length === len)
+function writeF64FixedArrayBE(bc: ByteCursor, x: Float64Array): void {
     bc.reserve(x.length * 8)
     for (let i = 0; i < x.length; i++) writeF64(bc, x[i])
 }
@@ -120,6 +100,6 @@ export function readF64Array(bc: ByteCursor): Float64Array {
 export function writeF64Array(bc: ByteCursor, x: Float64Array): void {
     writeUintSafe(bc, x.length)
     if (x.length !== 0) {
-        writeF64FixedArray(bc, x, x.length)
+        writeF64FixedArray(bc, x)
     }
 }
