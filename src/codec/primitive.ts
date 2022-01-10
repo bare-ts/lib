@@ -278,32 +278,33 @@ export function writeU64Safe(bc: ByteCursor, x: number): void {
 const UINT_MAX_BYTE_COUNT = 10
 
 export function readUint(bc: ByteCursor): bigint {
-    let byteCount = 0
-    let byte
-    let low = 0
-    let shiftMul = 1
-    do {
-        byte = readU8(bc)
-        low += (byte & 0x7f) * shiftMul
-        shiftMul *= 0x80 // 2**7
-        byteCount++
-    } while (byte >= 0x80 && byteCount < 7)
-    let height = 0
-    shiftMul = 1
-    while (byte >= 0x80 && byteCount < UINT_MAX_BYTE_COUNT) {
-        byte = readU8(bc)
-        height += (byte & 0x7f) * shiftMul
-        shiftMul *= 0x80 // 2**7
-        byteCount++
+    let low = readU8(bc)
+    if (low >= 0x80) {
+        low &= 0x7f
+        let shiftMul = 0x80
+        let byteCount = 1
+        let byte
+        do {
+            byte = readU8(bc)
+            low += (byte & 0x7f) * shiftMul
+            shiftMul *= 0x80 // 2**7
+            byteCount++
+        } while (byte >= 0x80 && byteCount < 7)
+        let height = 0
+        shiftMul = 1
+        while (byte >= 0x80 && byteCount < UINT_MAX_BYTE_COUNT) {
+            byte = readU8(bc)
+            height += (byte & 0x7f) * shiftMul
+            shiftMul *= 0x80 // 2**7
+            byteCount++
+        }
+        if (byte === 0 || (byteCount === UINT_MAX_BYTE_COUNT && byte > 1)) {
+            bc.offset -= byteCount
+            throw new BareError(bc.offset, NON_CANONICAL_REPRESENTATION)
+        }
+        return BigInt(low) + (BigInt(height) << BigInt(7 * 7))
     }
-    if (
-        (byteCount !== 1 && byte === 0) ||
-        (byteCount === UINT_MAX_BYTE_COUNT && byte > 1)
-    ) {
-        bc.offset -= byteCount
-        throw new BareError(bc.offset, NON_CANONICAL_REPRESENTATION)
-    }
-    return BigInt(low) + (BigInt(height) << BigInt(7 * 7))
+    return BigInt(low)
 }
 
 export function writeUint(bc: ByteCursor, x: bigint): void {
@@ -327,26 +328,29 @@ export function writeUint(bc: ByteCursor, x: bigint): void {
 const UINT_SAFE_MAX_BYTE_COUNT = 8
 
 export function readUintSafe(bc: ByteCursor): number {
-    let result = 0
-    let shiftMul = 1
-    let byteCount = 0
-    let byte
-    do {
-        byte = readU8(bc)
-        result += (byte & 0x7f) * shiftMul
-        shiftMul *= 0x80 // 2**7
-        byteCount++
-    } while (byte >= 0x80 && byteCount < UINT_SAFE_MAX_BYTE_COUNT)
-    if (byteCount !== 1 && byte === 0) {
-        bc.offset -= byteCount - 1
-        throw new BareError(
-            bc.offset - byteCount + 1,
-            NON_CANONICAL_REPRESENTATION
-        )
-    }
-    if (byteCount === UINT_SAFE_MAX_BYTE_COUNT && byte > 0xf) {
-        bc.offset -= byteCount - 1
-        throw new BareError(bc.offset, TOO_LARGE_NUMBER)
+    let result = readU8(bc)
+    if (result >= 0x80) {
+        result &= 0x7f
+        let shiftMul = 0x80 // 2**7
+        let byteCount = 1
+        let byte
+        do {
+            byte = readU8(bc)
+            result += (byte & 0x7f) * shiftMul
+            shiftMul *= 0x80 // 2**7
+            byteCount++
+        } while (byte >= 0x80 && byteCount < UINT_SAFE_MAX_BYTE_COUNT)
+        if (byte === 0) {
+            bc.offset -= byteCount - 1
+            throw new BareError(
+                bc.offset - byteCount + 1,
+                NON_CANONICAL_REPRESENTATION
+            )
+        }
+        if (byteCount === UINT_SAFE_MAX_BYTE_COUNT && byte > 0xf) {
+            bc.offset -= byteCount - 1
+            throw new BareError(bc.offset, TOO_LARGE_NUMBER)
+        }
     }
     return result
 }
