@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning][semver].
 
 ## Unreleased
 
+* Improve performance for reading and writing strings
+
 * Improve performance for reading variable integers encoded on a single byte
 
 * Add a reader and a writer for fixed-strings

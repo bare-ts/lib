@@ -2,6 +2,8 @@ import { BareError } from "../core/bare-error.js"
 import type { ByteCursor } from "../core/index.js"
 import { readUintSafe, writeUintSafe } from "./primitive.js"
 
+const INVALID_UTF8_STRING = "invalid UTF-8 string"
+
 export function readString(bc: ByteCursor): string {
     return readFixedString(bc, readUintSafe(bc))
 }
@@ -20,15 +22,13 @@ export function writeString(bc: ByteCursor, x: string): void {
 }
 
 export function readFixedString(bc: ByteCursor, byteLen: number): string {
-    const strBytes = bc.read(byteLen)
+    if (byteLen < bc.config.textDecoderThreshold) {
+        return readUtf8Js(bc, byteLen)
+    }
     try {
-        return byteLen < bc.config.textDecoderThreshold
-            ? readUtf8Js(strBytes)
-            : UTF8_DECODER.decode(strBytes)
+        return UTF8_DECODER.decode(bc.read(byteLen))
     } catch (cause) {
-        throw new BareError(bc.offset - byteLen, "invalid UTF-8 string", {
-            cause,
-        })
+        throw new BareError(bc.offset, INVALID_UTF8_STRING)
     }
 }
 
@@ -42,116 +42,103 @@ export function writeFixedString(bc: ByteCursor, x: string): void {
     }
 }
 
-function readUtf8Js(bytes: Uint8Array): string {
-    const bytesLen = bytes.length
+function readUtf8Js(bc: ByteCursor, byteLen: number): string {
+    bc.check(byteLen)
     let result = ""
-    let i = 0
-    while (i < bytesLen) {
-        let codePoint = bytes[i++] | 0
-        switch (Math.clz32(~codePoint << 24)) {
-            case 0:
-                // 0xxx_xxxx
-                break
-            case 2: {
+    const bytes = bc.bytes
+    let offset = bc.offset
+    const upperOffset = offset + byteLen
+    while (offset < upperOffset) {
+        let codePoint = bytes[offset++]
+        if (codePoint > 0x7f) {
+            let malformed = true
+            const byte1 = codePoint
+            if (offset < upperOffset && codePoint < 0xe0) {
                 // 110x_xxxx 10xx_xxxx
-                if (i < bytesLen) {
-                    codePoint = ((codePoint & 0x1f) << 6) | (bytes[i] & 0x3f)
-                }
-                if (
+                const byte2 = bytes[offset++]
+                codePoint = ((byte1 & 0x1f) << 6) | (byte2 & 0x3f)
+                malformed =
                     codePoint >> 7 === 0 || // non-canonical char
-                    bytes[i] >> 6 !== 0b10 // invalid tag
-                ) {
-                    throw TypeError("Decoding failed")
-                }
-                i += 1
-                break
-            }
-            case 3: {
+                    byte1 >> 5 !== 0b110 || // invalid tag
+                    byte2 >> 6 !== 0b10 // invalid tag
+            } else if (offset + 1 < upperOffset && codePoint < 0xf0) {
                 // 1110_xxxx 10xx_xxxx 10xx_xxxx
-                if (i + 1 < bytesLen) {
-                    codePoint =
-                        ((codePoint & 0xf) << 12) |
-                        ((bytes[i] & 0x3f) << 6) |
-                        (bytes[i + 1] & 0x3f)
-                }
-                if (
+                const byte2 = bytes[offset++]
+                const byte3 = bytes[offset++]
+                codePoint =
+                    ((byte1 & 0xf) << 12) |
+                    ((byte2 & 0x3f) << 6) |
+                    (byte3 & 0x3f)
+                malformed =
                     codePoint >> 11 === 0 || // non-canonical char or missing data
-                    bytes[i] >> 6 !== 0b10 || // invalid tag
-                    bytes[i + 1] >> 6 !== 0b10 || // invalid tag
-                    codePoint >> 11 === 0x1b // surrogate char (0xD800 <= codePoint <= 0xDFFF)
-                ) {
-                    throw TypeError("Decoding failed")
-                }
-                i += 2
-                break
-            }
-            case 4: {
+                    codePoint >> 11 === 0x1b || // surrogate char (0xD800 <= codePoint <= 0xDFFF)
+                    byte1 >> 4 !== 0b1110 || // invalid tag
+                    byte2 >> 6 !== 0b10 || // invalid tag
+                    byte3 >> 6 !== 0b10 // invalid tag
+            } else if (offset + 2 < upperOffset) {
                 // 1110_xxxx 10xx_xxxx 10xx_xxxx 10xx_xxxx
-                if (i + 2 < bytesLen) {
-                    codePoint =
-                        ((codePoint & 0x7) << 18) |
-                        ((bytes[i] & 0x3f) << 12) |
-                        ((bytes[i + 1] & 0x3f) << 6) |
-                        (bytes[i + 2] & 0x3f) // RangeError if code point si greater than 0x10_ff_ff
-                }
-                if (
+                const byte2 = bytes[offset++]
+                const byte3 = bytes[offset++]
+                const byte4 = bytes[offset++]
+                codePoint =
+                    ((byte1 & 0x7) << 18) |
+                    ((byte2 & 0x3f) << 12) |
+                    ((byte3 & 0x3f) << 6) |
+                    (byte4 & 0x3f)
+                malformed =
                     codePoint >> 16 === 0 || // non-canonical char or missing data
                     codePoint > 0x10ffff || // too large code point
-                    bytes[i] >> 6 !== 0b10 || // invalid tag
-                    bytes[i + 1] >> 6 !== 0b10 || // invalid tag
-                    bytes[i + 2] >> 6 !== 0b10 // invalid tag
-                ) {
-                    throw TypeError("Decoding failed")
-                }
-                i += 3
-                break
+                    byte1 >> 3 !== 0b11110 || // invalid tag
+                    byte2 >> 6 !== 0b10 || // invalid tag
+                    byte3 >> 6 !== 0b10 || // invalid tag
+                    byte4 >> 6 !== 0b10 // invalid tag
             }
-            default:
-                // invalid starting tag
-                throw TypeError("Decoding failed")
+            if (malformed) {
+                throw new BareError(bc.offset, INVALID_UTF8_STRING)
+            }
         }
         result += String.fromCodePoint(codePoint)
     }
+    bc.offset = offset
     return result
 }
 
 function writeUtf8Js(bc: ByteCursor, s: string): void {
-    const sLen = s.length
+    const bytes = bc.bytes
     let offset = bc.offset
-    const view = bc.view
     let i = 0
-    while (i < sLen) {
+    while (i < s.length) {
         const codePoint = s.codePointAt(i++) as number | 0 // i is a valid index
-        if (codePoint < 128) {
-            view.setUint8(offset++, codePoint)
-        } else if (codePoint < 0x800) {
-            view.setUint8(offset++, 0xc0 | (codePoint >> 6))
-            view.setUint8(offset++, 0x80 | (codePoint & 0x3f))
-        } else if (codePoint < 0x10_000) {
-            view.setUint8(offset++, 0xe0 | (codePoint >> 12))
-            view.setUint8(offset++, 0x80 | ((codePoint >> 6) & 0x3f))
-            view.setUint8(offset++, 0x80 | (codePoint & 0x3f))
+        if (codePoint < 0x80) {
+            bytes[offset++] = codePoint
         } else {
-            view.setUint8(offset++, 0xf0 | (codePoint >> 18))
-            view.setUint8(offset++, 0x80 | ((codePoint >> 12) & 0x3f))
-            view.setUint8(offset++, 0x80 | ((codePoint >> 6) & 0x3f))
-            view.setUint8(offset++, 0x80 | (codePoint & 0x3f))
-            i++ // surrogate char
+            if (codePoint < 0x800) {
+                bytes[offset++] = 0xc0 | (codePoint >> 6)
+            } else {
+                if (codePoint < 0x10_000) {
+                    bytes[offset++] = 0xe0 | (codePoint >> 12)
+                } else {
+                    bytes[offset++] = 0xf0 | (codePoint >> 18)
+                    bytes[offset++] = 0x80 | ((codePoint >> 12) & 0x3f)
+                    i++ // surrogate pair encoded as two ucs2 chars
+                }
+                bytes[offset++] = 0x80 | ((codePoint >> 6) & 0x3f)
+            }
+            bytes[offset++] = 0x80 | (codePoint & 0x3f)
         }
     }
     bc.offset = offset
 }
 
 function utf8ByteLength(s: string): number {
-    const sLen = s.length
-    let result = sLen
-    for (let i = 0; i < sLen; i++) {
+    let result = s.length
+    for (let i = 0; i < s.length; i++) {
         const codePoint = s.codePointAt(i) as number | 0 // i is a valid index
-        if (codePoint >= 128) {
+        if (codePoint > 0x7f) {
             result++
-            if (codePoint >= 0x800) {
+            if (codePoint > 0x7ff) {
                 result++
-                if (codePoint >= 0x10_000) {
+                if (codePoint > 0xff_ff) {
                     i++ // surrogate pair encoded as two ucs2 chars
                 }
             }
@@ -200,7 +187,7 @@ interface TextDecoder {
 }
 
 interface TextDecoderConstructor {
-    new (utfLabel: string, options: { fatal: boolean }): TextDecoder
+    new (utf8Label: "utf-8", options: { fatal: boolean }): TextDecoder
 }
 
 declare const TextDecoder: TextDecoderConstructor
