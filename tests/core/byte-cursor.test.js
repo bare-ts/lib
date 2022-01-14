@@ -5,18 +5,26 @@ import { toBytes } from "../codec/_util.js"
 test("ByteCursor", (t) => {
     const config = bare.Config({
         initialBufferLength: 0,
-        maxBufferLength: 0,
+        maxBufferLength: 3,
     })
-    const expectedError = {
-        name: "BareError",
-        issue: "too large buffer",
-        offset: 0,
-    }
     t.throws(
-        () => void new bare.ByteCursor(new Uint8Array(5), config),
-        expectedError,
+        () => void new bare.ByteCursor(new Uint8Array(6), config),
+        {
+            name: "BareError",
+            issue: "too large buffer",
+            offset: 0,
+        },
         "too large buffer"
     )
+    t.doesNotThrow(
+        () => void new bare.ByteCursor(new Uint8Array(6).subarray(0, 3), config)
+    )
+
+    const bc = new bare.ByteCursor(new Uint8Array(6).subarray(2, 5), config)
+    t.deepEqual(bc.bytes.byteOffset, bc.view.byteOffset)
+    t.deepEqual(bc.bytes.byteLength, bc.view.byteLength)
+    t.deepEqual(bc.bytes.byteOffset, 2)
+    t.deepEqual(bc.bytes.byteLength, 3)
 })
 
 test("ByteCursor.check", (t) => {
@@ -47,8 +55,9 @@ test("ByteCursor.reserve", (t) => {
     t.throws(
         () => bc.reserve(15),
         {
-            name: "AssertionError",
-            message: "too large buffer",
+            name: "BareError",
+            issue: "too large buffer",
+            offset: 0,
         },
         "max buffer length hit"
     )
@@ -58,14 +67,7 @@ test("ByteCursor.reserve", (t) => {
         bare.Config({})
     )
     t.doesNotThrow(() => bc.check(10), "enough room")
-    t.throws(
-        () => bc.reserve(15),
-        {
-            name: "AssertionError",
-            message: "un-growable buffer",
-        },
-        "un-growable buffer"
-    )
+    t.doesNotThrow(() => bc.reserve(15))
 })
 
 test("ByteCursor.read", (t) => {

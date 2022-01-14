@@ -1,24 +1,47 @@
-import { ok as assert } from "assert"
-import { BareError } from "../core/bare-error.js"
+import { BareError } from "./bare-error.js"
 import type { Config } from "./config.js"
 
 const TOO_LARGE_BUFFER = "too large buffer"
 
+/**
+ * @invariant bytes.buffer === view.buffer
+ * @invariant bytes.byteOffset === view.byteOffset
+ * @invariant bytes.byteLength === view.byteLength
+ * @invariant 0 <= offset <= bytes.byteLength
+ * @invariant bytes.byteLength <= config.maxBufferLength
+ *
+ * |         {bytes,view}.buffer                      |
+ *        |          bytes                    |
+ *        |          view                     |
+ *        |<------ offset ------>|
+ *        |<----------- config.maxBufferLength ------------>|
+ */
 export class ByteCursor {
+    declare bytes: Uint8Array
+
     declare readonly config: Config
 
+    /**
+     * Read and write Offset in {@link view} and {@link bytes}
+     */
     declare offset: number
 
     declare view: DataView
 
+    /**
+     * @param bytes read and/or write buffer
+     * @param config runtime configuration
+     * @throw BareError when the buffer exceeds the maximum allowed length
+     *  `config.maxBufferLength`
+     */
     constructor(bytes: Uint8Array, config: Config) {
-        const buffer = bytes.buffer
         if (bytes.length > config.maxBufferLength) {
             throw new BareError(0, TOO_LARGE_BUFFER)
         }
+        this.bytes = bytes
         this.config = config
         this.offset = 0
-        this.view = new DataView(buffer, bytes.byteOffset, bytes.length)
+        this.view = new DataView(bytes.buffer, bytes.byteOffset, bytes.length)
     }
 
     /**
@@ -26,42 +49,38 @@ export class ByteCursor {
      * @throw BareError when there is not enough bytes
      */
     check(min: number): void {
-        if (this.offset + min > this.view.byteLength) {
+        if (this.offset + min > this.bytes.length) {
             throw new BareError(this.offset, "missing bytes")
         }
     }
 
     /**
      * @param min number of bytes to reserve
+     * @throw BareError when the buffer exceeds the maximum allowed length
+     *  `config.maxBufferLength`
      */
     reserve(min: number): void {
-        if (this.offset + min > this.view.byteLength) {
-            const { config, view } = this
-            /*
-            |           newBytes                                        |
-                                |       newView                         |
-            |           bytes                             |
-                                |       view              |
-            |<---byteOffset---->|<---offset---->|<----min------>|
-            |<----------------------maxBufferLength--------------------------->|
-            */
-            const bytes = new Uint8Array(view.buffer)
-            const minExtraLength = min + this.offset - view.byteLength
-            assert(
-                bytes.length === view.byteOffset + view.byteLength,
-                "un-growable buffer"
-            ) // data may lay after and could be overwritten
-            assert(
-                bytes.length + minExtraLength <= config.maxBufferLength,
-                TOO_LARGE_BUFFER
-            )
-            const newLen = Math.min(
-                bytes.length + Math.max(minExtraLength, bytes.length),
-                config.maxBufferLength
-            )
+        const minLen = (this.offset + min) | 0
+        if (minLen > this.bytes.length) {
+            if (minLen > this.config.maxBufferLength) {
+                throw new BareError(0, TOO_LARGE_BUFFER)
+            }
+            //
+            // |     bytes,view}.buffer         |
+            //     |        bytes        |
+            //     |        view         |
+            //     |<-- offset -->|<-- min -->|
+            //     |<-------- minLen -------->|
+            //     |         new view                         |
+            //     |         new bytes                        |
+            //     |         new {bytes,view}.buffer          |
+            //     |<------------- config.maxBufferLength -------------->|
+            //
+            const newLen = Math.min(minLen << 1, this.config.maxBufferLength)
             const newBytes = new Uint8Array(newLen)
-            newBytes.set(bytes)
-            this.view = new DataView(newBytes.buffer, view.byteOffset)
+            newBytes.set(this.bytes)
+            this.bytes = newBytes
+            this.view = new DataView(newBytes.buffer)
         }
     }
 
@@ -74,9 +93,9 @@ export class ByteCursor {
      */
     read(len: number): Uint8Array {
         this.check(len)
-        const bufferOffset = this.view.byteOffset + this.offset
+        const offset = this.offset
         this.offset += len
-        return new Uint8Array(this.view.buffer, bufferOffset, len)
+        return this.bytes.subarray(offset, offset + len)
     }
 
     /**
@@ -89,9 +108,7 @@ export class ByteCursor {
         const len = bytes.length
         if (len !== 0) {
             this.reserve(len)
-            const bufferOffset = this.view.byteOffset + this.offset
-            const buffer = new Uint8Array(this.view.buffer)
-            buffer.set(bytes, bufferOffset)
+            this.bytes.set(bytes, this.offset)
             this.offset += len
         }
     }

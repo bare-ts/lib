@@ -14,6 +14,8 @@ This project adheres to [Semantic Versioning][semver].
     bare.writeFixedString(bc, "bare")
     ```
 
+* Simplification of ByteCursor
+
 * BREAKING CHANGE: rename all decode/encode into read/write
 
     read/write feel more low-level than decode/encode.
