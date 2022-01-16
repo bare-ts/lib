@@ -4,6 +4,21 @@ This project adheres to [Semantic Versioning][semver].
 
 ## Unreleased
 
+* BREAKING CHANGE: rename all decode/encode into read/write
+
+    read/write feel more low-level than decode/encode.
+    read/write are also more used among BARE implementations than decode/encode.
+    Moreover, in JS, decode and encode are used for high-level API such as
+    TextDEcoder and TextEncoder.
+
+    ```js
+    bare.decodeU8(bc) // Previously
+    bare.readU8(bc) // Now
+
+    bare.encodeU8(bc, 42) // Previously
+    bare.writeU8(bc, 42) // Now
+    ```
+
 ## 0.1.1 (2022-01-09)
 
 * Fix write offset when byteOffset > 0

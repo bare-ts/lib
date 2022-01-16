@@ -4,7 +4,7 @@ import { fromBytes, toBytes } from "./_util.js"
 
 const MAX_U64 = BigInt(2 ** 32) * BigInt(2 ** 32) - BigInt(1)
 
-test("bare.decodeUint", (t) => {
+test("bare.readUint", (t) => {
     let bc = fromBytes(
         0,
         0x7f,
@@ -21,26 +21,26 @@ test("bare.decodeUint", (t) => {
         0xff,
         0x1
     )
-    t.deepEqual(bare.decodeUint(bc), BigInt(0))
-    t.deepEqual(bare.decodeUint(bc), BigInt(0x7f))
-    t.deepEqual(bare.decodeUint(bc), BigInt(0x1337))
-    t.deepEqual(bare.decodeUint(bc), MAX_U64)
+    t.deepEqual(bare.readUint(bc), BigInt(0))
+    t.deepEqual(bare.readUint(bc), BigInt(0x7f))
+    t.deepEqual(bare.readUint(bc), BigInt(0x1337))
+    t.deepEqual(bare.readUint(bc), MAX_U64)
     t.throws(
-        () => bare.decodeUint(bc),
+        () => bare.readUint(bc),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes"
     )
 
     bc = fromBytes(0x80, 0)
     t.throws(
-        () => bare.decodeUint(bc),
+        () => bare.readUint(bc),
         { name: "BareError", issue: "must be canonical" },
         "non canonical: last byte is 0"
     )
 
     bc = fromBytes(0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x2)
     t.throws(
-        () => bare.decodeUint(bc),
+        () => bare.readUint(bc),
         { name: "BareError", issue: "must be canonical" },
         "non canonical: non-significant bits are set"
     )
@@ -59,25 +59,25 @@ test("bare.decodeUint", (t) => {
         0x1
     )
     t.throws(
-        () => bare.decodeUint(bc),
+        () => bare.readUint(bc),
         { name: "BareError", issue: "must be canonical" },
         "too many bytes"
     )
 
     bc = fromBytes(0x80)
     t.throws(
-        () => bare.decodeUint(bc),
+        () => bare.readUint(bc),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes"
     )
 })
 
-test("bare.encodeUint", (t) => {
+test("bare.writeUint", (t) => {
     let bc = fromBytes()
-    bare.encodeUint(bc, BigInt(0))
-    bare.encodeUint(bc, BigInt(0x7f))
-    bare.encodeUint(bc, BigInt(0x1337))
-    bare.encodeUint(bc, BigInt(MAX_U64))
+    bare.writeUint(bc, BigInt(0))
+    bare.writeUint(bc, BigInt(0x7f))
+    bare.writeUint(bc, BigInt(0x1337))
+    bare.writeUint(bc, BigInt(MAX_U64))
     t.deepEqual(
         toBytes(bc),
         [
@@ -88,13 +88,13 @@ test("bare.encodeUint", (t) => {
 
     bc = fromBytes()
     t.throws(
-        () => bare.encodeUint(bc, MAX_U64 + BigInt(1)),
+        () => bare.writeUint(bc, MAX_U64 + BigInt(1)),
         { name: "AssertionError", message: "too large number" },
         "too large number"
     )
 })
 
-test("bare.decodeUintSafe", (t) => {
+test("bare.readUintSafe", (t) => {
     let bc = fromBytes(
         0,
         0x7f,
@@ -109,51 +109,51 @@ test("bare.decodeUintSafe", (t) => {
         0xff,
         0xf
     )
-    t.deepEqual(bare.decodeUintSafe(bc), 0)
-    t.deepEqual(bare.decodeUintSafe(bc), 0x7f)
-    t.deepEqual(bare.decodeUintSafe(bc), 0x1337)
-    t.deepEqual(bare.decodeUintSafe(bc), Number.MAX_SAFE_INTEGER)
+    t.deepEqual(bare.readUintSafe(bc), 0)
+    t.deepEqual(bare.readUintSafe(bc), 0x7f)
+    t.deepEqual(bare.readUintSafe(bc), 0x1337)
+    t.deepEqual(bare.readUintSafe(bc), Number.MAX_SAFE_INTEGER)
     t.throws(
-        () => bare.decodeUintSafe(bc),
+        () => bare.readUintSafe(bc),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes"
     )
 
     bc = fromBytes(0x80, 0)
     t.throws(
-        () => bare.decodeUintSafe(bc),
+        () => bare.readUintSafe(bc),
         { name: "BareError", issue: "must be canonical" },
         "non canonical: last byte is 0"
     )
 
     bc = fromBytes(0x81, 0x81, 0x81, 0x81, 0x81, 0x81, 0x81, 0x81, 0x10)
     t.throws(
-        () => bare.decodeUintSafe(bc),
+        () => bare.readUintSafe(bc),
         { name: "BareError", issue: "too large number" },
         "too large number"
     )
 
     bc = fromBytes(0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x1)
     t.throws(
-        () => bare.decodeUintSafe(bc),
+        () => bare.readUintSafe(bc),
         { name: "BareError", issue: "too large number" },
         "too many bytes"
     )
 
     bc = fromBytes(0x80)
     t.throws(
-        () => bare.decodeUintSafe(bc),
+        () => bare.readUintSafe(bc),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes"
     )
 })
 
-test("bare.encodeUintSafe", (t) => {
+test("bare.writeUintSafe", (t) => {
     let bc = fromBytes()
-    bare.encodeUintSafe(bc, 0)
-    bare.encodeUintSafe(bc, 0x7f)
-    bare.encodeUintSafe(bc, 0x1337)
-    bare.encodeUintSafe(bc, Number.MAX_SAFE_INTEGER)
+    bare.writeUintSafe(bc, 0)
+    bare.writeUintSafe(bc, 0x7f)
+    bare.writeUintSafe(bc, 0x1337)
+    bare.writeUintSafe(bc, Number.MAX_SAFE_INTEGER)
     t.deepEqual(
         toBytes(bc),
         [0, 0x7f, 0xb7, 0x26, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xf]
@@ -161,7 +161,7 @@ test("bare.encodeUintSafe", (t) => {
 
     bc = fromBytes()
     t.throws(
-        () => bare.encodeUintSafe(bc, Number.MAX_SAFE_INTEGER + 1),
+        () => bare.writeUintSafe(bc, Number.MAX_SAFE_INTEGER + 1),
         { name: "AssertionError", message: "too large number" },
         "too large number"
     )

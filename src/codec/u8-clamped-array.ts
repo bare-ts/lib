@@ -1,33 +1,33 @@
 import type { ByteCursor } from "../core/index.js"
-import { decodeFixedData } from "./data.js"
-import { decodeUintSafe, encodeUintSafe } from "./primitive.js"
-import { encodeU8FixedArray } from "./u8-array.js"
+import { readFixedData } from "./data.js"
+import { readUintSafe, writeUintSafe } from "./primitive.js"
+import { writeU8FixedArray } from "./u8-array.js"
 
-export function decodeU8ClampedArray(bc: ByteCursor): Uint8ClampedArray {
-    return decodeU8ClampedFixedArray(bc, decodeUintSafe(bc))
+export function readU8ClampedArray(bc: ByteCursor): Uint8ClampedArray {
+    return readU8ClampedFixedArray(bc, readUintSafe(bc))
 }
 
-export function encodeU8ClampedArray(
+export function writeU8ClampedArray(
     bc: ByteCursor,
     x: Uint8ClampedArray
 ): void {
-    encodeUintSafe(bc, x.length)
-    encodeU8ClampedFixedArray(bc, x, x.length)
+    writeUintSafe(bc, x.length)
+    writeU8ClampedFixedArray(bc, x, x.length)
 }
 
-export function decodeU8ClampedFixedArray(
+export function readU8ClampedFixedArray(
     bc: ByteCursor,
     len: number
 ): Uint8ClampedArray {
-    return new Uint8ClampedArray(decodeFixedData(bc, len))
+    return new Uint8ClampedArray(readFixedData(bc, len))
 }
 
-export function encodeU8ClampedFixedArray(
+export function writeU8ClampedFixedArray(
     bc: ByteCursor,
     x: Uint8ClampedArray,
     len: number
 ): void {
-    encodeU8FixedArray(
+    writeU8FixedArray(
         bc,
         new Uint8Array(x.buffer, x.byteOffset, x.byteLength),
         len

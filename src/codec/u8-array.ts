@@ -1,22 +1,22 @@
 import { ok as assert } from "assert"
 import type { ByteCursor } from "../core/index.js"
-import { decodeUintSafe, encodeUintSafe } from "./primitive.js"
+import { readUintSafe, writeUintSafe } from "./primitive.js"
 
-export function decodeU8Array(bc: ByteCursor): Uint8Array {
-    const len = decodeUintSafe(bc)
+export function readU8Array(bc: ByteCursor): Uint8Array {
+    const len = readUintSafe(bc)
     return bc.read(len).slice()
 }
 
-export function encodeU8Array(bc: ByteCursor, x: Uint8Array): void {
-    encodeUintSafe(bc, x.length)
+export function writeU8Array(bc: ByteCursor, x: Uint8Array): void {
+    writeUintSafe(bc, x.length)
     bc.write(x)
 }
 
-export function decodeU8FixedArray(bc: ByteCursor, len: number): Uint8Array {
+export function readU8FixedArray(bc: ByteCursor, len: number): Uint8Array {
     return bc.read(len).slice()
 }
 
-export function encodeU8FixedArray(
+export function writeU8FixedArray(
     bc: ByteCursor,
     x: Uint8Array,
     len: number

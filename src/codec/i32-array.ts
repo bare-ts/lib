@@ -1,48 +1,43 @@
 import { ok as assert } from "assert"
 import type { ByteCursor } from "../core/index.js"
 import { IS_LITTLE_ENDIAN_PLATFORM } from "../util/util.js"
-import { decodeFixedData } from "./data.js"
-import {
-    decodeI32,
-    decodeUintSafe,
-    encodeI32,
-    encodeUintSafe,
-} from "./primitive.js"
+import { readFixedData } from "./data.js"
+import { readI32, readUintSafe, writeI32, writeUintSafe } from "./primitive.js"
 
 const I32_BYTE_COUNT = 4
 
-export const decodeI32FixedArray = IS_LITTLE_ENDIAN_PLATFORM
-    ? decodeI32FixedArrayLE
-    : decodeI32FixedArrayBE
+export const readI32FixedArray = IS_LITTLE_ENDIAN_PLATFORM
+    ? readI32FixedArrayLE
+    : readI32FixedArrayBE
 
-export function decodeI32Array(bc: ByteCursor): Int32Array {
-    return decodeI32FixedArray(bc, decodeUintSafe(bc))
+export function readI32Array(bc: ByteCursor): Int32Array {
+    return readI32FixedArray(bc, readUintSafe(bc))
 }
 
-function decodeI32FixedArrayLE(bc: ByteCursor, len: number): Int32Array {
+function readI32FixedArrayLE(bc: ByteCursor, len: number): Int32Array {
     const byteCount = len * I32_BYTE_COUNT
-    return new Int32Array(decodeFixedData(bc, byteCount))
+    return new Int32Array(readFixedData(bc, byteCount))
 }
 
-function decodeI32FixedArrayBE(bc: ByteCursor, len: number): Int32Array {
+function readI32FixedArrayBE(bc: ByteCursor, len: number): Int32Array {
     bc.check(len * I32_BYTE_COUNT)
     const result = new Int32Array(len)
-    for (let i = 0; i < len; i++) result[i] = decodeI32(bc)
+    for (let i = 0; i < len; i++) result[i] = readI32(bc)
     return result
 }
 
-export const encodeI32FixedArray = IS_LITTLE_ENDIAN_PLATFORM
-    ? encodeI32FixedArrayLE
-    : encodeI32FixedArrayBE
+export const writeI32FixedArray = IS_LITTLE_ENDIAN_PLATFORM
+    ? writeI32FixedArrayLE
+    : writeI32FixedArrayBE
 
-export function encodeI32Array(bc: ByteCursor, x: Int32Array): void {
-    encodeUintSafe(bc, x.length)
+export function writeI32Array(bc: ByteCursor, x: Int32Array): void {
+    writeUintSafe(bc, x.length)
     if (x.length !== 0) {
-        encodeI32FixedArray(bc, x, x.length)
+        writeI32FixedArray(bc, x, x.length)
     }
 }
 
-function encodeI32FixedArrayLE(
+function writeI32FixedArrayLE(
     bc: ByteCursor,
     x: Int32Array,
     len: number
@@ -51,12 +46,12 @@ function encodeI32FixedArrayLE(
     bc.write(new Uint8Array(x.buffer, x.byteOffset, x.byteLength))
 }
 
-function encodeI32FixedArrayBE(
+function writeI32FixedArrayBE(
     bc: ByteCursor,
     x: Int32Array,
     len: number
 ): void {
     assert(x.length === len)
     bc.reserve(x.length * I32_BYTE_COUNT)
-    for (let i = 0; i < x.length; i++) encodeI32(bc, x[i])
+    for (let i = 0; i < x.length; i++) writeI32(bc, x[i])
 }

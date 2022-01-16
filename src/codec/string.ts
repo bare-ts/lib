@@ -1,9 +1,9 @@
 import { BareError } from "../core/bare-error.js"
 import type { ByteCursor } from "../core/index.js"
-import { decodeUintSafe, encodeUintSafe } from "./primitive.js"
+import { readUintSafe, writeUintSafe } from "./primitive.js"
 
-export function decodeString(bc: ByteCursor): string {
-    const strBytesLen = decodeUintSafe(bc)
+export function readString(bc: ByteCursor): string {
+    const strBytesLen = readUintSafe(bc)
     const strBytes = bc.read(strBytesLen)
     try {
         return strBytesLen < bc.config.textDecoderThreshold
@@ -16,15 +16,15 @@ export function decodeString(bc: ByteCursor): string {
     }
 }
 
-export function encodeString(bc: ByteCursor, x: string): void {
+export function writeString(bc: ByteCursor, x: string): void {
     if (x.length < bc.config.textEncoderThreshold) {
         const byteLen = utf8ByteLength(x)
-        encodeUintSafe(bc, byteLen)
+        writeUintSafe(bc, byteLen)
         bc.reserve(byteLen)
-        encodeUtf8Js(bc, x)
+        writeUtf8Js(bc, x)
     } else {
         const strBytes = UTF8_ENCODER.encode(x)
-        encodeUintSafe(bc, strBytes.length)
+        writeUintSafe(bc, strBytes.length)
         bc.write(strBytes)
     }
 }
@@ -102,7 +102,7 @@ function decodeUtf8Js(bytes: Uint8Array): string {
     return result
 }
 
-function encodeUtf8Js(bc: ByteCursor, s: string): void {
+function writeUtf8Js(bc: ByteCursor, s: string): void {
     const sLen = s.length
     let offset = bc.offset
     const view = bc.view
@@ -150,8 +150,8 @@ function utf8ByteLength(s: string): number {
 /**
  * UTF-8 decoding and encoding using API that is supported in Node >= 12 and
  * modern browsers:
- * https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder/encode
- * https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder/decode
+ * https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder/write
+ * https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder/read
  *
  * If you're running in an environment where it's not available,
  * please use a polyfill, such as:
