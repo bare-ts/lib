@@ -2,7 +2,7 @@
 
 This project adheres to [Semantic Versioning][semver].
 
-## Unreleased
+## 0.2.0 (2022-01-16)
 
 * Improve performance for reading and writing strings
 
