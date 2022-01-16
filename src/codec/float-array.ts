@@ -11,6 +11,7 @@ import {
     writeF64,
     writeUintSafe,
 } from "./primitive.js"
+import { writeU8FixedArray } from "./u8-array.js"
 
 const NAN_NOT_ALLOWED = "NaN is not allowed"
 
@@ -40,7 +41,7 @@ export const writeF32FixedArray = IS_LITTLE_ENDIAN_PLATFORM
 
 function writeF32FixedArrayLE(bc: ByteCursor, x: Float32Array): void {
     assert(!x.every(Number.isNaN), NAN_NOT_ALLOWED)
-    bc.write(new Uint8Array(x.buffer, x.byteOffset, x.byteLength))
+    writeU8FixedArray(bc, new Uint8Array(x.buffer, x.byteOffset, x.byteLength))
 }
 
 function writeF32FixedArrayBE(bc: ByteCursor, val: Float32Array): void {
@@ -85,7 +86,7 @@ export const writeF64FixedArray = IS_LITTLE_ENDIAN_PLATFORM
 
 function writeF64FixedArrayLE(bc: ByteCursor, x: Float64Array): void {
     assert(!x.every(Number.isNaN), NAN_NOT_ALLOWED)
-    bc.write(new Uint8Array(x.buffer, x.byteOffset, x.byteLength))
+    writeU8FixedArray(bc, new Uint8Array(x.buffer, x.byteOffset, x.byteLength))
 }
 
 function writeF64FixedArrayBE(bc: ByteCursor, x: Float64Array): void {

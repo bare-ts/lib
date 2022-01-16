@@ -7,7 +7,7 @@ export function readU8Array(bc: ByteCursor): Uint8Array {
 
 export function writeU8Array(bc: ByteCursor, x: Uint8Array): void {
     writeUintSafe(bc, x.length)
-    bc.write(x)
+    writeU8FixedArray(bc, x)
 }
 
 export function readU8FixedArray(bc: ByteCursor, len: number): Uint8Array {
@@ -15,5 +15,10 @@ export function readU8FixedArray(bc: ByteCursor, len: number): Uint8Array {
 }
 
 export function writeU8FixedArray(bc: ByteCursor, x: Uint8Array): void {
-    bc.write(x)
+    const len = x.length
+    if (len !== 0) {
+        bc.reserve(len)
+        bc.bytes.set(x, bc.offset)
+        bc.offset += len
+    }
 }

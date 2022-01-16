@@ -43,7 +43,12 @@ test("bare.readU8FixedArray", (t) => {
 })
 
 test("bare.writeU8FixedArray", (t) => {
-    const bc = fromBytes()
+    let bc = fromBytes()
     bare.writeU8FixedArray(bc, Uint8Array.of(0x31, 0x42))
     t.deepEqual(toBytes(bc), [0x31, 0x42])
+
+    const bytes = Uint8Array.of(42, 0)
+    bc = new bare.ByteCursor(bytes.subarray(1), bare.Config({}))
+    bare.writeU8FixedArray(bc, Uint8Array.of(24))
+    t.deepEqual(Array.from(bytes), [42, 24])
 })

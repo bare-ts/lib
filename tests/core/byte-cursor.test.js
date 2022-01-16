@@ -79,14 +79,3 @@ test("ByteCursor.read", (t) => {
     read = bc.read(1)
     t.deepEqual(Array.from(read), [24])
 })
-
-test("ByteCursor.write", (t) => {
-    let bc = new bare.ByteCursor(new Uint8Array(1), bare.Config({}))
-    bc.write(Uint8Array.of(42))
-    t.deepEqual(toBytes(bc), [42])
-
-    const bytes = Uint8Array.of(42, 0)
-    bc = new bare.ByteCursor(bytes.subarray(1), bare.Config({}))
-    bc.write(Uint8Array.of(24))
-    t.deepEqual(Array.from(bytes), [42, 24])
-})

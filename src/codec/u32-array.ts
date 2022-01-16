@@ -2,6 +2,7 @@ import type { ByteCursor } from "../core/index.js"
 import { IS_LITTLE_ENDIAN_PLATFORM } from "../util/util.js"
 import { readFixedData } from "./data.js"
 import { readU32, readUintSafe, writeU32, writeUintSafe } from "./primitive.js"
+import { writeU8FixedArray } from "./u8-array.js"
 
 const U32_BYTE_COUNT = 4
 
@@ -37,7 +38,7 @@ export function writeU32Array(bc: ByteCursor, x: Uint32Array): void {
 }
 
 function writeU32FixedArrayLE(bc: ByteCursor, x: Uint32Array): void {
-    bc.write(new Uint8Array(x.buffer, x.byteOffset, x.byteLength))
+    writeU8FixedArray(bc, new Uint8Array(x.buffer, x.byteOffset, x.byteLength))
 }
 
 function writeU32FixedArrayBE(bc: ByteCursor, x: Uint32Array): void {

@@ -97,19 +97,4 @@ export class ByteCursor {
         this.offset += len
         return this.bytes.subarray(offset, offset + len)
     }
-
-    /**
-     * Write {@code bytes} in the buffer and advance cursor by
-     *  {@code bytes.length}
-     *
-     * @param bytes bytes to copy
-     */
-    write(bytes: Uint8Array): void {
-        const len = bytes.length
-        if (len !== 0) {
-            this.reserve(len)
-            this.bytes.set(bytes, this.offset)
-            this.offset += len
-        }
-    }
 }

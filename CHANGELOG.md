@@ -65,6 +65,17 @@ This project adheres to [Semantic Versioning][semver].
     new ByteCursor(new Uint8Array(5), config) // Update to this
     ```
 
+* BREAKING CHANGE: remove `ByteCursor#write`
+
+    Use `writeU8FixedArray` instead:
+
+    ```js
+    const bc = new ByteCursor(buffer, config)
+
+    bc.write(buffer) // Previously
+    bare.writeU8FixedArray(bc, buffer) // Now
+    ```
+
 ## 0.1.1 (2022-01-09)
 
 * Fix write offset when byteOffset > 0

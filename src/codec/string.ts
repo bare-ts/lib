@@ -1,6 +1,7 @@
 import { BareError } from "../core/bare-error.js"
 import type { ByteCursor } from "../core/index.js"
 import { readUintSafe, writeUintSafe } from "./primitive.js"
+import { writeU8FixedArray } from "./u8-array.js"
 
 const INVALID_UTF8_STRING = "invalid UTF-8 string"
 
@@ -17,7 +18,7 @@ export function writeString(bc: ByteCursor, x: string): void {
     } else {
         const strBytes = UTF8_ENCODER.encode(x)
         writeUintSafe(bc, strBytes.length)
-        bc.write(strBytes)
+        writeU8FixedArray(bc, strBytes)
     }
 }
 
@@ -38,7 +39,7 @@ export function writeFixedString(bc: ByteCursor, x: string): void {
         bc.reserve(byteLen)
         writeUtf8Js(bc, x)
     } else {
-        bc.write(UTF8_ENCODER.encode(x))
+        writeU8FixedArray(bc, UTF8_ENCODER.encode(x))
     }
 }
 
