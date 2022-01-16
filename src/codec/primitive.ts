@@ -209,13 +209,13 @@ export function writeIntSafe(bc: ByteCursor, x: number): void {
 
 export function readU8(bc: ByteCursor): number {
     bc.check(1)
-    return bc.view.getUint8(bc.offset++)
+    return bc.bytes[bc.offset++]
 }
 
 export function writeU8(bc: ByteCursor, x: number): void {
     assert(isU8(x), TOO_LARGE_NUMBER)
     bc.reserve(1)
-    bc.view.setUint8(bc.offset++, x)
+    bc.bytes[bc.offset++] = x
 }
 
 export function readU16(bc: ByteCursor): number {
