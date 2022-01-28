@@ -11,7 +11,6 @@
 
     "sourceMap": true,
 
-    "importHelpers": true,
     "newLine": "lf",
     "stripInternal": true,
     "useDefineForClassFields": true,
@@ -27,8 +26,10 @@
     "exactOptionalPropertyTypes": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
+    "noImplicitThis": true,
     "noPropertyAccessFromIndexSignature": true,
     "strict": true
   }
