@@ -158,8 +158,8 @@ function utf8ByteLength(s: string): number {
  * please use a polyfill, such as:
  * https://github.com/anonyco/FastestSmallestTextEncoderDecoder
  */
-const UTF8_DECODER = new TextDecoder("utf-8", { fatal: true })
-const UTF8_ENCODER = new TextEncoder()
+const UTF8_DECODER = /* @__PURE__ */ new TextDecoder("utf-8", { fatal: true })
+const UTF8_ENCODER = /* @__PURE__ */ new TextEncoder()
 
 interface EncodeResult {
     readonly read: number
