@@ -440,14 +440,3 @@ test("bare.writeU64Safe", (t) => {
         "too large number"
     )
 })
-
-test("bare.readVoid", (t) => {
-    let bc = fromBytes()
-    t.deepEqual(bare.readVoid(bc), undefined)
-})
-
-test("bare.writeVoid", (t) => {
-    let bc = fromBytes()
-    bare.writeVoid(bc, undefined)
-    t.deepEqual(toBytes(bc), [])
-})

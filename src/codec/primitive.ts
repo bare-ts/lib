@@ -363,11 +363,3 @@ export function writeUintSafe(bc: ByteCursor, x: number): void {
     }
     writeU8(bc, x)
 }
-
-export function readVoid(_dc: ByteCursor): undefined {
-    return undefined
-}
-
-export function writeVoid(_dc: ByteCursor, _x: undefined): void {
-    // do nothing
-}
