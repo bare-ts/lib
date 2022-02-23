@@ -1,4 +1,4 @@
-import { ok as assert } from "assert"
+import { assert } from "../util/assert.js"
 import { BareError, type ByteCursor } from "../core/index.js"
 import {
     INT_SAFE_MAX_BYTE_COUNT,

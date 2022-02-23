@@ -1,8 +1,7 @@
 {
   "extends": "../tsconfig-base.json",
   "compilerOptions": {
-    "paths": { "@bare-ts/lib": ["../src/index.js"] },
-    "types": ["node"]
+    "paths": { "@bare-ts/lib": ["../src/index.js"] }
   },
   "include": ["**/*.js", "**/*.ts"],
   "references": [{ "path": "../src" }]

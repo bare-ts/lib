@@ -1,4 +1,4 @@
-import { ok as assert } from "assert"
+import { assert } from "../util/assert.js"
 import type { ByteCursor } from "../core/index.js"
 import { BareError } from "../core/index.js"
 import { NAN_NOT_ALLOWED } from "../util/constants.js"

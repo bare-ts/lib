@@ -7,14 +7,8 @@ export class AssertionError extends Error {
     }
 }
 
-export default function assert(
-    test: boolean,
-    message: Error | string
-): asserts test {
+export function assert(test: boolean, message: string): asserts test {
     if (!test) {
-        if (message instanceof Error) {
-            throw message
-        }
         const e = new AssertionError(message)
         if (Error.captureStackTrace) {
             Error.captureStackTrace(e, assert)
@@ -23,4 +17,8 @@ export default function assert(
     }
 }
 
-export const ok = assert
+declare const Error: V8ErrorConstructor
+
+interface V8ErrorConstructor extends ErrorConstructor {
+    readonly captureStackTrace?: (e: Error, f: unknown) => void
+}

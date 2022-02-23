@@ -4,7 +4,7 @@
 npx tsc --build src
 
 # build CommonJS
-npx esbuild src/index.ts src/util/assert.ts \
+npx esbuild src/index.ts \
     --bundle \
     --platform='node' --main-fields='module' \
     --format='cjs' \

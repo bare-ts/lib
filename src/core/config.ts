@@ -1,4 +1,4 @@
-import { ok as assert } from "assert"
+import { assert } from "../util/assert.js"
 import { TOO_LARGE_NUMBER } from "../util/constants.js"
 import { isU32 } from "../util/validator.js"
 

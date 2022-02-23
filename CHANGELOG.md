@@ -6,6 +6,11 @@ This project adheres to [Semantic Versioning][semver].
 
 * Remove {read,write}Void
 
+* Make @bare-ts/lib platform-agnostic
+
+    Use your favorite ESM-ready CDN and simply import @bare-ts/lib.
+    This was made possible by removing the dependency over node:assert.
+
 ## 0.2.0 (2022-01-16)
 
 * Improve performance for reading and writing strings
