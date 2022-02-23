@@ -1,7 +1,6 @@
 import { ok as assert } from "assert"
+import { TOO_LARGE_NUMBER } from "../util/constants.js"
 import { isU32 } from "../util/validator.js"
-
-const TOO_LARGE_NUMBER = "too large number"
 
 // Default values
 const initialBufferLength = 1024

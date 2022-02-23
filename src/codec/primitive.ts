@@ -1,6 +1,14 @@
 import { ok as assert } from "assert"
 import { BareError, type ByteCursor } from "../core/index.js"
 import {
+    INT_SAFE_MAX_BYTE_COUNT,
+    NAN_NOT_ALLOWED,
+    NON_CANONICAL_REPRESENTATION,
+    TOO_LARGE_NUMBER,
+    UINT_MAX_BYTE_COUNT,
+    UINT_SAFE_MAX_BYTE_COUNT,
+} from "../util/constants.js"
+import {
     isI16,
     isI32,
     isI64,
@@ -11,10 +19,6 @@ import {
     isU64,
     isU8,
 } from "../util/validator.js"
-
-const NAN_NOT_ALLOWED = "NaN is not allowed"
-const NON_CANONICAL_REPRESENTATION = "must be canonical"
-const TOO_LARGE_NUMBER = "too large number"
 
 export function readBool(bc: ByteCursor): boolean {
     const val = readU8(bc)
@@ -155,8 +159,6 @@ export function writeInt(bc: ByteCursor, x: bigint): void {
     writeUint(bc, zigZag)
 }
 
-const INT_SAFE_MAX_BYTE_COUNT = 8
-
 export function readIntSafe(bc: ByteCursor): number {
     const firstByte = readU8(bc)
     let result = (firstByte & 0x7f) >> 1
@@ -275,8 +277,6 @@ export function writeU64Safe(bc: ByteCursor, x: number): void {
     writeU32(bc, (x / /* 2**32 */ 0x1_00_00_00_00) >>> 0)
 }
 
-const UINT_MAX_BYTE_COUNT = 10
-
 export function readUint(bc: ByteCursor): bigint {
     let low = readU8(bc)
     if (low >= 0x80) {
@@ -324,8 +324,6 @@ export function writeUint(bc: ByteCursor, x: bigint): void {
     }
     writeU8(bc, tmp)
 }
-
-const UINT_SAFE_MAX_BYTE_COUNT = 8
 
 export function readUintSafe(bc: ByteCursor): number {
     let result = readU8(bc)

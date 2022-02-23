@@ -1,9 +1,8 @@
 import { BareError } from "../core/bare-error.js"
 import type { ByteCursor } from "../core/index.js"
+import { INVALID_UTF8_STRING } from "../util/constants.js"
 import { readUintSafe, writeUintSafe } from "./primitive.js"
 import { writeU8FixedArray } from "./u8-array.js"
-
-const INVALID_UTF8_STRING = "invalid UTF-8 string"
 
 export function readString(bc: ByteCursor): string {
     return readFixedString(bc, readUintSafe(bc))

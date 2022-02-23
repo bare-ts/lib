@@ -1,6 +1,7 @@
 import { ok as assert } from "assert"
 import type { ByteCursor } from "../core/index.js"
 import { BareError } from "../core/index.js"
+import { NAN_NOT_ALLOWED } from "../util/constants.js"
 import { IS_LITTLE_ENDIAN_PLATFORM } from "../util/util.js"
 import { readFixedData } from "./data.js"
 import {
@@ -12,8 +13,6 @@ import {
     writeUintSafe,
 } from "./primitive.js"
 import { writeU8FixedArray } from "./u8-array.js"
-
-const NAN_NOT_ALLOWED = "NaN is not allowed"
 
 export const readF32FixedArray = IS_LITTLE_ENDIAN_PLATFORM
     ? readF32FixedArrayLE

@@ -1,7 +1,6 @@
+import { TOO_LARGE_BUFFER } from "../util/constants.js"
 import { BareError } from "./bare-error.js"
 import type { Config } from "./config.js"
-
-const TOO_LARGE_BUFFER = "too large buffer"
 
 /**
  * @invariant bytes.buffer === view.buffer

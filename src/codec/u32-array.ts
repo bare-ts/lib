@@ -1,10 +1,9 @@
 import type { ByteCursor } from "../core/index.js"
+import { U32_BYTE_COUNT } from "../util/constants.js"
 import { IS_LITTLE_ENDIAN_PLATFORM } from "../util/util.js"
 import { readFixedData } from "./data.js"
 import { readU32, readUintSafe, writeU32, writeUintSafe } from "./primitive.js"
 import { writeU8FixedArray } from "./u8-array.js"
-
-const U32_BYTE_COUNT = 4
 
 export const readU32FixedArray = IS_LITTLE_ENDIAN_PLATFORM
     ? readU32FixedArrayLE
