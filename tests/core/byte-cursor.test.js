@@ -1,6 +1,5 @@
 import * as bare from "@bare-ts/lib"
 import { default as test } from "oletus"
-import { toBytes } from "../codec/_util.js"
 
 test("ByteCursor", (t) => {
     const config = bare.Config({
