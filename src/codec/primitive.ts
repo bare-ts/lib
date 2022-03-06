@@ -2,7 +2,6 @@ import { assert } from "../util/assert.js"
 import { BareError, type ByteCursor } from "../core/index.js"
 import {
     INT_SAFE_MAX_BYTE_COUNT,
-    NAN_NOT_ALLOWED,
     NON_CANONICAL_REPRESENTATION,
     TOO_LARGE_NUMBER,
     UINT_MAX_BYTE_COUNT,
@@ -36,19 +35,16 @@ export function writeBool(bc: ByteCursor, x: boolean): void {
 export function readF32(bc: ByteCursor): number {
     bc.check(4)
     const result = bc.view.getFloat32(bc.offset, true)
-    if (Number.isNaN(result)) {
-        throw new BareError(bc.offset, NAN_NOT_ALLOWED)
-    }
     bc.offset += 4
     return result
 }
 
 export function writeF32(bc: ByteCursor, x: number): void {
-    assert(!Number.isNaN(x), NAN_NOT_ALLOWED)
     bc.reserve(4)
     bc.view.setFloat32(bc.offset, x, true)
     assert(
-        Math.abs(bc.view.getFloat32(bc.offset, true) - x) <= Number.EPSILON,
+        Number.isNaN(x) ||
+            Math.abs(bc.view.getFloat32(bc.offset, true) - x) <= Number.EPSILON,
         TOO_LARGE_NUMBER
     )
     bc.offset += 4
@@ -57,15 +53,11 @@ export function writeF32(bc: ByteCursor, x: number): void {
 export function readF64(bc: ByteCursor): number {
     bc.check(8)
     const result = bc.view.getFloat64(bc.offset, true)
-    if (Number.isNaN(result)) {
-        throw new BareError(bc.offset, NAN_NOT_ALLOWED)
-    }
     bc.offset += 8
     return result
 }
 
 export function writeF64(bc: ByteCursor, x: number): void {
-    assert(!Number.isNaN(x), NAN_NOT_ALLOWED)
     bc.reserve(8)
     bc.view.setFloat64(bc.offset, x, true)
     bc.offset += 8

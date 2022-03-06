@@ -10,7 +10,6 @@ export const UINT_MAX_BYTE_COUNT = 10
 export const UINT_SAFE_MAX_BYTE_COUNT = 8
 
 export const INVALID_UTF8_STRING = "invalid UTF-8 string"
-export const NAN_NOT_ALLOWED = "NaN is not allowed"
 export const NON_CANONICAL_REPRESENTATION = "must be canonical"
 export const TOO_LARGE_BUFFER = "too large buffer"
 export const TOO_LARGE_NUMBER = "too large number"

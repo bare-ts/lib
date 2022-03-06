@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning][semver].
 
 ## Unreleased
 
+-   Full compliance to IEEE-754 (floating point numbers)
+
+    NaN is now a valid value for f32 and f64.
+
 -   Remove {read,write}Void
 
 -   Make @bare-ts/lib platform-agnostic

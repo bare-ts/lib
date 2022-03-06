@@ -1,7 +1,4 @@
-import { assert } from "../util/assert.js"
 import type { ByteCursor } from "../core/index.js"
-import { BareError } from "../core/index.js"
-import { NAN_NOT_ALLOWED } from "../util/constants.js"
 import { IS_LITTLE_ENDIAN_PLATFORM } from "../util/util.js"
 import { readFixedData } from "./data.js"
 import {
@@ -21,9 +18,6 @@ export const readF32FixedArray = IS_LITTLE_ENDIAN_PLATFORM
 function readF32FixedArrayLE(bc: ByteCursor, len: number): Float32Array {
     const byteLen = len * 4
     const result = new Float32Array(readFixedData(bc, byteLen))
-    if (result.some(Number.isNaN)) {
-        throw new BareError(bc.offset, NAN_NOT_ALLOWED)
-    }
     return result
 }
 
@@ -39,7 +33,6 @@ export const writeF32FixedArray = IS_LITTLE_ENDIAN_PLATFORM
     : writeF32FixedArrayBE
 
 function writeF32FixedArrayLE(bc: ByteCursor, x: Float32Array): void {
-    assert(!x.every(Number.isNaN), NAN_NOT_ALLOWED)
     writeU8FixedArray(bc, new Uint8Array(x.buffer, x.byteOffset, x.byteLength))
 }
 
@@ -66,9 +59,6 @@ export const readF64FixedArray = IS_LITTLE_ENDIAN_PLATFORM
 function readF64FixedArrayLE(bc: ByteCursor, len: number): Float64Array {
     const byteLen = len * 8
     const result = new Float64Array(readFixedData(bc, byteLen))
-    if (result.some(Number.isNaN)) {
-        throw new BareError(bc.offset, NAN_NOT_ALLOWED)
-    }
     return result
 }
 
@@ -84,7 +74,6 @@ export const writeF64FixedArray = IS_LITTLE_ENDIAN_PLATFORM
     : writeF64FixedArrayBE
 
 function writeF64FixedArrayLE(bc: ByteCursor, x: Float64Array): void {
-    assert(!x.every(Number.isNaN), NAN_NOT_ALLOWED)
     writeU8FixedArray(bc, new Uint8Array(x.buffer, x.byteOffset, x.byteLength))
 }
 

@@ -20,9 +20,13 @@ test("bare.readF32Array", (t) => {
 })
 
 test("bare.writeF32Array", (t) => {
-    const bc = fromBytes()
+    let bc = fromBytes()
     bare.writeF32Array(bc, Float32Array.of(0))
     t.deepEqual(toBytes(bc), [/* length */ 1, 0, 0, 0, 0])
+
+    bc = fromBytes()
+    bare.writeF32Array(bc, Float32Array.of(Number.NaN))
+    t.deepEqual(toBytes(bc), [/* length */ 1, 0, 0, 0xc0, 0x7f])
 })
 
 test("bare.readF32FixedArray", (t) => {
@@ -43,7 +47,11 @@ test("bare.readF32FixedArray", (t) => {
 })
 
 test("bare.writeF32FixedArray", (t) => {
-    const bc = fromBytes()
+    let bc = fromBytes()
     bare.writeF32FixedArray(bc, Float32Array.of(0))
     t.deepEqual(toBytes(bc), [0, 0, 0, 0])
+
+    bc = fromBytes()
+    bare.writeF32FixedArray(bc, Float32Array.of(Number.NaN))
+    t.deepEqual(toBytes(bc), [0, 0, 0xc0, 0x7f])
 })

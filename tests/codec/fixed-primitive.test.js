@@ -43,11 +43,11 @@ test("bare.readF32", (t) => {
     )
 
     bc = fromBytes(0, 0, 0xc0, 0x7f)
-    t.throws(
-        () => bare.readF32(bc),
-        { name: "BareError", issue: "NaN is not allowed", offset: 0 },
-        "NaN is not allowed"
-    )
+    t.deepEqual(Number.isNaN(bare.readF32(bc)), true)
+
+    // test with a NaN payload
+    bc = fromBytes(0, 1, 0xc0, 0x7f)
+    t.deepEqual(Number.isNaN(bare.readF32(bc)), true)
 })
 
 test("bare.writeF32", (t) => {
@@ -56,17 +56,15 @@ test("bare.writeF32", (t) => {
     t.deepEqual(toBytes(bc), [0, 0, 0xfa, 0x41])
 
     bc = fromBytes()
+    bare.writeF32(bc, Number.NaN)
+    // canonical quiet NaN emitted by v8
+    t.deepEqual(toBytes(bc), [0, 0, 0xc0, 0x7f])
+
+    bc = fromBytes()
     t.throws(
         () => bare.writeF32(bc, 10 ** 20 / 2 ** 30),
         { name: "AssertionError", message: "too large number" },
         "too large number"
-    )
-
-    bc = fromBytes()
-    t.throws(
-        () => bare.writeF32(bc, Number.NaN),
-        { name: "AssertionError", message: "NaN is not allowed" },
-        "NaN is not allowed"
     )
 })
 
@@ -80,11 +78,11 @@ test("bare.readF64", (t) => {
     )
 
     bc = fromBytes(0, 0, 0, 0, 0, 0, 0xf8, 0x7f)
-    t.throws(
-        () => bare.readF64(bc),
-        { name: "BareError", issue: "NaN is not allowed", offset: 0 },
-        "NaN is not allowed"
-    )
+    t.deepEqual(Number.isNaN(bare.readF64(bc)), true)
+
+    // test with a NaN payload
+    bc = fromBytes(0, 0, 0, 1, 0, 0, 0xf8, 0x7f)
+    t.deepEqual(Number.isNaN(bare.readF64(bc)), true)
 })
 
 test("bare.writeF64", (t) => {
@@ -92,12 +90,10 @@ test("bare.writeF64", (t) => {
     bare.writeF64(bc, 10 ** 20 / 2 ** 30) // dyadic number
     t.deepEqual(toBytes(bc), [64, 140, 181, 120, 29, 175, 53, 66])
 
-    bc = fromBytes(0, 0, 192, 127)
-    t.throws(
-        () => bare.writeF64(bc, Number.NaN),
-        { name: "AssertionError", message: "NaN is not allowed" },
-        "NaN is not allowed"
-    )
+    bc = fromBytes()
+    bare.writeF64(bc, Number.NaN)
+    // canonical quiet NaN emitted by v8
+    t.deepEqual(toBytes(bc), [0, 0, 0, 0, 0, 0, 0xf8, 0x7f])
 })
 
 test("bare.readI8", (t) => {
