@@ -2,7 +2,7 @@
 
 This project adheres to [Semantic Versioning][semver].
 
-## Unreleased
+## 0.3.0 (2022-04-25)
 
 -   Full compliance to IEEE-754 (floating point numbers)
 
