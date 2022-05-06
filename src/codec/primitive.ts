@@ -12,10 +12,10 @@ import {
     isI32,
     isI64,
     isI8,
-    isSafeU64,
     isU16,
     isU32,
     isU64,
+    isU64Safe,
     isU8,
 } from "../util/validator.js"
 
@@ -256,7 +256,7 @@ export function writeU64(bc: ByteCursor, x: bigint): void {
 
 export function readU64Safe(bc: ByteCursor): number {
     const result = readU32(bc) + readU32(bc) * 0x1_00_00_00_00 // 2 ** 32
-    if (!isSafeU64(result)) {
+    if (!isU64Safe(result)) {
         bc.offset -= 8
         throw new BareError(bc.offset, TOO_LARGE_NUMBER)
     }
@@ -264,7 +264,7 @@ export function readU64Safe(bc: ByteCursor): number {
 }
 
 export function writeU64Safe(bc: ByteCursor, x: number): void {
-    assert(isSafeU64(x), TOO_LARGE_NUMBER)
+    assert(isU64Safe(x), TOO_LARGE_NUMBER)
     writeU32(bc, x >>> 0)
     writeU32(bc, (x / /* 2**32 */ 0x1_00_00_00_00) >>> 0)
 }
@@ -346,7 +346,7 @@ export function readUintSafe(bc: ByteCursor): number {
 }
 
 export function writeUintSafe(bc: ByteCursor, x: number): void {
-    assert(isSafeU64(x), TOO_LARGE_NUMBER)
+    assert(isU64Safe(x), TOO_LARGE_NUMBER)
     while (x >= 0x80) {
         writeU8(bc, 0x80 | (x & 0x7f))
         x = Math.floor(x / 0x80) // 2**7
