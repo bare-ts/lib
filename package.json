@@ -52,17 +52,11 @@
     "test": "npm run build && tsc -b tests && oletus tests/**/*.test.js",
     "test:coverage": "c8 --reporter=lcovonly npm test"
   },
-  "size-limit": [
-    {
-      "path": "./dist/index.js",
-      "limit": "10 kB"
-    }
-  ],
   "devDependencies": {
-    "esbuild": "~0.14.10",
-    "oletus": "^3.2.0",
-    "prettier": "~2.5.1",
-    "typescript": "~4.5.4",
-    "validate-commit-message": "^3.2.0"
+    "esbuild": "~0.14.39",
+    "oletus": "3.3.0",
+    "prettier": "2.6.2",
+    "typescript": "~4.6.4",
+    "validate-commit-message": "3.2.0"
   }
 }
