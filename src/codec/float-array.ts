@@ -24,7 +24,9 @@ function readF32FixedArrayLE(bc: ByteCursor, len: number): Float32Array {
 function readF32FixedArrayBE(bc: ByteCursor, len: number): Float32Array {
     bc.check(len * 4)
     const result = new Float32Array(len)
-    for (let i = 0; i < len; i++) result[i] = readF32(bc)
+    for (let i = 0; i < len; i++) {
+        result[i] = readF32(bc)
+    }
     return result
 }
 
@@ -38,7 +40,9 @@ function writeF32FixedArrayLE(bc: ByteCursor, x: Float32Array): void {
 
 function writeF32FixedArrayBE(bc: ByteCursor, val: Float32Array): void {
     bc.reserve(val.length * 4)
-    for (let i = 0; i < val.length; i++) writeF32(bc, val[i])
+    for (let i = 0; i < val.length; i++) {
+        writeF32(bc, val[i])
+    }
 }
 
 export function readF32Array(bc: ByteCursor): Float32Array {
@@ -65,7 +69,9 @@ function readF64FixedArrayLE(bc: ByteCursor, len: number): Float64Array {
 function readF64FixedArrayBE(bc: ByteCursor, len: number): Float64Array {
     bc.check(len * 8)
     const result = new Float64Array(len)
-    for (let i = 0; i < len; i++) result[i] = readF64(bc)
+    for (let i = 0; i < len; i++) {
+        result[i] = readF64(bc)
+    }
     return result
 }
 
@@ -79,7 +85,9 @@ function writeF64FixedArrayLE(bc: ByteCursor, x: Float64Array): void {
 
 function writeF64FixedArrayBE(bc: ByteCursor, x: Float64Array): void {
     bc.reserve(x.length * 8)
-    for (let i = 0; i < x.length; i++) writeF64(bc, x[i])
+    for (let i = 0; i < x.length; i++) {
+        writeF64(bc, x[i])
+    }
 }
 
 export function readF64Array(bc: ByteCursor): Float64Array {

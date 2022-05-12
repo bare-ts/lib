@@ -21,7 +21,9 @@ function readU64FixedArrayLE(bc: ByteCursor, len: number): BigUint64Array {
 function readU64FixedArrayBE(bc: ByteCursor, len: number): BigUint64Array {
     bc.check(len * U64_BYTE_COUNT)
     const result = new BigUint64Array(len)
-    for (let i = 0; i < len; i++) result[i] = readU64(bc)
+    for (let i = 0; i < len; i++) {
+        result[i] = readU64(bc)
+    }
     return result
 }
 
@@ -42,5 +44,7 @@ function writeU64FixedArrayLE(bc: ByteCursor, x: BigUint64Array): void {
 
 function writeU64FixedArrayBE(bc: ByteCursor, x: BigUint64Array): void {
     bc.reserve(x.length * U64_BYTE_COUNT)
-    for (let i = 0; i < x.length; i++) writeU64(bc, x[i])
+    for (let i = 0; i < x.length; i++) {
+        writeU64(bc, x[i])
+    }
 }

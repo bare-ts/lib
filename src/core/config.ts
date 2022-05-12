@@ -15,19 +15,19 @@ export function Config({
     textDecoderThreshold = 256,
     textEncoderThreshold = 256,
 }): Config {
+    assert(isU32(initialBufferLength), TOO_LARGE_NUMBER)
+    assert(isU32(maxBufferLength), TOO_LARGE_NUMBER)
+    assert(isU32(textDecoderThreshold), TOO_LARGE_NUMBER)
+    assert(isU32(textEncoderThreshold), TOO_LARGE_NUMBER)
+    assert(
+        initialBufferLength <= maxBufferLength,
+        "initialBufferLength must be lower than or equal to maxBufferLength",
+    )
     const config = {
         initialBufferLength,
         maxBufferLength,
         textDecoderThreshold,
         textEncoderThreshold,
     }
-    assert(isU32(config.initialBufferLength), TOO_LARGE_NUMBER)
-    assert(isU32(config.maxBufferLength), TOO_LARGE_NUMBER)
-    assert(isU32(config.textDecoderThreshold), TOO_LARGE_NUMBER)
-    assert(isU32(config.textEncoderThreshold), TOO_LARGE_NUMBER)
-    assert(
-        config.initialBufferLength <= config.maxBufferLength,
-        "initialBufferLength must be lower than or equal to maxBufferLength"
-    )
     return config
 }

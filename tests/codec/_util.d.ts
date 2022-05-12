@@ -1,4 +1,4 @@
-import { Config, ByteCursor } from "@bare-ts/lib"
+import { ByteCursor, Config } from "@bare-ts/lib"
 
 export function fromConfigBytes(
     partConfig: Partial<Config>,

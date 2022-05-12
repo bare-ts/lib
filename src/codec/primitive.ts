@@ -1,5 +1,5 @@
-import { assert } from "../util/assert.js"
 import { BareError, type ByteCursor } from "../core/index.js"
+import { assert } from "../util/assert.js"
 import {
     INT_SAFE_MAX_BYTE_COUNT,
     NON_CANONICAL_REPRESENTATION,
@@ -8,15 +8,15 @@ import {
     UINT_SAFE_MAX_BYTE_COUNT,
 } from "../util/constants.js"
 import {
+    isI8,
     isI16,
     isI32,
     isI64,
-    isI8,
+    isU8,
     isU16,
     isU32,
     isU64,
     isU64Safe,
-    isU8,
 } from "../util/validator.js"
 
 export function readBool(bc: ByteCursor): boolean {
@@ -45,7 +45,7 @@ export function writeF32(bc: ByteCursor, x: number): void {
     assert(
         Number.isNaN(x) ||
             Math.abs(bc.view.getFloat32(bc.offset, true) - x) <= Number.EPSILON,
-        TOO_LARGE_NUMBER
+        TOO_LARGE_NUMBER,
     )
     bc.offset += 4
 }
@@ -188,14 +188,12 @@ export function readIntSafe(bc: ByteCursor): number {
 export function writeIntSafe(bc: ByteCursor, x: number): void {
     assert(Number.isSafeInteger(x), TOO_LARGE_NUMBER)
     const sign = x < 0 ? 1 : 0
-    if (x < 0) {
-        x = -(x + 1)
-    }
-    const firstByte = ((x & 0x3f) << 1) | sign
-    x = Math.floor(x / 0x40) // 2**6
-    if (x > 0) {
+    let zigZag = x < 0 ? -(x + 1) : x
+    const firstByte = ((zigZag & 0x3f) << 1) | sign
+    zigZag = Math.floor(zigZag / 0x40) // 2**6
+    if (zigZag > 0) {
         writeU8(bc, 0x80 | firstByte)
-        writeUintSafe(bc, x)
+        writeUintSafe(bc, zigZag)
     } else {
         writeU8(bc, firstByte)
     }
@@ -334,7 +332,7 @@ export function readUintSafe(bc: ByteCursor): number {
             bc.offset -= byteCount - 1
             throw new BareError(
                 bc.offset - byteCount + 1,
-                NON_CANONICAL_REPRESENTATION
+                NON_CANONICAL_REPRESENTATION,
             )
         }
         if (byteCount === UINT_SAFE_MAX_BYTE_COUNT && byte > 0xf) {
@@ -347,9 +345,10 @@ export function readUintSafe(bc: ByteCursor): number {
 
 export function writeUintSafe(bc: ByteCursor, x: number): void {
     assert(isU64Safe(x), TOO_LARGE_NUMBER)
-    while (x >= 0x80) {
+    let zigZag = x
+    while (zigZag >= 0x80) {
         writeU8(bc, 0x80 | (x & 0x7f))
-        x = Math.floor(x / 0x80) // 2**7
+        zigZag = Math.floor(zigZag / 0x80) // 2**7
     }
-    writeU8(bc, x)
+    writeU8(bc, zigZag)
 }

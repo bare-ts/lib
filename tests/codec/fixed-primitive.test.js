@@ -1,5 +1,6 @@
 import * as bare from "@bare-ts/lib"
 import { default as test } from "oletus"
+
 import { fromBytes, toBytes } from "./_util.js"
 
 test("bare.readBool", (t) => {
@@ -9,7 +10,7 @@ test("bare.readBool", (t) => {
     t.throws(
         () => bare.readBool(bc),
         { name: "BareError", issue: "missing bytes", offset: 2 },
-        "missing bytes"
+        "missing bytes",
     )
 
     bc = fromBytes(0x42)
@@ -20,7 +21,7 @@ test("bare.readBool", (t) => {
             issue: "a bool must be equal to 0 or 1",
             offset: 0,
         },
-        "malformed bool"
+        "malformed bool",
     )
 })
 
@@ -39,7 +40,7 @@ test("bare.readF32", (t) => {
     t.throws(
         () => bare.readF32(bc),
         { name: "BareError", issue: "missing bytes", offset: 4 },
-        "missing bytes"
+        "missing bytes",
     )
 
     bc = fromBytes(0, 0, 0xc0, 0x7f)
@@ -64,7 +65,7 @@ test("bare.writeF32", (t) => {
     t.throws(
         () => bare.writeF32(bc, 10 ** 20 / 2 ** 30),
         { name: "AssertionError", message: "too large number" },
-        "too large number"
+        "too large number",
     )
 })
 
@@ -74,7 +75,7 @@ test("bare.readF64", (t) => {
     t.throws(
         () => bare.readF64(bc),
         { name: "BareError", issue: "missing bytes", offset: 8 },
-        "missing bytes"
+        "missing bytes",
     )
 
     bc = fromBytes(0, 0, 0, 0, 0, 0, 0xf8, 0x7f)
@@ -102,7 +103,7 @@ test("bare.readI8", (t) => {
     t.throws(
         () => bare.readI8(bc),
         { name: "BareError", issue: "missing bytes", offset: 1 },
-        "missing bytes"
+        "missing bytes",
     )
 })
 
@@ -115,14 +116,14 @@ test("bare.writeI8", (t) => {
     t.throws(
         () => bare.writeI8(bc, 2 ** 7),
         { name: "AssertionError", message: "too large number" },
-        "too large number"
+        "too large number",
     )
 
     bc = fromBytes()
     t.throws(
         () => bare.writeI8(bc, -(2 ** 7 + 1)),
         { name: "AssertionError", message: "too large number" },
-        "too large negative"
+        "too large negative",
     )
 })
 
@@ -132,7 +133,7 @@ test("bare.readI16", (t) => {
     t.throws(
         () => bare.readI16(bc),
         { name: "BareError", issue: "missing bytes", offset: 2 },
-        "missing bytes"
+        "missing bytes",
     )
 })
 
@@ -145,14 +146,14 @@ test("bare.writeI16", (t) => {
     t.throws(
         () => bare.writeI16(bc, 2 ** 15),
         { name: "AssertionError", message: "too large number" },
-        "too large number"
+        "too large number",
     )
 
     bc = fromBytes()
     t.throws(
         () => bare.writeI16(bc, -(2 ** 15 + 1)),
         { name: "AssertionError", message: "too large number" },
-        "too large negative"
+        "too large negative",
     )
 })
 
@@ -162,7 +163,7 @@ test("bare.readI32", (t) => {
     t.throws(
         () => bare.readI32(bc),
         { name: "BareError", issue: "missing bytes", offset: 4 },
-        "missing bytes"
+        "missing bytes",
     )
 })
 
@@ -175,14 +176,14 @@ test("bare.writeI32", (t) => {
     t.throws(
         () => bare.writeI32(bc, 2 ** 31),
         { name: "AssertionError", message: "too large number" },
-        "too large number"
+        "too large number",
     )
 
     bc = fromBytes()
     t.throws(
         () => bare.writeI32(bc, -(2 ** 31 + 1)),
         { name: "AssertionError", message: "too large number" },
-        "too large negative"
+        "too large negative",
     )
 })
 
@@ -194,7 +195,7 @@ test("bare.readI64", (t) => {
     t.throws(
         () => bare.readI64(bc),
         { name: "BareError", issue: "missing bytes", offset: 8 },
-        "missing bytes"
+        "missing bytes",
     )
 })
 
@@ -207,7 +208,7 @@ test("bare.writeI64", (t) => {
     t.throws(
         () => bare.writeI64(bc, BigInt(2 ** 31) * BigInt(2 ** 32)),
         { name: "AssertionError", message: "too large number" },
-        "too large number"
+        "too large number",
     )
 
     bc = fromBytes()
@@ -215,7 +216,7 @@ test("bare.writeI64", (t) => {
         () =>
             bare.writeI64(bc, -(BigInt(2 ** 31) * BigInt(2 ** 32) + BigInt(1))),
         { name: "AssertionError", message: "too large number" },
-        "too large negative"
+        "too large negative",
     )
 })
 
@@ -260,7 +261,7 @@ test("bare.readI64Safe", (t) => {
         0,
         0,
         0xe0,
-        0xff
+        0xff,
     )
     t.deepEqual(bare.readI64Safe(bc), 0)
     t.deepEqual(bare.readI64Safe(bc), Number.MAX_SAFE_INTEGER)
@@ -270,14 +271,14 @@ test("bare.readI64Safe", (t) => {
     t.throws(
         () => bare.readI64Safe(bc),
         { name: "BareError", issue: "missing bytes", offset: 5 * 8 },
-        "missing bytes"
+        "missing bytes",
     )
 
     bc = fromBytes(0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x20, 0)
     t.throws(
         () => bare.readI64Safe(bc),
         { name: "BareError", issue: "too large number", offset: 0 },
-        "too large number"
+        "too large number",
     )
 })
 
@@ -294,21 +295,21 @@ test("bare.writeI64Safe", (t) => {
             0, 0, 0, 0, 0, 0, 0, 0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x1f, 0,
             0xd6, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0, 0, 0, 0, 0xff,
             0xff, 0xff, 0xff, 1, 0, 0, 0, 0, 0, 0xe0, 0xff,
-        ]
+        ],
     )
 
     bc = fromBytes()
     t.throws(
         () => bare.writeI64Safe(bc, Number.MAX_SAFE_INTEGER + 1),
         { name: "AssertionError", message: "too large number" },
-        "too large number"
+        "too large number",
     )
 
     bc = fromBytes()
     t.throws(
         () => bare.writeI64Safe(bc, Number.MIN_SAFE_INTEGER - 1),
         { name: "AssertionError", message: "too large number" },
-        "too large negative"
+        "too large negative",
     )
 })
 
@@ -318,7 +319,7 @@ test("bare.readU8", (t) => {
     t.throws(
         () => bare.readU8(bc),
         { name: "BareError", issue: "missing bytes", offset: 1 },
-        "missing bytes"
+        "missing bytes",
     )
 })
 
@@ -331,7 +332,7 @@ test("bare.writeU8", (t) => {
     t.throws(
         () => bare.writeU8(bc, 0x100),
         { name: "AssertionError", message: "too large number" },
-        "too large number"
+        "too large number",
     )
 })
 
@@ -341,7 +342,7 @@ test("bare.readU16", (t) => {
     t.throws(
         () => bare.readU16(bc),
         { name: "BareError", issue: "missing bytes", offset: 2 },
-        "missing bytes"
+        "missing bytes",
     )
 })
 
@@ -354,7 +355,7 @@ test("bare.writeU16", (t) => {
     t.throws(
         () => bare.writeU16(bc, 0x10000),
         { name: "AssertionError", message: "too large number" },
-        "too large number"
+        "too large number",
     )
 })
 
@@ -364,7 +365,7 @@ test("bare.readU32", (t) => {
     t.throws(
         () => bare.readU32(bc),
         { name: "BareError", issue: "missing bytes", offset: 4 },
-        "missing bytes"
+        "missing bytes",
     )
 })
 
@@ -377,7 +378,7 @@ test("bare.writeU32", (t) => {
     t.throws(
         () => bare.writeU32(bc, 2 ** 32),
         { name: "AssertionError", message: "too large number" },
-        "too large number"
+        "too large number",
     )
 })
 
@@ -390,7 +391,7 @@ test("bare.readU64", (t) => {
     t.throws(
         () => bare.readU64(bc),
         { name: "BareError", issue: "missing bytes", offset: 8 },
-        "missing bytes"
+        "missing bytes",
     )
 })
 
@@ -403,7 +404,7 @@ test("bare.writeU64", (t) => {
     t.throws(
         () => bare.writeU64(bc, BigInt(2 ** 32) * BigInt(2 ** 32)),
         { name: "AssertionError", message: "too large number" },
-        "too large number"
+        "too large number",
     )
 })
 
@@ -413,14 +414,14 @@ test("bare.readU64Safe", (t) => {
     t.throws(
         () => bare.readU64Safe(bc),
         { name: "BareError", issue: "missing bytes", offset: 8 },
-        "missing bytes"
+        "missing bytes",
     )
 
     bc = fromBytes(0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x20, 0)
     t.throws(
         () => bare.readU64Safe(bc),
         { name: "BareError", issue: "too large number", offset: 0 },
-        "too large number"
+        "too large number",
     )
 })
 
@@ -433,6 +434,6 @@ test("bare.writeU64Safe", (t) => {
     t.throws(
         () => bare.writeU64Safe(bc, 0xcafe_babe_dead_beef),
         { name: "AssertionError", message: "too large number" },
-        "too large number"
+        "too large number",
     )
 })

@@ -1,4 +1,4 @@
-import { Config, ByteCursor } from "@bare-ts/lib"
+import { ByteCursor, Config } from "@bare-ts/lib"
 
 /**
  *
@@ -26,6 +26,6 @@ export function fromBytes(...rest) {
  */
 export function toBytes(bc) {
     return Array.from(
-        new Uint8Array(bc.view.buffer, bc.view.byteOffset, bc.offset)
+        new Uint8Array(bc.view.buffer, bc.view.byteOffset, bc.offset),
     )
 }

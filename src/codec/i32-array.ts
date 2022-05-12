@@ -21,7 +21,9 @@ function readI32FixedArrayLE(bc: ByteCursor, len: number): Int32Array {
 function readI32FixedArrayBE(bc: ByteCursor, len: number): Int32Array {
     bc.check(len * I32_BYTE_COUNT)
     const result = new Int32Array(len)
-    for (let i = 0; i < len; i++) result[i] = readI32(bc)
+    for (let i = 0; i < len; i++) {
+        result[i] = readI32(bc)
+    }
     return result
 }
 
@@ -42,5 +44,7 @@ function writeI32FixedArrayLE(bc: ByteCursor, x: Int32Array): void {
 
 function writeI32FixedArrayBE(bc: ByteCursor, x: Int32Array): void {
     bc.reserve(x.length * I32_BYTE_COUNT)
-    for (let i = 0; i < x.length; i++) writeI32(bc, x[i])
+    for (let i = 0; i < x.length; i++) {
+        writeI32(bc, x[i])
+    }
 }

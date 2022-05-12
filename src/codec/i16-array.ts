@@ -21,7 +21,9 @@ function readI16FixedArrayLE(bc: ByteCursor, len: number): Int16Array {
 function readI16FixedArrayBE(bc: ByteCursor, len: number): Int16Array {
     bc.check(len * I16_BYTE_COUNT)
     const result = new Int16Array(len)
-    for (let i = 0; i < len; i++) result[i] = readI16(bc)
+    for (let i = 0; i < len; i++) {
+        result[i] = readI16(bc)
+    }
     return result
 }
 
@@ -42,5 +44,7 @@ function writeI16FixedArrayLE(bc: ByteCursor, x: Int16Array): void {
 
 function writeI16FixedArrayBE(bc: ByteCursor, x: Int16Array): void {
     bc.reserve(x.length * I16_BYTE_COUNT)
-    for (let i = 0; i < x.length; i++) writeI16(bc, x[i])
+    for (let i = 0; i < x.length; i++) {
+        writeI16(bc, x[i])
+    }
 }

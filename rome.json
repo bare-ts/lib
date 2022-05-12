@@ -1,0 +1,22 @@
+{
+  "formatter": {
+    "indentStyle": "space",
+    "indentSize": 4,
+    "ignore": ["*.json", "./tsconfig-base.json"]
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "all": true
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteProperties": "preserve",
+      "semicolons": "asNeeded"
+    }
+  },
+  "organizeImports": {
+    "enabled": true
+  }
+}

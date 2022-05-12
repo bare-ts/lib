@@ -9,7 +9,7 @@ export function readU8ClampedArray(bc: ByteCursor): Uint8ClampedArray {
 
 export function writeU8ClampedArray(
     bc: ByteCursor,
-    x: Uint8ClampedArray
+    x: Uint8ClampedArray,
 ): void {
     writeUintSafe(bc, x.length)
     writeU8ClampedFixedArray(bc, x)
@@ -17,14 +17,14 @@ export function writeU8ClampedArray(
 
 export function readU8ClampedFixedArray(
     bc: ByteCursor,
-    len: number
+    len: number,
 ): Uint8ClampedArray {
     return new Uint8ClampedArray(readFixedData(bc, len))
 }
 
 export function writeU8ClampedFixedArray(
     bc: ByteCursor,
-    x: Uint8ClampedArray
+    x: Uint8ClampedArray,
 ): void {
     writeU8FixedArray(bc, new Uint8Array(x.buffer, x.byteOffset, x.byteLength))
 }

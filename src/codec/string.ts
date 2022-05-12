@@ -27,7 +27,7 @@ export function readFixedString(bc: ByteCursor, byteLen: number): string {
     }
     try {
         return UTF8_DECODER.decode(bc.read(byteLen))
-    } catch (cause) {
+    } catch (_cause) {
         throw new BareError(bc.offset, INVALID_UTF8_STRING)
     }
 }

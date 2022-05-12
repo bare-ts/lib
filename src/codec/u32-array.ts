@@ -21,7 +21,9 @@ function readU32FixedArrayLE(bc: ByteCursor, len: number): Uint32Array {
 function readU32FixedArrayBE(bc: ByteCursor, len: number): Uint32Array {
     bc.check(len * U32_BYTE_COUNT)
     const result = new Uint32Array(len)
-    for (let i = 0; i < len; i++) result[i] = readU32(bc)
+    for (let i = 0; i < len; i++) {
+        result[i] = readU32(bc)
+    }
     return result
 }
 
@@ -42,5 +44,7 @@ function writeU32FixedArrayLE(bc: ByteCursor, x: Uint32Array): void {
 
 function writeU32FixedArrayBE(bc: ByteCursor, x: Uint32Array): void {
     bc.reserve(x.length * U32_BYTE_COUNT)
-    for (let i = 0; i < x.length; i++) writeU32(bc, x[i])
+    for (let i = 0; i < x.length; i++) {
+        writeU32(bc, x[i])
+    }
 }

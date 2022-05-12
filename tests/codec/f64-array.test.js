@@ -1,5 +1,6 @@
 import * as bare from "@bare-ts/lib"
 import { default as test } from "oletus"
+
 import { fromBytes, toBytes } from "./_util.js"
 
 test("bare.readF64Array", (t) => {
@@ -8,14 +9,14 @@ test("bare.readF64Array", (t) => {
     t.throws(
         () => bare.readF64Array(bc),
         { name: "BareError", issue: "missing bytes" },
-        "missing bytes"
+        "missing bytes",
     )
 
     bc = fromBytes(/* length */ 2, 0, 0, 0, 0, 0, 0, 0, 0)
     t.throws(
         () => bare.readF64Array(bc),
         { name: "BareError", issue: "missing bytes" },
-        "missing bytes"
+        "missing bytes",
     )
 })
 
@@ -35,14 +36,14 @@ test("bare.readF64FixedArray", (t) => {
     t.throws(
         () => bare.readF64FixedArray(bc, 1),
         { name: "BareError", issue: "missing bytes" },
-        "missing bytes"
+        "missing bytes",
     )
 
     bc = fromBytes(0, 0, 0, 0, 0, 0, 0, 0)
     t.throws(
         () => bare.readF64FixedArray(bc, 2),
         { name: "BareError", issue: "missing bytes" },
-        "missing bytes"
+        "missing bytes",
     )
 })
 

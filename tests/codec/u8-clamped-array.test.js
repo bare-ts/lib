@@ -1,5 +1,6 @@
 import * as bare from "@bare-ts/lib"
 import { default as test } from "oletus"
+
 import { fromBytes, toBytes } from "./_util.js"
 
 test("bare.readU8ClampedArray", (t) => {
@@ -8,14 +9,14 @@ test("bare.readU8ClampedArray", (t) => {
     t.throws(
         () => bare.readU8ClampedArray(bc),
         { name: "BareError", issue: "missing bytes" },
-        "missing bytes"
+        "missing bytes",
     )
 
     bc = fromBytes(/* length */ 3, 0x31, 0x42)
     t.throws(
         () => bare.readU8ClampedArray(bc),
         { name: "BareError", issue: "missing bytes" },
-        "missing bytes"
+        "missing bytes",
     )
 })
 
@@ -29,19 +30,19 @@ test("bare.readU8FixedArray", (t) => {
     let bc = fromBytes(0x31, 0x42)
     t.deepEqual(
         bare.readU8ClampedFixedArray(bc, 2),
-        Uint8ClampedArray.of(0x31, 0x42)
+        Uint8ClampedArray.of(0x31, 0x42),
     )
     t.throws(
         () => bare.readU8ClampedFixedArray(bc, 2),
         { name: "BareError", issue: "missing bytes" },
-        "missing bytes"
+        "missing bytes",
     )
 
     bc = fromBytes(0x31, 0x42)
     t.throws(
         () => bare.readU8ClampedFixedArray(bc, 3),
         { name: "BareError", issue: "missing bytes" },
-        "missing bytes"
+        "missing bytes",
     )
 })
 

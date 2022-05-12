@@ -21,7 +21,7 @@
     "url": "https://github.com/bare-ts/lib/issues"
   },
   "engines": {
-    "node": ">= 12"
+    "node": "^14.18.0 || >=16.0.0"
   },
   "type": "module",
   "main": "./dist/index.cjs",
@@ -49,20 +49,14 @@
     "clean": "rm -rf dist coverage",
     "prepare": "validate-commit-msg",
     "prepublishOnly": "npm run clean && npm test",
-    "test": "npm run build && tsc -b tests && oletus tests/**/*.test.js",
+    "test": "sh ./scripts/test.sh",
     "test:coverage": "c8 --reporter=lcovonly npm test"
   },
-  "size-limit": [
-    {
-      "path": "./dist/index.js",
-      "limit": "10 kB"
-    }
-  ],
   "devDependencies": {
-    "esbuild": "~0.14.10",
-    "oletus": "^3.2.0",
-    "prettier": "~2.5.1",
-    "typescript": "~4.5.4",
-    "validate-commit-message": "^3.2.0"
+    "esbuild": "0.17.12",
+    "oletus": "3.3.0",
+    "rome": "12.0.0",
+    "typescript": "5.0.2",
+    "validate-commit-message": "3.2.0"
   }
 }

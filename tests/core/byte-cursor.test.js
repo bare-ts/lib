@@ -13,10 +13,11 @@ test("ByteCursor", (t) => {
             issue: "too large buffer",
             offset: 0,
         },
-        "too large buffer"
+        "too large buffer",
     )
     t.doesNotThrow(
-        () => void new bare.ByteCursor(new Uint8Array(6).subarray(0, 3), config)
+        () =>
+            void new bare.ByteCursor(new Uint8Array(6).subarray(0, 3), config),
     )
 
     const bc = new bare.ByteCursor(new Uint8Array(6).subarray(2, 5), config)
@@ -36,7 +37,7 @@ test("ByteCursor.check", (t) => {
             issue: "missing bytes",
             offset: 0,
         },
-        "missing bytes"
+        "missing bytes",
     )
 })
 
@@ -46,7 +47,7 @@ test("ByteCursor.reserve", (t) => {
         bare.Config({
             initialBufferLength: 10,
             maxBufferLength: 10,
-        })
+        }),
     )
     t.doesNotThrow(() => bc.reserve(5), "reservable bytes")
     t.doesNotThrow(() => bc.check(5), "reserved bytes")
@@ -58,12 +59,12 @@ test("ByteCursor.reserve", (t) => {
             issue: "too large buffer",
             offset: 0,
         },
-        "max buffer length hit"
+        "max buffer length hit",
     )
 
     bc = new bare.ByteCursor(
         new Uint8Array(new ArrayBuffer(20), 5, 10),
-        bare.Config({})
+        bare.Config({}),
     )
     t.doesNotThrow(() => bc.check(10), "enough room")
     t.doesNotThrow(() => bc.reserve(15))

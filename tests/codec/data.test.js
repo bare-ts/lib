@@ -1,5 +1,6 @@
 import * as bare from "@bare-ts/lib"
 import { default as test } from "oletus"
+
 import { fromBytes, toBytes } from "./_util.js"
 
 test("bare.readData", (t) => {
@@ -10,7 +11,7 @@ test("bare.readData", (t) => {
     t.throws(
         () => bare.readData(bc),
         { name: "BareError", issue: "missing bytes", offset: 1 },
-        "missing bytes"
+        "missing bytes",
     )
 })
 
@@ -28,7 +29,7 @@ test("bare.readFixedData", (t) => {
     t.throws(
         () => bare.readFixedData(bc, 2),
         { name: "BareError", issue: "missing bytes", offset: 0 },
-        "missing bytes"
+        "missing bytes",
     )
 })
 

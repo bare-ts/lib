@@ -21,7 +21,9 @@ function readI64FixedArrayLE(bc: ByteCursor, len: number): BigInt64Array {
 function readI64FixedArrayBE(bc: ByteCursor, len: number): BigInt64Array {
     bc.check(len * I64_BYTE_COUNT)
     const result = new BigInt64Array(len)
-    for (let i = 0; i < len; i++) result[i] = readI64(bc)
+    for (let i = 0; i < len; i++) {
+        result[i] = readI64(bc)
+    }
     return result
 }
 
@@ -42,5 +44,7 @@ function writeI64FixedArrayLE(bc: ByteCursor, x: BigInt64Array): void {
 
 function writeI64FixedArrayBE(bc: ByteCursor, x: BigInt64Array): void {
     bc.reserve(x.length * I64_BYTE_COUNT)
-    for (let i = 0; i < x.length; i++) writeI64(bc, x[i])
+    for (let i = 0; i < x.length; i++) {
+        writeI64(bc, x[i])
+    }
 }
