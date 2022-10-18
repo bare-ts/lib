@@ -47,10 +47,10 @@
   "scripts": {
     "build": "sh ./scripts/build.sh",
     "clean": "rm -rf dist coverage",
+    "coverage": "c8 --reporter=lcovonly npm test",
     "prepare": "validate-commit-msg",
     "prepublishOnly": "npm run clean && npm test",
-    "test": "sh ./scripts/test.sh",
-    "test:coverage": "c8 --reporter=lcovonly npm test"
+    "test": "sh ./scripts/test.sh"
   },
   "devDependencies": {
     "esbuild": "0.17.12",
