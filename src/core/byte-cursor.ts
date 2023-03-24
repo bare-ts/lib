@@ -16,16 +16,16 @@ import type { Config } from "./config.js"
  *        |<----------- config.maxBufferLength ------------>|
  */
 export class ByteCursor {
-    declare bytes: Uint8Array
+    bytes: Uint8Array
 
-    declare readonly config: Config
+    readonly config: Config
 
     /**
      * Read and write Offset in {@link view} and {@link bytes}
      */
-    declare offset: number
+    offset: number
 
-    declare view: DataView
+    view: DataView
 
     /**
      * @param bytes read and/or write buffer

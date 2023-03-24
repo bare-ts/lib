@@ -1,11 +1,9 @@
 export class BareError extends Error {
-    declare readonly name: "BareError"
+    readonly cause: unknown
 
-    declare readonly cause: unknown
+    readonly issue: string
 
-    declare readonly issue: string
-
-    declare readonly offset: number
+    readonly offset: number
 
     constructor(offset: number, issue: string, opts?: { cause: unknown }) {
         super(`(byte:${offset}) ${issue}`)
