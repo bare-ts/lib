@@ -2,24 +2,12 @@
 set -eu
 
 # build ESM
-esbuild src/*/*.ts src/*.ts \
-    --bundle \
-    --platform='node' --main-fields='module' \
-    --format='esm' \
-    --target='es2019' \
-    --outdir='dist' \
-    --sourcemap \
-    --log-level='warning'
+esbuild src/*.ts src/*/*.ts --outdir=dist --log-level=warning
 
 # build .d.ts
 tsc --build src
 
-# build CommonJS
-esbuild src/index.ts \
-    --bundle \
-    --platform='browser' --main-fields='module' \
-    --format='cjs' \
-    --target='es2019' \
-    --outdir='dist' \
-    --out-extension:.js=.cjs \
-    --log-level='warning'
+# build CommonJS (fallback)
+esbuild src/index.ts --bundle --platform=node > dist/index.cjs
+
+cp -f dist/index.d.ts dist/index.d.cts

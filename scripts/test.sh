@@ -3,7 +3,7 @@
 . scripts/build.sh
 
 # unit tests
-oletus tests/*/*.test.js
+env NODE_ENV=development oletus tests/*/*.test.js
 
 # lint
 rome ci src tests
