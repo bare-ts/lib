@@ -1,26 +1,25 @@
 #!/bin/sh
 set -eu
 
-# build .d.ts
-npx tsc --build src
-
-# build CommonJS
-npx esbuild src/index.ts \
-    --bundle \
-    --platform='node' --main-fields='module' \
-    --format='cjs' \
-    --target='es2019' \
-    --outdir='dist' \
-    --out-extension:.js=.cjs \
-    --log-level='warning'
-
 # build ESM
-npx esbuild src/*/*.ts src/*.ts \
+esbuild src/*/*.ts src/*.ts \
     --bundle \
-    --external:'*.js' \
     --platform='node' --main-fields='module' \
     --format='esm' \
     --target='es2019' \
     --outdir='dist' \
     --sourcemap \
+    --log-level='warning'
+
+# build .d.ts
+tsc --build src
+
+# build CommonJS
+esbuild src/index.ts \
+    --bundle \
+    --platform='browser' --main-fields='module' \
+    --format='cjs' \
+    --target='es2019' \
+    --outdir='dist' \
+    --out-extension:.js=.cjs \
     --log-level='warning'
