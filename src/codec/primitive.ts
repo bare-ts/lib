@@ -6,7 +6,6 @@ import {
     TOO_LARGE_NUMBER,
     UINT_MAX_BYTE_COUNT,
     UINT_SAFE32_MAX_BYTE_COUNT,
-    UINT_SAFE_MAX_BYTE_COUNT,
 } from "../util/constants.js"
 import {
     isI8,
@@ -427,7 +426,7 @@ export function readUintSafe(bc: ByteCursor): number {
             result += (byte & 0x7f) * shiftMul
             shiftMul *= /* 2**7 */ 0x80
             byteCount++
-        } while (byte >= 0x80 && byteCount < UINT_SAFE_MAX_BYTE_COUNT)
+        } while (byte >= 0x80 && byteCount < INT_SAFE_MAX_BYTE_COUNT)
         if (byte === 0) {
             bc.offset -= byteCount - 1
             throw new BareError(
@@ -435,7 +434,7 @@ export function readUintSafe(bc: ByteCursor): number {
                 NON_CANONICAL_REPRESENTATION,
             )
         }
-        if (byteCount === UINT_SAFE_MAX_BYTE_COUNT && byte > 0xf) {
+        if (byteCount === INT_SAFE_MAX_BYTE_COUNT && byte > 0xf) {
             bc.offset -= byteCount - 1
             throw new BareError(bc.offset, TOO_LARGE_NUMBER)
         }
@@ -449,12 +448,12 @@ export function writeUintSafe(bc: ByteCursor, x: number): void {
     }
     let byteCount = 1
     let zigZag = x
-    while (zigZag >= 0x80 && byteCount < UINT_SAFE_MAX_BYTE_COUNT) {
+    while (zigZag >= 0x80 && byteCount < INT_SAFE_MAX_BYTE_COUNT) {
         writeU8(bc, 0x80 | (zigZag & 0x7f))
         zigZag = Math.floor(zigZag / /* 2**7 */ 0x80)
         byteCount++
     }
-    if (byteCount === UINT_SAFE_MAX_BYTE_COUNT) {
+    if (byteCount === INT_SAFE_MAX_BYTE_COUNT) {
         // truncate to mimic other int encoders
         // this is useful when assertions are skipped
         zigZag &= 0x0f

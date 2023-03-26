@@ -1,7 +1,6 @@
 import type { ByteCursor } from "../core/index.js"
 import { DEV, assert } from "../util/assert.js"
-import { U16_BYTE_COUNT } from "../util/constants.js"
-import { IS_LITTLE_ENDIAN_PLATFORM } from "../util/util.js"
+import { IS_LITTLE_ENDIAN_PLATFORM } from "../util/constants.js"
 import { isU32 } from "../util/validator.js"
 import { readFixedData } from "./data.js"
 import {
@@ -24,7 +23,7 @@ function readU16FixedArrayLE(bc: ByteCursor, len: number): Uint16Array {
     if (DEV) {
         assert(isU32(len))
     }
-    const byteCount = len * U16_BYTE_COUNT
+    const byteCount = len * 2
     return new Uint16Array(readFixedData(bc, byteCount))
 }
 
@@ -32,7 +31,7 @@ function readU16FixedArrayBE(bc: ByteCursor, len: number): Uint16Array {
     if (DEV) {
         assert(isU32(len))
     }
-    bc.check(len * U16_BYTE_COUNT)
+    bc.check(len * 2)
     const result = new Uint16Array(len)
     for (let i = 0; i < len; i++) {
         result[i] = readU16(bc)
@@ -56,7 +55,7 @@ function writeU16FixedArrayLE(bc: ByteCursor, x: Uint16Array): void {
 }
 
 function writeU16FixedArrayBE(bc: ByteCursor, x: Uint16Array): void {
-    bc.reserve(x.length * U16_BYTE_COUNT)
+    bc.reserve(x.length * 2)
     for (let i = 0; i < x.length; i++) {
         writeU16(bc, x[i])
     }
