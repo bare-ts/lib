@@ -1,10 +1,11 @@
 import { BareError, type ByteCursor } from "../core/index.js"
-import { assert } from "../util/assert.js"
+import { DEV, assert } from "../util/assert.js"
 import {
     INT_SAFE_MAX_BYTE_COUNT,
     NON_CANONICAL_REPRESENTATION,
     TOO_LARGE_NUMBER,
     UINT_MAX_BYTE_COUNT,
+    UINT_SAFE32_MAX_BYTE_COUNT,
     UINT_SAFE_MAX_BYTE_COUNT,
 } from "../util/constants.js"
 import {
@@ -42,11 +43,14 @@ export function readF32(bc: ByteCursor): number {
 export function writeF32(bc: ByteCursor, x: number): void {
     bc.reserve(4)
     bc.view.setFloat32(bc.offset, x, true)
-    assert(
-        Number.isNaN(x) ||
-            Math.abs(bc.view.getFloat32(bc.offset, true) - x) <= Number.EPSILON,
-        TOO_LARGE_NUMBER,
-    )
+    if (DEV) {
+        assert(
+            Number.isNaN(x) ||
+                Math.abs(bc.view.getFloat32(bc.offset, true) - x) <=
+                    Number.EPSILON,
+            TOO_LARGE_NUMBER,
+        )
+    }
     bc.offset += 4
 }
 
@@ -69,7 +73,9 @@ export function readI8(bc: ByteCursor): number {
 }
 
 export function writeI8(bc: ByteCursor, x: number): void {
-    assert(isI8(x), TOO_LARGE_NUMBER)
+    if (DEV) {
+        assert(isI8(x), TOO_LARGE_NUMBER)
+    }
     bc.reserve(1)
     bc.view.setInt8(bc.offset++, x)
 }
@@ -82,7 +88,9 @@ export function readI16(bc: ByteCursor): number {
 }
 
 export function writeI16(bc: ByteCursor, x: number): void {
-    assert(isI16(x), TOO_LARGE_NUMBER)
+    if (DEV) {
+        assert(isI16(x), TOO_LARGE_NUMBER)
+    }
     bc.reserve(2)
     bc.view.setInt16(bc.offset, x, true)
     bc.offset += 2
@@ -96,7 +104,9 @@ export function readI32(bc: ByteCursor): number {
 }
 
 export function writeI32(bc: ByteCursor, x: number): void {
-    assert(isI32(x), TOO_LARGE_NUMBER)
+    if (DEV) {
+        assert(isI32(x), TOO_LARGE_NUMBER)
+    }
     bc.reserve(4)
     bc.view.setInt32(bc.offset, x, true)
     bc.offset += 4
@@ -110,14 +120,16 @@ export function readI64(bc: ByteCursor): bigint {
 }
 
 export function writeI64(bc: ByteCursor, x: bigint): void {
-    assert(isI64(x), TOO_LARGE_NUMBER)
+    if (DEV) {
+        assert(isI64(x), TOO_LARGE_NUMBER)
+    }
     bc.reserve(8)
     bc.view.setBigInt64(bc.offset, x, true)
     bc.offset += 8
 }
 
 export function readI64Safe(bc: ByteCursor): number {
-    const result = readU32(bc) + readI32(bc) * 0x1_00_00_00_00 // 2 ** 32
+    const result = readU32(bc) + readI32(bc) * /* 2**32 */ 0x1_00_00_00_00
     if (!Number.isSafeInteger(result)) {
         bc.offset -= 8
         throw new BareError(bc.offset, TOO_LARGE_NUMBER)
@@ -126,15 +138,23 @@ export function readI64Safe(bc: ByteCursor): number {
 }
 
 export function writeI64Safe(bc: ByteCursor, x: number): void {
-    assert(Number.isSafeInteger(x), TOO_LARGE_NUMBER)
-    const lowest32 = x >>> 0
+    if (DEV) {
+        assert(Number.isSafeInteger(x), TOO_LARGE_NUMBER)
+    }
+    let lowest32 = x >>> 0
     writeU32(bc, lowest32)
     let highest32 = (x / /* 2**32 */ 0x1_00_00_00_00) | 0
     if (x < 0) {
-        // get two's complement representation of the highest 32bits
-        highest32 = ~Math.abs(highest32) >>> 0
+        // get two's complement representation of the highest 21bits
+        highest32 = ~(Math.abs(highest32) & /* 2**21-1 */ 0x1f_ffff) >>> 0
         if (lowest32 === 0) {
-            highest32++
+            if (highest32 === 0x1f_ffff) {
+                // maps -2**53 to Number.MIN_SAFE_INTEGER
+                // this is useful when assertions are skipped
+                lowest32 = 1
+            } else {
+                highest32++
+            }
         }
     }
     writeU32(bc, highest32)
@@ -146,22 +166,27 @@ export function readInt(bc: ByteCursor): bigint {
 }
 
 export function writeInt(bc: ByteCursor, x: bigint): void {
-    assert(isI64(x), TOO_LARGE_NUMBER)
-    const zigZag = (x >> BigInt(63)) ^ (x << BigInt(1))
-    writeUint(bc, zigZag)
+    // truncate to mimic DataView#setBigInt64
+    // this is useful when assertions are skipped
+    const truncated = BigInt.asIntN(64, x)
+    if (DEV) {
+        assert(truncated === x, TOO_LARGE_NUMBER)
+    }
+    const zigZag = (truncated >> BigInt(63)) ^ (truncated << BigInt(1))
+    writeTruncatedUint(bc, zigZag)
 }
 
 export function readIntSafe(bc: ByteCursor): number {
     const firstByte = readU8(bc)
     let result = (firstByte & 0x7f) >> 1
     if (firstByte >= 0x80) {
-        let shiftMul = 0x40 // 2**6
+        let shiftMul = /* 2**6 */ 0x40
         let byteCount = 1
         let byte
         do {
             byte = readU8(bc)
             result += (byte & 0x7f) * shiftMul
-            shiftMul *= 0x80 // 2**7
+            shiftMul *= /* 2**7 */ 0x80
             byteCount++
         } while (byte >= 0x80 && byteCount < INT_SAFE_MAX_BYTE_COUNT)
         if (byte === 0) {
@@ -186,16 +211,30 @@ export function readIntSafe(bc: ByteCursor): number {
 }
 
 export function writeIntSafe(bc: ByteCursor, x: number): void {
-    assert(Number.isSafeInteger(x), TOO_LARGE_NUMBER)
     const sign = x < 0 ? 1 : 0
     let zigZag = x < 0 ? -(x + 1) : x
-    const firstByte = ((zigZag & 0x3f) << 1) | sign
-    zigZag = Math.floor(zigZag / 0x40) // 2**6
+    let first7Bits = ((zigZag & 0x3f) << 1) | sign
+    zigZag = Math.floor(zigZag / /* 2**6 */ 0x40)
     if (zigZag > 0) {
-        writeU8(bc, 0x80 | firstByte)
+        if (!Number.isSafeInteger(x)) {
+            if (DEV) {
+                assert(false, TOO_LARGE_NUMBER)
+            }
+            // keep only the remaining 53 - 6 = 47 bits
+            // this is useful when assertions are skipped
+            const low = zigZag & 0x7fff
+            const high = ((zigZag / 0x8000) >>> 0) * 0x8000
+            if (first7Bits === 0x7f && low === 0x7fff && high === 0xffff_ffff) {
+                // maps -2**53 to Number.MIN_SAFE_INTEGER
+                // this is useful when assertions are skipped
+                first7Bits &= ~0b10
+            }
+            zigZag = high + low
+        }
+        writeU8(bc, 0x80 | first7Bits)
         writeUintSafe(bc, zigZag)
     } else {
-        writeU8(bc, firstByte)
+        writeU8(bc, first7Bits)
     }
 }
 
@@ -205,7 +244,9 @@ export function readU8(bc: ByteCursor): number {
 }
 
 export function writeU8(bc: ByteCursor, x: number): void {
-    assert(isU8(x), TOO_LARGE_NUMBER)
+    if (DEV) {
+        assert(isU8(x), TOO_LARGE_NUMBER)
+    }
     bc.reserve(1)
     bc.bytes[bc.offset++] = x
 }
@@ -218,7 +259,9 @@ export function readU16(bc: ByteCursor): number {
 }
 
 export function writeU16(bc: ByteCursor, x: number): void {
-    assert(isU16(x), TOO_LARGE_NUMBER)
+    if (DEV) {
+        assert(isU16(x), TOO_LARGE_NUMBER)
+    }
     bc.reserve(2)
     bc.view.setUint16(bc.offset, x, true)
     bc.offset += 2
@@ -232,7 +275,9 @@ export function readU32(bc: ByteCursor): number {
 }
 
 export function writeU32(bc: ByteCursor, x: number): void {
-    assert(isU32(x), TOO_LARGE_NUMBER)
+    if (DEV) {
+        assert(isU32(x), TOO_LARGE_NUMBER)
+    }
     bc.reserve(4)
     bc.view.setUint32(bc.offset, x, true)
     bc.offset += 4
@@ -246,14 +291,16 @@ export function readU64(bc: ByteCursor): bigint {
 }
 
 export function writeU64(bc: ByteCursor, x: bigint): void {
-    assert(isU64(x), TOO_LARGE_NUMBER)
+    if (DEV) {
+        assert(isU64(x), TOO_LARGE_NUMBER)
+    }
     bc.reserve(8)
     bc.view.setBigUint64(bc.offset, x, true)
     bc.offset += 8
 }
 
 export function readU64Safe(bc: ByteCursor): number {
-    const result = readU32(bc) + readU32(bc) * 0x1_00_00_00_00 // 2 ** 32
+    const result = readU32(bc) + readU32(bc) * /* 2**32 */ 0x1_00_00_00_00
     if (!isU64Safe(result)) {
         bc.offset -= 8
         throw new BareError(bc.offset, TOO_LARGE_NUMBER)
@@ -262,9 +309,11 @@ export function readU64Safe(bc: ByteCursor): number {
 }
 
 export function writeU64Safe(bc: ByteCursor, x: number): void {
-    assert(isU64Safe(x), TOO_LARGE_NUMBER)
+    if (DEV) {
+        assert(isU64Safe(x), TOO_LARGE_NUMBER)
+    }
     writeU32(bc, x >>> 0)
-    writeU32(bc, (x / /* 2**32 */ 0x1_00_00_00_00) >>> 0)
+    writeU32(bc, (x / /* 2**32 */ 0x1_00_00_00_00) & /* 2**21-1 */ 0x1f_ffff)
 }
 
 export function readUint(bc: ByteCursor): bigint {
@@ -277,7 +326,7 @@ export function readUint(bc: ByteCursor): bigint {
         do {
             byte = readU8(bc)
             low += (byte & 0x7f) * shiftMul
-            shiftMul *= 0x80 // 2**7
+            shiftMul *= /* 2**7 */ 0x80
             byteCount++
         } while (byte >= 0x80 && byteCount < 7)
         let height = 0
@@ -285,7 +334,7 @@ export function readUint(bc: ByteCursor): bigint {
         while (byte >= 0x80 && byteCount < UINT_MAX_BYTE_COUNT) {
             byte = readU8(bc)
             height += (byte & 0x7f) * shiftMul
-            shiftMul *= 0x80 // 2**7
+            shiftMul *= /* 2**7 */ 0x80
             byteCount++
         }
         if (byte === 0 || (byteCount === UINT_MAX_BYTE_COUNT && byte > 1)) {
@@ -298,14 +347,23 @@ export function readUint(bc: ByteCursor): bigint {
 }
 
 export function writeUint(bc: ByteCursor, x: bigint): void {
-    assert(isU64(x), TOO_LARGE_NUMBER)
+    // truncate to mimic DataView#setBigUint64
+    // this is useful when assertions are skipped
+    const truncated = BigInt.asUintN(64, x)
+    if (DEV) {
+        assert(truncated === x, TOO_LARGE_NUMBER)
+    }
+    writeTruncatedUint(bc, truncated)
+}
+
+function writeTruncatedUint(bc: ByteCursor, x: bigint): void {
     // For better performances, we decompose `x` into two safe uint.
     let tmp = Number(BigInt.asUintN(7 * 7, x))
     let rest = Number(x >> BigInt(7 * 7))
     let byteCount = 0
     while (tmp >= 0x80 || rest !== 0) {
         writeU8(bc, 0x80 | (tmp & 0x7f))
-        tmp = Math.floor(tmp / 0x80) // 2**7
+        tmp = Math.floor(tmp / /* 2**7 */ 0x80)
         byteCount++
         if (byteCount === 7) {
             tmp = rest
@@ -315,17 +373,59 @@ export function writeUint(bc: ByteCursor, x: bigint): void {
     writeU8(bc, tmp)
 }
 
+export function readUintSafe32(bc: ByteCursor): number {
+    let result = readU8(bc)
+    if (result >= 0x80) {
+        result &= 0x7f
+        let shift = 7
+        let byteCount = 1
+        let byte
+        do {
+            byte = readU8(bc)
+            result += ((byte & 0x7f) << shift) >>> 0
+            shift += 7
+            byteCount++
+        } while (byte >= 0x80 && byteCount < UINT_SAFE32_MAX_BYTE_COUNT)
+        if (byte === 0) {
+            bc.offset -= byteCount - 1
+            throw new BareError(
+                bc.offset - byteCount + 1,
+                NON_CANONICAL_REPRESENTATION,
+            )
+        }
+        if (byteCount === UINT_SAFE32_MAX_BYTE_COUNT && byte > 0xf) {
+            bc.offset -= byteCount - 1
+            throw new BareError(bc.offset, TOO_LARGE_NUMBER)
+        }
+    }
+    return result
+}
+
+export function writeUintSafe32(bc: ByteCursor, x: number): void {
+    if (DEV) {
+        assert(isU32(x), TOO_LARGE_NUMBER)
+    }
+    // truncate to mimic other int encoders
+    // this is useful when assertions are skipped
+    let zigZag = x >>> 0
+    while (zigZag >= 0x80) {
+        writeU8(bc, 0x80 | (x & 0x7f))
+        zigZag >>>= 7
+    }
+    writeU8(bc, zigZag)
+}
+
 export function readUintSafe(bc: ByteCursor): number {
     let result = readU8(bc)
     if (result >= 0x80) {
         result &= 0x7f
-        let shiftMul = 0x80 // 2**7
+        let shiftMul = /* 2**7 */ 0x80
         let byteCount = 1
         let byte
         do {
             byte = readU8(bc)
             result += (byte & 0x7f) * shiftMul
-            shiftMul *= 0x80 // 2**7
+            shiftMul *= /* 2**7 */ 0x80
             byteCount++
         } while (byte >= 0x80 && byteCount < UINT_SAFE_MAX_BYTE_COUNT)
         if (byte === 0) {
@@ -344,11 +444,20 @@ export function readUintSafe(bc: ByteCursor): number {
 }
 
 export function writeUintSafe(bc: ByteCursor, x: number): void {
-    assert(isU64Safe(x), TOO_LARGE_NUMBER)
+    if (DEV) {
+        assert(isU64Safe(x), TOO_LARGE_NUMBER)
+    }
+    let byteCount = 1
     let zigZag = x
-    while (zigZag >= 0x80) {
-        writeU8(bc, 0x80 | (x & 0x7f))
-        zigZag = Math.floor(zigZag / 0x80) // 2**7
+    while (zigZag >= 0x80 && byteCount < UINT_SAFE_MAX_BYTE_COUNT) {
+        writeU8(bc, 0x80 | (zigZag & 0x7f))
+        zigZag = Math.floor(zigZag / /* 2**7 */ 0x80)
+        byteCount++
+    }
+    if (byteCount === UINT_SAFE_MAX_BYTE_COUNT) {
+        // truncate to mimic other int encoders
+        // this is useful when assertions are skipped
+        zigZag &= 0x0f
     }
     writeU8(bc, zigZag)
 }

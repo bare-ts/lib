@@ -2,6 +2,34 @@
 
 This project adheres to [Semantic Versioning][semver].
 
+## Unreleased
+
+-   Assertions and development mode
+
+    Previously, bare-ts enabled a few assertions to check some function arguments.
+    For instance, the following code could trigger an `AssertionError`:
+
+    ```js
+    import * as bare from "@bare-ts/lib"
+
+    const bc = new bare.ByteCursor(new Uint8Array(5), bare.Config({}))
+    bare.writeU8(bc, 2**10) // AssertionError: too large number
+    ```
+
+    Assertions are now disabled by default.
+    They are enabled under the following condition:
+
+    -   The code is executed under _node_ with `NODE_ENV=development`
+
+    -   The code is executed or bundled under [`development` condition](https://nodejs.org/api/packages.html#community-conditions-definitions).
+
+    New assertions were added to improve error reporting on development.
+    More assertions could be added in the future.
+
+    Because assertions can be disabled, we improved the code robustness:
+    All uint/int writters truncate their input to ensure that the number of written bytes is bounded.
+
+
 ## 0.3.0 (2022-04-25)
 
 -   Full compliance to IEEE-754 (floating point numbers)

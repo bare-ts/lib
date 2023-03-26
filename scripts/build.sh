@@ -2,7 +2,7 @@
 set -eu
 
 # build ESM
-esbuild src/*.ts src/*/*.ts --outdir=dist --log-level=warning
+esbuild src/*.ts src/*/*.ts --platform=neutral --outdir=dist --log-level=warning
 
 # build .d.ts
 tsc --build src

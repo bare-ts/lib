@@ -1,4 +1,6 @@
 import type { ByteCursor } from "../core/index.js"
+import { DEV, assert } from "../util/assert.js"
+import { isU32 } from "../util/validator.js"
 import {
     readU8Array,
     readU8FixedArray,
@@ -15,6 +17,9 @@ export function writeData(bc: ByteCursor, x: ArrayBuffer): void {
 }
 
 export function readFixedData(bc: ByteCursor, len: number): ArrayBuffer {
+    if (DEV) {
+        assert(isU32(len))
+    }
     return readU8FixedArray(bc, len).buffer
 }
 

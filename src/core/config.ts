@@ -1,4 +1,4 @@
-import { assert } from "../util/assert.js"
+import { DEV, assert } from "../util/assert.js"
 import { TOO_LARGE_NUMBER } from "../util/constants.js"
 import { isU32 } from "../util/validator.js"
 
@@ -15,19 +15,20 @@ export function Config({
     textDecoderThreshold = 256,
     textEncoderThreshold = 256,
 }): Config {
-    assert(isU32(initialBufferLength), TOO_LARGE_NUMBER)
-    assert(isU32(maxBufferLength), TOO_LARGE_NUMBER)
-    assert(isU32(textDecoderThreshold), TOO_LARGE_NUMBER)
-    assert(isU32(textEncoderThreshold), TOO_LARGE_NUMBER)
-    assert(
-        initialBufferLength <= maxBufferLength,
-        "initialBufferLength must be lower than or equal to maxBufferLength",
-    )
-    const config = {
+    if (DEV) {
+        assert(isU32(initialBufferLength), TOO_LARGE_NUMBER)
+        assert(isU32(maxBufferLength), TOO_LARGE_NUMBER)
+        assert(isU32(textDecoderThreshold), TOO_LARGE_NUMBER)
+        assert(isU32(textEncoderThreshold), TOO_LARGE_NUMBER)
+        assert(
+            initialBufferLength <= maxBufferLength,
+            "initialBufferLength must be lower than or equal to maxBufferLength",
+        )
+    }
+    return {
         initialBufferLength,
         maxBufferLength,
         textDecoderThreshold,
         textEncoderThreshold,
     }
-    return config
 }

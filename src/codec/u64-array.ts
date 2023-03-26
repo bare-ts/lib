@@ -1,8 +1,15 @@
 import type { ByteCursor } from "../core/index.js"
+import { DEV, assert } from "../util/assert.js"
 import { U64_BYTE_COUNT } from "../util/constants.js"
 import { IS_LITTLE_ENDIAN_PLATFORM } from "../util/util.js"
+import { isU32 } from "../util/validator.js"
 import { readFixedData } from "./data.js"
-import { readU64, readUintSafe, writeU64, writeUintSafe } from "./primitive.js"
+import {
+    readU64,
+    readUintSafe32,
+    writeU64,
+    writeUintSafe32,
+} from "./primitive.js"
 import { writeU8FixedArray } from "./u8-array.js"
 
 export const readU64FixedArray = IS_LITTLE_ENDIAN_PLATFORM
@@ -10,15 +17,21 @@ export const readU64FixedArray = IS_LITTLE_ENDIAN_PLATFORM
     : readU64FixedArrayBE
 
 export function readU64Array(bc: ByteCursor): BigUint64Array {
-    return readU64FixedArray(bc, readUintSafe(bc))
+    return readU64FixedArray(bc, readUintSafe32(bc))
 }
 
 function readU64FixedArrayLE(bc: ByteCursor, len: number): BigUint64Array {
+    if (DEV) {
+        assert(isU32(len))
+    }
     const byteCount = len * U64_BYTE_COUNT
     return new BigUint64Array(readFixedData(bc, byteCount))
 }
 
 function readU64FixedArrayBE(bc: ByteCursor, len: number): BigUint64Array {
+    if (DEV) {
+        assert(isU32(len))
+    }
     bc.check(len * U64_BYTE_COUNT)
     const result = new BigUint64Array(len)
     for (let i = 0; i < len; i++) {
@@ -32,7 +45,7 @@ export const writeU64FixedArray = IS_LITTLE_ENDIAN_PLATFORM
     : writeU64FixedArrayBE
 
 export function writeU64Array(bc: ByteCursor, x: BigUint64Array): void {
-    writeUintSafe(bc, x.length)
+    writeUintSafe32(bc, x.length)
     if (x.length !== 0) {
         writeU64FixedArray(bc, x)
     }

@@ -1,17 +1,19 @@
 import type { ByteCursor } from "../core/index.js"
+import { DEV, assert } from "../util/assert.js"
+import { isU32 } from "../util/validator.js"
 import { readFixedData } from "./data.js"
-import { readUintSafe, writeUintSafe } from "./primitive.js"
+import { readUintSafe32, writeUintSafe32 } from "./primitive.js"
 import { writeU8FixedArray } from "./u8-array.js"
 
 export function readU8ClampedArray(bc: ByteCursor): Uint8ClampedArray {
-    return readU8ClampedFixedArray(bc, readUintSafe(bc))
+    return readU8ClampedFixedArray(bc, readUintSafe32(bc))
 }
 
 export function writeU8ClampedArray(
     bc: ByteCursor,
     x: Uint8ClampedArray,
 ): void {
-    writeUintSafe(bc, x.length)
+    writeUintSafe32(bc, x.length)
     writeU8ClampedFixedArray(bc, x)
 }
 
@@ -19,6 +21,9 @@ export function readU8ClampedFixedArray(
     bc: ByteCursor,
     len: number,
 ): Uint8ClampedArray {
+    if (DEV) {
+        assert(isU32(len))
+    }
     return new Uint8ClampedArray(readFixedData(bc, len))
 }
 

@@ -1,13 +1,15 @@
 import type { ByteCursor } from "../core/index.js"
+import { DEV, assert } from "../util/assert.js"
 import { IS_LITTLE_ENDIAN_PLATFORM } from "../util/util.js"
+import { isU32 } from "../util/validator.js"
 import { readFixedData } from "./data.js"
 import {
     readF32,
     readF64,
-    readUintSafe,
+    readUintSafe32,
     writeF32,
     writeF64,
-    writeUintSafe,
+    writeUintSafe32,
 } from "./primitive.js"
 import { writeU8FixedArray } from "./u8-array.js"
 
@@ -16,12 +18,18 @@ export const readF32FixedArray = IS_LITTLE_ENDIAN_PLATFORM
     : readF32FixedArrayBE
 
 function readF32FixedArrayLE(bc: ByteCursor, len: number): Float32Array {
+    if (DEV) {
+        assert(isU32(len))
+    }
     const byteLen = len * 4
     const result = new Float32Array(readFixedData(bc, byteLen))
     return result
 }
 
 function readF32FixedArrayBE(bc: ByteCursor, len: number): Float32Array {
+    if (DEV) {
+        assert(isU32(len))
+    }
     bc.check(len * 4)
     const result = new Float32Array(len)
     for (let i = 0; i < len; i++) {
@@ -46,11 +54,11 @@ function writeF32FixedArrayBE(bc: ByteCursor, val: Float32Array): void {
 }
 
 export function readF32Array(bc: ByteCursor): Float32Array {
-    return readF32FixedArray(bc, readUintSafe(bc))
+    return readF32FixedArray(bc, readUintSafe32(bc))
 }
 
 export function writeF32Array(bc: ByteCursor, x: Float32Array): void {
-    writeUintSafe(bc, x.length)
+    writeUintSafe32(bc, x.length)
     if (x.length !== 0) {
         writeF32FixedArray(bc, x)
     }
@@ -61,12 +69,18 @@ export const readF64FixedArray = IS_LITTLE_ENDIAN_PLATFORM
     : readF64FixedArrayBE
 
 function readF64FixedArrayLE(bc: ByteCursor, len: number): Float64Array {
+    if (DEV) {
+        assert(isU32(len))
+    }
     const byteLen = len * 8
     const result = new Float64Array(readFixedData(bc, byteLen))
     return result
 }
 
 function readF64FixedArrayBE(bc: ByteCursor, len: number): Float64Array {
+    if (DEV) {
+        assert(isU32(len))
+    }
     bc.check(len * 8)
     const result = new Float64Array(len)
     for (let i = 0; i < len; i++) {
@@ -91,11 +105,11 @@ function writeF64FixedArrayBE(bc: ByteCursor, x: Float64Array): void {
 }
 
 export function readF64Array(bc: ByteCursor): Float64Array {
-    return readF64FixedArray(bc, readUintSafe(bc))
+    return readF64FixedArray(bc, readUintSafe32(bc))
 }
 
 export function writeF64Array(bc: ByteCursor, x: Float64Array): void {
-    writeUintSafe(bc, x.length)
+    writeUintSafe32(bc, x.length)
     if (x.length !== 0) {
         writeF64FixedArray(bc, x)
     }

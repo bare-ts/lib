@@ -7,6 +7,7 @@ export const U64_BYTE_COUNT = 8
 
 export const INT_SAFE_MAX_BYTE_COUNT = 8
 export const UINT_MAX_BYTE_COUNT = 10
+export const UINT_SAFE32_MAX_BYTE_COUNT = 5
 export const UINT_SAFE_MAX_BYTE_COUNT = 8
 
 export const INVALID_UTF8_STRING = "invalid UTF-8 string"

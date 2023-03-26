@@ -1,8 +1,15 @@
 import type { ByteCursor } from "../core/index.js"
+import { DEV, assert } from "../util/assert.js"
 import { I32_BYTE_COUNT } from "../util/constants.js"
 import { IS_LITTLE_ENDIAN_PLATFORM } from "../util/util.js"
+import { isU32 } from "../util/validator.js"
 import { readFixedData } from "./data.js"
-import { readI32, readUintSafe, writeI32, writeUintSafe } from "./primitive.js"
+import {
+    readI32,
+    readUintSafe32,
+    writeI32,
+    writeUintSafe32,
+} from "./primitive.js"
 import { writeU8FixedArray } from "./u8-array.js"
 
 export const readI32FixedArray = IS_LITTLE_ENDIAN_PLATFORM
@@ -10,15 +17,21 @@ export const readI32FixedArray = IS_LITTLE_ENDIAN_PLATFORM
     : readI32FixedArrayBE
 
 export function readI32Array(bc: ByteCursor): Int32Array {
-    return readI32FixedArray(bc, readUintSafe(bc))
+    return readI32FixedArray(bc, readUintSafe32(bc))
 }
 
 function readI32FixedArrayLE(bc: ByteCursor, len: number): Int32Array {
+    if (DEV) {
+        assert(isU32(len))
+    }
     const byteCount = len * I32_BYTE_COUNT
     return new Int32Array(readFixedData(bc, byteCount))
 }
 
 function readI32FixedArrayBE(bc: ByteCursor, len: number): Int32Array {
+    if (DEV) {
+        assert(isU32(len))
+    }
     bc.check(len * I32_BYTE_COUNT)
     const result = new Int32Array(len)
     for (let i = 0; i < len; i++) {
@@ -32,7 +45,7 @@ export const writeI32FixedArray = IS_LITTLE_ENDIAN_PLATFORM
     : writeI32FixedArrayBE
 
 export function writeI32Array(bc: ByteCursor, x: Int32Array): void {
-    writeUintSafe(bc, x.length)
+    writeUintSafe32(bc, x.length)
     if (x.length !== 0) {
         writeI32FixedArray(bc, x)
     }

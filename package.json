@@ -33,6 +33,13 @@
     "require": "./dist/index.cjs",
     "default": "./dist/index.js"
   },
+  "imports": {
+    "#dev": {
+      "development": "./dist/env/dev.development.js",
+      "node": "./dist/env/dev.node.js",
+      "default": "./dist/env/dev.js"
+    }
+  },
   "sideEffects": false,
   "files": [
     "dist/*.cjs",

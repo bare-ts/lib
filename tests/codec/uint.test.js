@@ -95,6 +95,63 @@ test("bare.writeUint", (t) => {
     )
 })
 
+test("bare.readUintSafe32", (t) => {
+    let bc = fromBytes(0, 0x7f, 0xb7, 0x26, 0xff, 0xff, 0xff, 0xff, 0xf)
+    t.deepEqual(bare.readUintSafe32(bc), 0)
+    t.deepEqual(bare.readUintSafe32(bc), 0x7f)
+    t.deepEqual(bare.readUintSafe32(bc), 0x1337)
+    t.deepEqual(bare.readUintSafe32(bc), 2 ** 32 - 1)
+    t.throws(
+        () => bare.readUintSafe32(bc),
+        { name: "BareError", issue: "missing bytes" },
+        "missing bytes",
+    )
+
+    bc = fromBytes(0x80, 0)
+    t.throws(
+        () => bare.readUintSafe32(bc),
+        { name: "BareError", issue: "must be canonical" },
+        "non canonical: last byte is 0",
+    )
+
+    bc = fromBytes(0x81, 0x81, 0x81, 0x81, 0x10)
+    t.throws(
+        () => bare.readUintSafe32(bc),
+        { name: "BareError", issue: "too large number" },
+        "too large number",
+    )
+
+    bc = fromBytes(0x80, 0x80, 0x80, 0x80, 0x80, 0x1)
+    t.throws(
+        () => bare.readUintSafe32(bc),
+        { name: "BareError", issue: "too large number" },
+        "too many bytes",
+    )
+
+    bc = fromBytes(0x80)
+    t.throws(
+        () => bare.readUintSafe32(bc),
+        { name: "BareError", issue: "missing bytes" },
+        "missing bytes",
+    )
+})
+
+test("bare.writeUintSafe32", (t) => {
+    let bc = fromBytes()
+    bare.writeUintSafe32(bc, 0)
+    bare.writeUintSafe32(bc, 0x7f)
+    bare.writeUintSafe32(bc, 0x1337)
+    bare.writeUintSafe32(bc, 2 ** 32 - 1)
+    t.deepEqual(toBytes(bc), [0, 0x7f, 0xb7, 0x26, 0xff, 0xff, 0xff, 0xff, 0xf])
+
+    bc = fromBytes()
+    t.throws(
+        () => bare.writeUintSafe32(bc, 2 ** 32),
+        { name: "AssertionError", message: "too large number" },
+        "too large number",
+    )
+})
+
 test("bare.readUintSafe", (t) => {
     let bc = fromBytes(
         0,

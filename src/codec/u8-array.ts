@@ -1,12 +1,12 @@
 import type { ByteCursor } from "../core/index.js"
-import { readUintSafe, writeUintSafe } from "./primitive.js"
+import { readUintSafe32, writeUintSafe32 } from "./primitive.js"
 
 export function readU8Array(bc: ByteCursor): Uint8Array {
-    return readU8FixedArray(bc, readUintSafe(bc))
+    return readU8FixedArray(bc, readUintSafe32(bc))
 }
 
 export function writeU8Array(bc: ByteCursor, x: Uint8Array): void {
-    writeUintSafe(bc, x.length)
+    writeUintSafe32(bc, x.length)
     writeU8FixedArray(bc, x)
 }
 

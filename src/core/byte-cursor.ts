@@ -1,4 +1,6 @@
+import { DEV, assert } from "../util/assert.js"
 import { TOO_LARGE_BUFFER } from "../util/constants.js"
+import { isU32 } from "../util/validator.js"
 import { BareError } from "./bare-error.js"
 import type { Config } from "./config.js"
 
@@ -48,6 +50,9 @@ export class ByteCursor {
      * @throw BareError when there is not enough bytes
      */
     check(min: number): void {
+        if (DEV) {
+            assert(isU32(min))
+        }
         if (this.offset + min > this.bytes.length) {
             throw new BareError(this.offset, "missing bytes")
         }
@@ -59,6 +64,9 @@ export class ByteCursor {
      *  `config.maxBufferLength`
      */
     reserve(min: number): void {
+        if (DEV) {
+            assert(isU32(min))
+        }
         const minLen = (this.offset + min) | 0
         if (minLen > this.bytes.length) {
             if (minLen > this.config.maxBufferLength) {
@@ -91,9 +99,13 @@ export class ByteCursor {
      * @returns read bytes
      */
     read(len: number): Uint8Array {
+        if (DEV) {
+            assert(isU32(len))
+        }
         this.check(len)
         const offset = this.offset
         this.offset += len
-        return this.bytes.subarray(offset, offset + len)
+        const result = this.bytes.subarray(offset, offset + len)
+        return result
     }
 }
