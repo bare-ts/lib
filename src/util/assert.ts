@@ -1,9 +1,13 @@
 export { DEV } from "#dev"
 
+/**
+ * @sealed
+ */
 export class AssertionError extends Error {
+    override name = "AssertionError"
+
     constructor(message: string) {
         super(message)
-        this.name = "AssertionError"
     }
 }
 

@@ -18,6 +18,8 @@ import type { Config } from "./config.js"
  *        |<------ offset ------>|
  *        |<----------- config.maxBufferLength ------------>|
  * ```
+ *
+ * @sealed
  */
 export class ByteCursor {
     bytes: Uint8Array
