@@ -2,7 +2,7 @@ import { DEV, assert } from "../util/assert.js"
 import { TOO_LARGE_NUMBER } from "../util/constants.js"
 import { isU32 } from "../util/validator.js"
 
-export interface Config {
+export type Config = {
     readonly initialBufferLength: number
     readonly maxBufferLength: number
     readonly textDecoderThreshold: number
