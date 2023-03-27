@@ -1,4 +1,4 @@
-import type { ByteCursor } from "../core/index.js"
+import { type ByteCursor, check, reserve } from "../core/index.js"
 import { DEV, assert } from "../util/assert.js"
 import { IS_LITTLE_ENDIAN_PLATFORM } from "../util/constants.js"
 import { isU32 } from "../util/validator.js"
@@ -31,7 +31,7 @@ function readU32FixedArrayBE(bc: ByteCursor, len: number): Uint32Array {
     if (DEV) {
         assert(isU32(len))
     }
-    bc.check(len * 4)
+    check(bc, len * 4)
     const result = new Uint32Array(len)
     for (let i = 0; i < len; i++) {
         result[i] = readU32(bc)
@@ -55,7 +55,7 @@ function writeU32FixedArrayLE(bc: ByteCursor, x: Uint32Array): void {
 }
 
 function writeU32FixedArrayBE(bc: ByteCursor, x: Uint32Array): void {
-    bc.reserve(x.length * 4)
+    reserve(bc, x.length * 4)
     for (let i = 0; i < x.length; i++) {
         writeU32(bc, x[i])
     }

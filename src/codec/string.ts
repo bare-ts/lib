@@ -1,10 +1,10 @@
 import { BareError } from "../core/bare-error.js"
-import type { ByteCursor } from "../core/index.js"
+import { type ByteCursor, check, reserve } from "../core/index.js"
 import { DEV, assert } from "../util/assert.js"
 import { INVALID_UTF8_STRING } from "../util/constants.js"
 import { isU32 } from "../util/validator.js"
 import { readUintSafe32, writeUintSafe32 } from "./primitive.js"
-import { writeU8FixedArray } from "./u8-array.js"
+import { readUnsafeU8FixedArray, writeU8FixedArray } from "./u8-array.js"
 
 export function readString(bc: ByteCursor): string {
     return readFixedString(bc, readUintSafe32(bc))
@@ -14,7 +14,7 @@ export function writeString(bc: ByteCursor, x: string): void {
     if (x.length < bc.config.textEncoderThreshold) {
         const byteLen = utf8ByteLength(x)
         writeUintSafe32(bc, byteLen)
-        bc.reserve(byteLen)
+        reserve(bc, byteLen)
         writeUtf8Js(bc, x)
     } else {
         const strBytes = UTF8_ENCODER.encode(x)
@@ -31,7 +31,7 @@ export function readFixedString(bc: ByteCursor, byteLen: number): string {
         return readUtf8Js(bc, byteLen)
     }
     try {
-        return UTF8_DECODER.decode(bc.read(byteLen))
+        return UTF8_DECODER.decode(readUnsafeU8FixedArray(bc, byteLen))
     } catch (_cause) {
         throw new BareError(bc.offset, INVALID_UTF8_STRING)
     }
@@ -40,7 +40,7 @@ export function readFixedString(bc: ByteCursor, byteLen: number): string {
 export function writeFixedString(bc: ByteCursor, x: string): void {
     if (x.length < bc.config.textEncoderThreshold) {
         const byteLen = utf8ByteLength(x)
-        bc.reserve(byteLen)
+        reserve(bc, byteLen)
         writeUtf8Js(bc, x)
     } else {
         writeU8FixedArray(bc, UTF8_ENCODER.encode(x))
@@ -49,7 +49,7 @@ export function writeFixedString(bc: ByteCursor, x: string): void {
 
 function readUtf8Js(bc: ByteCursor, byteLen: number): string {
     // `check` asserts that `byteLen` is a `u32`
-    bc.check(byteLen)
+    check(bc, byteLen)
     let result = ""
     const bytes = bc.bytes
     let offset = bc.offset

@@ -1,4 +1,4 @@
-import { BareError, type ByteCursor } from "../core/index.js"
+import { BareError, type ByteCursor, check, reserve } from "../core/index.js"
 import { DEV, assert } from "../util/assert.js"
 import {
     INT_SAFE_MAX_BYTE_COUNT,
@@ -33,14 +33,14 @@ export function writeBool(bc: ByteCursor, x: boolean): void {
 }
 
 export function readF32(bc: ByteCursor): number {
-    bc.check(4)
+    check(bc, 4)
     const result = bc.view.getFloat32(bc.offset, true)
     bc.offset += 4
     return result
 }
 
 export function writeF32(bc: ByteCursor, x: number): void {
-    bc.reserve(4)
+    reserve(bc, 4)
     bc.view.setFloat32(bc.offset, x, true)
     if (DEV) {
         assert(
@@ -54,20 +54,20 @@ export function writeF32(bc: ByteCursor, x: number): void {
 }
 
 export function readF64(bc: ByteCursor): number {
-    bc.check(8)
+    check(bc, 8)
     const result = bc.view.getFloat64(bc.offset, true)
     bc.offset += 8
     return result
 }
 
 export function writeF64(bc: ByteCursor, x: number): void {
-    bc.reserve(8)
+    reserve(bc, 8)
     bc.view.setFloat64(bc.offset, x, true)
     bc.offset += 8
 }
 
 export function readI8(bc: ByteCursor): number {
-    bc.check(1)
+    check(bc, 1)
     return bc.view.getInt8(bc.offset++)
 }
 
@@ -75,12 +75,12 @@ export function writeI8(bc: ByteCursor, x: number): void {
     if (DEV) {
         assert(isI8(x), TOO_LARGE_NUMBER)
     }
-    bc.reserve(1)
+    reserve(bc, 1)
     bc.view.setInt8(bc.offset++, x)
 }
 
 export function readI16(bc: ByteCursor): number {
-    bc.check(2)
+    check(bc, 2)
     const result = bc.view.getInt16(bc.offset, true)
     bc.offset += 2
     return result
@@ -90,13 +90,13 @@ export function writeI16(bc: ByteCursor, x: number): void {
     if (DEV) {
         assert(isI16(x), TOO_LARGE_NUMBER)
     }
-    bc.reserve(2)
+    reserve(bc, 2)
     bc.view.setInt16(bc.offset, x, true)
     bc.offset += 2
 }
 
 export function readI32(bc: ByteCursor): number {
-    bc.check(4)
+    check(bc, 4)
     const result = bc.view.getInt32(bc.offset, true)
     bc.offset += 4
     return result
@@ -106,13 +106,13 @@ export function writeI32(bc: ByteCursor, x: number): void {
     if (DEV) {
         assert(isI32(x), TOO_LARGE_NUMBER)
     }
-    bc.reserve(4)
+    reserve(bc, 4)
     bc.view.setInt32(bc.offset, x, true)
     bc.offset += 4
 }
 
 export function readI64(bc: ByteCursor): bigint {
-    bc.check(8)
+    check(bc, 8)
     const result = bc.view.getBigInt64(bc.offset, true)
     bc.offset += 8
     return result
@@ -122,7 +122,7 @@ export function writeI64(bc: ByteCursor, x: bigint): void {
     if (DEV) {
         assert(isI64(x), TOO_LARGE_NUMBER)
     }
-    bc.reserve(8)
+    reserve(bc, 8)
     bc.view.setBigInt64(bc.offset, x, true)
     bc.offset += 8
 }
@@ -238,7 +238,7 @@ export function writeIntSafe(bc: ByteCursor, x: number): void {
 }
 
 export function readU8(bc: ByteCursor): number {
-    bc.check(1)
+    check(bc, 1)
     return bc.bytes[bc.offset++]
 }
 
@@ -246,12 +246,12 @@ export function writeU8(bc: ByteCursor, x: number): void {
     if (DEV) {
         assert(isU8(x), TOO_LARGE_NUMBER)
     }
-    bc.reserve(1)
+    reserve(bc, 1)
     bc.bytes[bc.offset++] = x
 }
 
 export function readU16(bc: ByteCursor): number {
-    bc.check(2)
+    check(bc, 2)
     const result = bc.view.getUint16(bc.offset, true)
     bc.offset += 2
     return result
@@ -261,13 +261,13 @@ export function writeU16(bc: ByteCursor, x: number): void {
     if (DEV) {
         assert(isU16(x), TOO_LARGE_NUMBER)
     }
-    bc.reserve(2)
+    reserve(bc, 2)
     bc.view.setUint16(bc.offset, x, true)
     bc.offset += 2
 }
 
 export function readU32(bc: ByteCursor): number {
-    bc.check(4)
+    check(bc, 4)
     const result = bc.view.getUint32(bc.offset, true)
     bc.offset += 4
     return result
@@ -277,13 +277,13 @@ export function writeU32(bc: ByteCursor, x: number): void {
     if (DEV) {
         assert(isU32(x), TOO_LARGE_NUMBER)
     }
-    bc.reserve(4)
+    reserve(bc, 4)
     bc.view.setUint32(bc.offset, x, true)
     bc.offset += 4
 }
 
 export function readU64(bc: ByteCursor): bigint {
-    bc.check(8)
+    check(bc, 8)
     const result = bc.view.getBigUint64(bc.offset, true)
     bc.offset += 8
     return result
@@ -293,7 +293,7 @@ export function writeU64(bc: ByteCursor, x: bigint): void {
     if (DEV) {
         assert(isU64(x), TOO_LARGE_NUMBER)
     }
-    bc.reserve(8)
+    reserve(bc, 8)
     bc.view.setBigUint64(bc.offset, x, true)
     bc.offset += 8
 }

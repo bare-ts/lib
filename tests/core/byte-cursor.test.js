@@ -27,11 +27,11 @@ test("ByteCursor", (t) => {
     t.deepEqual(bc.bytes.byteLength, 3)
 })
 
-test("ByteCursor.check", (t) => {
+test("bare.check", (t) => {
     const bc = new bare.ByteCursor(new Uint8Array(5), bare.Config({}))
-    t.doesNotThrow(() => bc.check(5), "enough bytes")
+    t.doesNotThrow(() => bare.check(bc, 5), "enough bytes")
     t.throws(
-        () => bc.check(6),
+        () => bare.check(bc, 6),
         {
             name: "BareError",
             issue: "missing bytes",
@@ -41,7 +41,7 @@ test("ByteCursor.check", (t) => {
     )
 })
 
-test("ByteCursor.reserve", (t) => {
+test("bare.reserve", (t) => {
     let bc = new bare.ByteCursor(
         new Uint8Array(0),
         bare.Config({
@@ -49,11 +49,11 @@ test("ByteCursor.reserve", (t) => {
             maxBufferLength: 10,
         }),
     )
-    t.doesNotThrow(() => bc.reserve(5), "reservable bytes")
-    t.doesNotThrow(() => bc.check(5), "reserved bytes")
-    t.doesNotThrow(() => bc.reserve(10), "max reservable bytes")
+    t.doesNotThrow(() => bare.reserve(bc, 5), "reservable bytes")
+    t.doesNotThrow(() => bare.check(bc, 5), "reserved bytes")
+    t.doesNotThrow(() => bare.reserve(bc, 10), "max reservable bytes")
     t.throws(
-        () => bc.reserve(15),
+        () => bare.reserve(bc, 15),
         {
             name: "BareError",
             issue: "too large buffer",
@@ -66,16 +66,6 @@ test("ByteCursor.reserve", (t) => {
         new Uint8Array(new ArrayBuffer(20), 5, 10),
         bare.Config({}),
     )
-    t.doesNotThrow(() => bc.check(10), "enough room")
-    t.doesNotThrow(() => bc.reserve(15))
-})
-
-test("ByteCursor.read", (t) => {
-    let bc = new bare.ByteCursor(Uint8Array.of(42), bare.Config({}))
-    let read = bc.read(1)
-    t.deepEqual(Array.from(read), [42])
-
-    bc = new bare.ByteCursor(Uint8Array.of(42, 24).subarray(1), bare.Config({}))
-    read = bc.read(1)
-    t.deepEqual(Array.from(read), [24])
+    t.doesNotThrow(() => bare.check(bc, 10), "enough room")
+    t.doesNotThrow(() => bare.reserve(bc, 15))
 })

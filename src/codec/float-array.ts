@@ -1,4 +1,4 @@
-import type { ByteCursor } from "../core/index.js"
+import { type ByteCursor, check, reserve } from "../core/index.js"
 import { DEV, assert } from "../util/assert.js"
 import { IS_LITTLE_ENDIAN_PLATFORM } from "../util/constants.js"
 import { isU32 } from "../util/validator.js"
@@ -30,7 +30,7 @@ function readF32FixedArrayBE(bc: ByteCursor, len: number): Float32Array {
     if (DEV) {
         assert(isU32(len))
     }
-    bc.check(len * 4)
+    check(bc, len * 4)
     const result = new Float32Array(len)
     for (let i = 0; i < len; i++) {
         result[i] = readF32(bc)
@@ -47,7 +47,7 @@ function writeF32FixedArrayLE(bc: ByteCursor, x: Float32Array): void {
 }
 
 function writeF32FixedArrayBE(bc: ByteCursor, val: Float32Array): void {
-    bc.reserve(val.length * 4)
+    reserve(bc, val.length * 4)
     for (let i = 0; i < val.length; i++) {
         writeF32(bc, val[i])
     }
@@ -81,7 +81,7 @@ function readF64FixedArrayBE(bc: ByteCursor, len: number): Float64Array {
     if (DEV) {
         assert(isU32(len))
     }
-    bc.check(len * 8)
+    check(bc, len * 8)
     const result = new Float64Array(len)
     for (let i = 0; i < len; i++) {
         result[i] = readF64(bc)
@@ -98,7 +98,7 @@ function writeF64FixedArrayLE(bc: ByteCursor, x: Float64Array): void {
 }
 
 function writeF64FixedArrayBE(bc: ByteCursor, x: Float64Array): void {
-    bc.reserve(x.length * 8)
+    reserve(bc, x.length * 8)
     for (let i = 0; i < x.length; i++) {
         writeF64(bc, x[i])
     }

@@ -4,6 +4,22 @@ This project adheres to [Semantic Versioning][semver].
 
 ## Unreleased
 
+-   BREAKING CHANGES: remove `ByteCursor` methods
+
+    To make _bare-ts/lib_ API uniform, methods of `ByteCursor` are replaced by regular functions.
+
+    ```diff
+      import * as bare from "@bare-ts/lib"
+
+      const bc = new bare.ByteCursor(new Uint8Array(5), bare.Config({}))
+    - bc.check(5)
+    - bc.reserve(5)
+    - bc.read(5)
+    + bare.check(bc, 5)
+    + bare.reserve(bc, 5)
+    + bare.readUnsafeU8FixedArray(bc, 5)
+    ```
+
 -   Assertions and development mode
 
     Previously, bare-ts enabled a few assertions to check some function arguments.
