@@ -1,4 +1,4 @@
-import { type ByteCursor, check, reserve } from "../core/index.js"
+import { type ByteCursor, check, reserve } from "../core/byte-cursor.js"
 import { DEV, assert } from "../util/assert.js"
 import { IS_LITTLE_ENDIAN_PLATFORM } from "../util/constants.js"
 import { isU32 } from "../util/validator.js"

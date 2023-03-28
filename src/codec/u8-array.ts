@@ -1,4 +1,4 @@
-import { type ByteCursor, check, reserve } from "../core/index.js"
+import { type ByteCursor, check, reserve } from "../core/byte-cursor.js"
 import { DEV, assert } from "../util/assert.js"
 import { isU32 } from "../util/validator.js"
 import { readUintSafe32, writeUintSafe32 } from "./primitive.js"

@@ -1,4 +1,5 @@
-import { BareError, type ByteCursor, check, reserve } from "../core/index.js"
+import { BareError } from "../core/bare-error.js"
+import { type ByteCursor, check, reserve } from "../core/byte-cursor.js"
 import { DEV, assert } from "../util/assert.js"
 import {
     INT_SAFE_MAX_BYTE_COUNT,

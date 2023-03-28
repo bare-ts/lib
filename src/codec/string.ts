@@ -1,5 +1,5 @@
 import { BareError } from "../core/bare-error.js"
-import { type ByteCursor, check, reserve } from "../core/index.js"
+import { type ByteCursor, check, reserve } from "../core/byte-cursor.js"
 import { DEV, assert } from "../util/assert.js"
 import { INVALID_UTF8_STRING } from "../util/constants.js"
 import { isU32 } from "../util/validator.js"
