@@ -1,22 +1,19 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    // https://node.green/#ES2020
-    // https://kangax.github.io/compat-table/es2016plus
     "lib": ["ES2020"],
-    "moduleResolution": "node16",
     "module": "ES2020",
+    "moduleResolution": "node16",
     "target": "ES2020",
 
-    // Don't implicitly import @types/*
-    "types": [],
-
     "noEmit": true,
-    "sourceMap": true,
-    "stripInternal": true,
+
+    "types": [],
 
     "esModuleInterop": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
+    "skipLibCheck": true,
     "verbatimModuleSyntax": true,
 
     "allowUnreachableCode": false,
@@ -25,7 +22,6 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
-    "noPropertyAccessFromIndexSignature": true,
     "strict": true
   }
 }

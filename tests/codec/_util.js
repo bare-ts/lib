@@ -2,7 +2,7 @@ import { ByteCursor, Config } from "@bare-ts/lib"
 
 /**
  *
- * @param  {...number[]} rest
+ * @param  {...number} rest
  * @returns {ByteCursor}
  */
 export function fromBytes(...rest) {

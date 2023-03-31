@@ -1,4 +1,5 @@
 #!/bin/sh
+set -eu
 
 . scripts/build.sh
 
@@ -6,7 +7,7 @@
 env NODE_ENV=development oletus tests/*/*.test.js
 
 # lint
-rome ci src tests
+rome ci .
 
 # type check
 tsc --build tests
