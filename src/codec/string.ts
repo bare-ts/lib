@@ -1,7 +1,11 @@
 import { BareError } from "../core/bare-error.js"
 import { type ByteCursor, check, reserve } from "../core/byte-cursor.js"
 import { DEV, assert } from "../util/assert.js"
-import { INVALID_UTF8_STRING } from "../util/constants.js"
+import {
+    INVALID_UTF8_STRING,
+    TEXT_DECODER_THRESHOLD,
+    TEXT_ENCODER_THRESHOLD,
+} from "../util/constants.js"
 import { isU32 } from "../util/validator.js"
 import { readUintSafe32, writeUintSafe32 } from "./primitive.js"
 import { readUnsafeU8FixedArray, writeU8FixedArray } from "./u8-array.js"
@@ -11,7 +15,7 @@ export function readString(bc: ByteCursor): string {
 }
 
 export function writeString(bc: ByteCursor, x: string): void {
-    if (x.length < bc.config.textEncoderThreshold) {
+    if (x.length < TEXT_ENCODER_THRESHOLD) {
         const byteLen = utf8ByteLength(x)
         writeUintSafe32(bc, byteLen)
         reserve(bc, byteLen)
@@ -27,7 +31,7 @@ export function readFixedString(bc: ByteCursor, byteLen: number): string {
     if (DEV) {
         assert(isU32(byteLen))
     }
-    if (byteLen < bc.config.textDecoderThreshold) {
+    if (byteLen < TEXT_DECODER_THRESHOLD) {
         return readUtf8Js(bc, byteLen)
     }
     try {
@@ -38,7 +42,7 @@ export function readFixedString(bc: ByteCursor, byteLen: number): string {
 }
 
 export function writeFixedString(bc: ByteCursor, x: string): void {
-    if (x.length < bc.config.textEncoderThreshold) {
+    if (x.length < TEXT_ENCODER_THRESHOLD) {
         const byteLen = utf8ByteLength(x)
         reserve(bc, byteLen)
         writeUtf8Js(bc, x)

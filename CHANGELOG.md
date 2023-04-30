@@ -20,6 +20,19 @@ This project adheres to [Semantic Versioning][semver].
     + bare.readUnsafeU8FixedArray(bc, 5)
     ```
 
+-   BREAKING CHANGES: remove `textDecoderThreshold` and `textEncoderThreshold` configuration
+
+    Calls to native `TextDecoder.decode` and `TextEncoder.encode` have a fixed cost.
+    This cost outperforms the native performance to decode and encode small strings.
+
+    _bare-ts_ uses a custom implementation to decode and encode small strings.
+    The choice between the custom and the native codecs is based on thresholds.
+    These threshold were configurable via `textDecoderThreshold` and `textEncoderThreshold` config properties.
+
+    This is not clear whether this configuration is worth to expose.
+    Most of decoded and encoded strings are small.
+    Fixed thresholds seem fair enough.
+
 -   Assertions and development mode
 
     Previously, bare-ts enabled a few assertions to check some function arguments.

@@ -1,9 +1,4 @@
-import { ByteCursor, Config } from "@bare-ts/lib"
-
-export function fromConfigBytes(
-    partConfig: Partial<Config>,
-    ...rest: number[]
-): ByteCursor
+import { ByteCursor } from "@bare-ts/lib"
 
 export function fromBytes(...rest: number[]): ByteCursor
 

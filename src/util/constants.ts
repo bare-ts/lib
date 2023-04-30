@@ -1,3 +1,6 @@
+export const TEXT_DECODER_THRESHOLD = 256
+export const TEXT_ENCODER_THRESHOLD = 256
+
 export const INT_SAFE_MAX_BYTE_COUNT = 8
 export const UINT_MAX_BYTE_COUNT = 10
 export const UINT_SAFE32_MAX_BYTE_COUNT = 5

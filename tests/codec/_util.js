@@ -2,16 +2,6 @@ import { ByteCursor, Config } from "@bare-ts/lib"
 
 /**
  *
- * @param {Partial<Config>} partConfig
- * @param  {...number[]} rest
- * @returns {ByteCursor}
- */
-export function fromConfigBytes(partConfig, ...rest) {
-    return new ByteCursor(Uint8Array.from(rest), Config(partConfig))
-}
-
-/**
- *
  * @param  {...number[]} rest
  * @returns {ByteCursor}
  */

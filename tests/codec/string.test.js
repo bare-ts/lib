@@ -1,20 +1,27 @@
 import * as bare from "@bare-ts/lib"
 import { default as test } from "oletus"
 
-import { fromBytes, fromConfigBytes, toBytes } from "./_util.js"
+import { fromBytes, toBytes } from "./_util.js"
+
+test("bare.readFixedString", (t) => {
+    let bc = fromBytes(
+        ..."b"
+            .repeat(300)
+            .split("")
+            .map((s) => s.charCodeAt(0)),
+    )
+    t.deepEqual(
+        bare.readFixedString(bc, 300),
+        "b".repeat(300),
+        "can natively read ASCII",
+    )
+
+    bc = fromBytes(98, 97, 114, 101)
+    t.deepEqual(bare.readFixedString(bc, 4), "bare", "can read ASCII")
+})
 
 test("bare.readString", (t) => {
-    let bc = fromConfigBytes(
-        { textDecoderThreshold: 0 },
-        /* byteLength */ 4,
-        98,
-        97,
-        114,
-        101,
-    )
-    t.deepEqual(bare.readString(bc), "bare", "can natively read ASCII")
-
-    bc = fromBytes(/* byteLength */ 4, 98, 97, 114, 101)
+    let bc = fromBytes(/* byteLength */ 4, 98, 97, 114, 101)
     t.deepEqual(bare.readString(bc), "bare", "can read ASCII")
 
     bc = fromBytes(/* byteLength */ 6, 0xc3, 0xa9, 0xc3, 0xa0, 0xc3, 0xb9)
@@ -167,16 +174,25 @@ test("bare.readString", (t) => {
     )
 })
 
-test("bare.writeString", (t) => {
-    let bc = fromConfigBytes({ textEncoderThreshold: 0 })
-    bare.writeString(bc, "bare")
+test("bare.writeFixedString", (t) => {
+    let bc = fromBytes()
+    bare.writeFixedString(bc, "b".repeat(300))
     t.deepEqual(
         toBytes(bc),
-        [/* byteLength */ 4, 98, 97, 114, 101],
+        "b"
+            .repeat(300)
+            .split("")
+            .map((s) => s.charCodeAt(0)),
         "can natively write ASCII",
     )
 
     bc = fromBytes()
+    bare.writeFixedString(bc, "bare")
+    t.deepEqual(toBytes(bc), [98, 97, 114, 101], "can write ASCII")
+})
+
+test("bare.writeString", (t) => {
+    let bc = fromBytes()
     bare.writeString(bc, "bare")
     t.deepEqual(
         toBytes(bc),
@@ -269,14 +285,4 @@ test("bare.writeString", (t) => {
             0xb8, 0x96, 0xe7, 0x95, 0x8c, 0xef, 0xbc, 0x81,
         ],
     )
-})
-
-test("bare.writeFixedString", (t) => {
-    let bc = fromConfigBytes({ textEncoderThreshold: 0 })
-    bare.writeFixedString(bc, "bare")
-    t.deepEqual(toBytes(bc), [98, 97, 114, 101], "can natively write ASCII")
-
-    bc = fromBytes()
-    bare.writeFixedString(bc, "bare")
-    t.deepEqual(toBytes(bc), [98, 97, 114, 101], "can write ASCII")
 })
