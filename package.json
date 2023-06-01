@@ -24,14 +24,19 @@
     "node": "^14.18.0 || >=16.0.0"
   },
   "type": "module",
-  "main": "./dist/index.cjs",
   "module": "./dist/index.js",
-  "es2015": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/index.cjs",
   "exports": {
-    "module": "./dist/index.js",
-    "require": "./dist/index.cjs",
-    "default": "./dist/index.js"
+    "./package.json": "./package.json",
+    ".": {
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      },
+      "types": "./dist/index.d.ts",
+      "module": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
   },
   "imports": {
     "#dev": {
@@ -42,10 +47,8 @@
   },
   "sideEffects": false,
   "files": [
-    "dist/*.cjs",
-    "dist/*.d.ts",
-    "dist/*.js",
     "dist/**/*.cjs",
+    "dist/**/*.d.cts",
     "dist/**/*.d.ts",
     "dist/**/*.js"
   ],
