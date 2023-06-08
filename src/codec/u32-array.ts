@@ -12,14 +12,14 @@ import {
 import { writeU8FixedArray } from "./u8-array.js"
 
 export const readU32FixedArray = IS_LITTLE_ENDIAN_PLATFORM
-    ? readU32FixedArrayLE
-    : readU32FixedArrayBE
+    ? readU32FixedArrayLe
+    : readU32FixedArrayBe
 
 export function readU32Array(bc: ByteCursor): Uint32Array {
     return readU32FixedArray(bc, readUintSafe32(bc))
 }
 
-function readU32FixedArrayLE(bc: ByteCursor, len: number): Uint32Array {
+function readU32FixedArrayLe(bc: ByteCursor, len: number): Uint32Array {
     if (DEV) {
         assert(isU32(len))
     }
@@ -27,7 +27,7 @@ function readU32FixedArrayLE(bc: ByteCursor, len: number): Uint32Array {
     return new Uint32Array(readFixedData(bc, byteCount))
 }
 
-function readU32FixedArrayBE(bc: ByteCursor, len: number): Uint32Array {
+function readU32FixedArrayBe(bc: ByteCursor, len: number): Uint32Array {
     if (DEV) {
         assert(isU32(len))
     }
@@ -40,8 +40,8 @@ function readU32FixedArrayBE(bc: ByteCursor, len: number): Uint32Array {
 }
 
 export const writeU32FixedArray = IS_LITTLE_ENDIAN_PLATFORM
-    ? writeU32FixedArrayLE
-    : writeU32FixedArrayBE
+    ? writeU32FixedArrayLe
+    : writeU32FixedArrayBe
 
 export function writeU32Array(bc: ByteCursor, x: Uint32Array): void {
     writeUintSafe32(bc, x.length)
@@ -50,11 +50,11 @@ export function writeU32Array(bc: ByteCursor, x: Uint32Array): void {
     }
 }
 
-function writeU32FixedArrayLE(bc: ByteCursor, x: Uint32Array): void {
+function writeU32FixedArrayLe(bc: ByteCursor, x: Uint32Array): void {
     writeU8FixedArray(bc, new Uint8Array(x.buffer, x.byteOffset, x.byteLength))
 }
 
-function writeU32FixedArrayBE(bc: ByteCursor, x: Uint32Array): void {
+function writeU32FixedArrayBe(bc: ByteCursor, x: Uint32Array): void {
     reserve(bc, x.length * 4)
     for (let i = 0; i < x.length; i++) {
         writeU32(bc, x[i])
