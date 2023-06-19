@@ -2,7 +2,7 @@
 
 This project adheres to [Semantic Versioning][semver].
 
-## Unreleased
+## 0.4.0 (2023-06-19)
 
 -   BREAKING CHANGES: remove `ByteCursor` methods
 
