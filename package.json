@@ -62,7 +62,8 @@
     "format": "rome format --write .",
     "prepare": "validate-commit-msg",
     "prepublishOnly": "npm run clean && npm test",
-    "test": "sh ./scripts/test.sh"
+    "test": "sh ./scripts/test.sh",
+    "version": "sh ./scripts/version.sh"
   },
   "devDependencies": {
     "esbuild": "0.18.4",
