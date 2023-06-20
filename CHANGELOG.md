@@ -2,6 +2,16 @@
 
 This project adheres to [Semantic Versioning][semver].
 
+## Unreleased
+
+-   Export a default bare configuration
+
+    ```js
+    import * as bare from "@bare-ts/lib"
+
+    const config: bare.Config = bare.DEFAULT_CONFIG
+    ```
+
 ## 0.4.0 (2023-06-19)
 
 -   BREAKING CHANGES: remove `ByteCursor` methods

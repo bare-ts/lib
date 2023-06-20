@@ -24,3 +24,5 @@ export function Config({
         maxBufferLength,
     }
 }
+
+export const DEFAULT_CONFIG: Config = /* @__PURE__ */ Config({})
