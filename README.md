@@ -8,13 +8,15 @@
 [BARE][bare] (Binary Application Record Encoding) is a schema-based binary format that favors compactness and simplicity.
 [bare-ts/lib](#) provides decoders and encoders for basic BARE types.
 
-Please, take a look to [bare-ts/tools][bare-ts-tools] for more information.
+Please, take a look to [bare-ts/bare][bare-ts-bare] for more information.
 
 Warning: BARE specification is currently a IEF draft.
-The specification is likely to evolve before its final release. [bare-ts](#) implements an ongoing draft that is not published yet.
+The specification is likely to evolve before its final release.
+However, most of the changes since the beginning concern the schema language.
+The binary format is fairly stable.
 
 [bare]: https://baremessages.org
-[bare-ts-tools]: https://github.com/bare-ts/tools
+[bare-ts-bare]: https://github.com/bare-ts/bare
 [ci-img]: https://img.shields.io/github/workflow/status/bare-ts/lib/CI?label=CI&style=flat-square
 [ci-url]: https://github.com/bare-ts/lib/actions/workflows/ci.yml
 [npm-img]: https://img.shields.io/npm/v/@bare-ts/lib.svg?style=flat-square
