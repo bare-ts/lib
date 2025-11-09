@@ -3,7 +3,10 @@
   "compilerOptions": {
     "composite": true,
     "emitDeclarationOnly": true,
+    "erasableSyntaxOnly": true,
+    "isolatedDeclarations": true,
     "noEmit": false,
+    "rootDir": ".",
     "outDir": "../dist"
   }
 }

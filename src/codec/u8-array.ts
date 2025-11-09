@@ -1,5 +1,5 @@
 import { type ByteCursor, check, reserve } from "../core/byte-cursor.js"
-import { DEV, assert } from "../util/assert.js"
+import { assert, DEV } from "../util/assert.js"
 import { isU32 } from "../util/validator.js"
 import { readUintSafe32, writeUintSafe32 } from "./primitive.js"
 
@@ -18,7 +18,7 @@ export function readU8FixedArray(bc: ByteCursor, len: number): Uint8Array {
 
 export function writeU8FixedArray(bc: ByteCursor, x: Uint8Array): void {
     const len = x.length
-    if (len !== 0) {
+    if (len > 0) {
         reserve(bc, len)
         bc.bytes.set(x, bc.offset)
         bc.offset += len

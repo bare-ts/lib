@@ -1,5 +1,5 @@
 import { type ByteCursor, check, reserve } from "../core/byte-cursor.js"
-import { DEV, assert } from "../util/assert.js"
+import { assert, DEV } from "../util/assert.js"
 import { IS_LITTLE_ENDIAN_PLATFORM } from "../util/constants.js"
 import { isU32 } from "../util/validator.js"
 import { readFixedData } from "./data.js"
@@ -11,9 +11,8 @@ import {
 } from "./primitive.js"
 import { writeU8FixedArray } from "./u8-array.js"
 
-export const readU32FixedArray = IS_LITTLE_ENDIAN_PLATFORM
-    ? readU32FixedArrayLe
-    : readU32FixedArrayBe
+export const readU32FixedArray: (bc: ByteCursor, len: number) => Uint32Array =
+    IS_LITTLE_ENDIAN_PLATFORM ? readU32FixedArrayLe : readU32FixedArrayBe
 
 export function readU32Array(bc: ByteCursor): Uint32Array {
     return readU32FixedArray(bc, readUintSafe32(bc))
@@ -39,13 +38,12 @@ function readU32FixedArrayBe(bc: ByteCursor, len: number): Uint32Array {
     return result
 }
 
-export const writeU32FixedArray = IS_LITTLE_ENDIAN_PLATFORM
-    ? writeU32FixedArrayLe
-    : writeU32FixedArrayBe
+export const writeU32FixedArray: (bc: ByteCursor, x: Uint32Array) => void =
+    IS_LITTLE_ENDIAN_PLATFORM ? writeU32FixedArrayLe : writeU32FixedArrayBe
 
 export function writeU32Array(bc: ByteCursor, x: Uint32Array): void {
     writeUintSafe32(bc, x.length)
-    if (x.length !== 0) {
+    if (x.length > 0) {
         writeU32FixedArray(bc, x)
     }
 }

@@ -7,7 +7,7 @@ set -eu
 env NODE_ENV=development oletus tests/*/*.test.js
 
 # lint
-rome ci .
+biome ci .
 
 # type check
 tsc --build tests

@@ -7,7 +7,9 @@ test("ByteCursor", (t) => {
         maxBufferLength: 3,
     })
     t.throws(
-        () => void new bare.ByteCursor(new Uint8Array(6), config),
+        () => {
+            new bare.ByteCursor(new Uint8Array(6), config)
+        },
         {
             name: "BareError",
             issue: "too large buffer",
@@ -15,10 +17,9 @@ test("ByteCursor", (t) => {
         },
         "too large buffer",
     )
-    t.doesNotThrow(
-        () =>
-            void new bare.ByteCursor(new Uint8Array(6).subarray(0, 3), config),
-    )
+    t.doesNotThrow(() => {
+        new bare.ByteCursor(new Uint8Array(6).subarray(0, 3), config)
+    })
 
     const bc = new bare.ByteCursor(new Uint8Array(6).subarray(2, 5), config)
     t.deepEqual(bc.bytes.byteOffset, bc.view.byteOffset)

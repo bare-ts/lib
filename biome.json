@@ -1,0 +1,147 @@
+{
+  "$schema": "https://next.biomejs.dev/schemas/2.2.4/schema.json",
+  "root": true,
+  "files": {
+    "ignoreUnknown": true
+  },
+  "formatter": {
+    "includes": [
+      "**",
+      "!tests-corpus/**"
+    ],
+    "indentStyle": "space",
+    "indentWidth": 4
+  },
+  "linter": {
+    "domains": {
+      "project": "recommended",
+      "test": "recommended"
+    },
+    "rules": {
+      "complexity": {
+        "noImplicitCoercions": "on",
+        "noUselessLoneBlockStatements": "off",
+        "noVoid": "on"
+      },
+      "nursery": {
+        "noDeprecatedImports": "on",
+        "noDuplicateDependencies": "on",
+        "noImportCycles": "on",
+        "noUselessUndefined": "off",
+        "useExhaustiveSwitchCases": "off",
+        "useExplicitType": "off"
+      },
+      "performance": {
+        "noDelete": "on"
+      },
+      "style": {
+        "noDefaultExport": "on",
+        "noImplicitBoolean": "on",
+        "noInferrableTypes": "on",
+        "noNamespace": "on",
+        "noNegationElse": "on",
+        "noParameterAssign": "on",
+        "noParameterProperties": "on",
+        "noUnusedTemplateLiteral": "on",
+        "noUselessElse": "on",
+        "noYodaExpression": "on",
+        "useAsConstAssertion": "on",
+        "useBlockStatements": "on",
+        "useCollapsedElseIf": "on",
+        "useConsistentArrayType": "on",
+        "useConsistentBuiltinInstantiation": "on",
+        "useConst": "on",
+        "useDefaultParameterLast": "on",
+        "useEnumInitializers": "on",
+        "useExplicitLengthCheck": "on",
+        "useFilenamingConvention": {
+          "level": "on",
+          "options": {
+            "filenameCases": [
+              "kebab-case"
+            ]
+          }
+        },
+        "useGroupedAccessorPairs": "on",
+        "useForOf": "off",
+        "useNamingConvention": {
+          "level": "on",
+          "fix": "none",
+          "options": {
+            "conventions": [
+              {
+                "selector": {
+                  "kind": "typeAlias"
+                },
+                "formats": [
+                  "PascalCase",
+                  "camelCase"
+                ]
+              },
+              {
+                "selector": {
+                  "kind": "objectLiteralProperty"
+                },
+                "match": "__proto__|(.+)",
+                "formats": [
+                  "camelCase",
+                  "PascalCase"
+                ]
+              }
+            ]
+          }
+        },
+        "useNodeAssertStrict": "on",
+        "useNumberNamespace": "on",
+        "useNumericSeparators": "off",
+        "useReadonlyClassProperties": "on",
+        "useShorthandAssign": "on",
+        "useSingleVarDeclarator": "on",
+        "useThrowNewError": "on",
+        "useThrowOnlyError": "on",
+        "useUnifiedTypeSignatures": "on"
+      },
+      "suspicious": {
+        "noConsole": {
+          "level": "on",
+          "options": {
+            "allow": [
+              "info",
+              "warn",
+              "error"
+            ]
+          }
+        },
+        "noConstantBinaryExpressions": "on",
+        "noEmptyBlockStatements": "on",
+        "noEvolvingTypes": "on",
+        "noExportsInTest": "on",
+        "noUnassignedVariables": "on",
+        "noUselessEscapeInString": "on",
+        "noVar": "on",
+        "useErrorMessage": "on",
+        "useNumberToFixedDigitsArgument": "on"
+      },
+      "correctness": {
+        "noInvalidUseBeforeDeclaration": "off",
+        "useJsonImportAttributes": "on"
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "semicolons": "asNeeded"
+    }
+  },
+  "json": {
+    "formatter": {
+      "expand": "always",
+      "indentWidth": 2
+    }
+  },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  }
+}

@@ -1,5 +1,5 @@
 import type { ByteCursor } from "../core/byte-cursor.js"
-import { DEV, assert } from "../util/assert.js"
+import { assert, DEV } from "../util/assert.js"
 import { isU32 } from "../util/validator.js"
 import { readFixedData } from "./data.js"
 import { readUintSafe32, writeUintSafe32 } from "./primitive.js"

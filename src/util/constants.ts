@@ -1,3 +1,6 @@
+// To make constants inlinable by bundlers like esbuild, we group them in this module.
+// The module must be without any imports.
+
 export const TEXT_DECODER_THRESHOLD = 256
 export const TEXT_ENCODER_THRESHOLD = 256
 

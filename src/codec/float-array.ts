@@ -1,5 +1,5 @@
 import { type ByteCursor, check, reserve } from "../core/byte-cursor.js"
-import { DEV, assert } from "../util/assert.js"
+import { assert, DEV } from "../util/assert.js"
 import { IS_LITTLE_ENDIAN_PLATFORM } from "../util/constants.js"
 import { isU32 } from "../util/validator.js"
 import { readFixedData } from "./data.js"
@@ -13,9 +13,8 @@ import {
 } from "./primitive.js"
 import { writeU8FixedArray } from "./u8-array.js"
 
-export const readF32FixedArray = IS_LITTLE_ENDIAN_PLATFORM
-    ? readF32FixedArrayLe
-    : readF32FixedArrayBe
+export const readF32FixedArray: (bc: ByteCursor, len: number) => Float32Array =
+    IS_LITTLE_ENDIAN_PLATFORM ? readF32FixedArrayLe : readF32FixedArrayBe
 
 function readF32FixedArrayLe(bc: ByteCursor, len: number): Float32Array {
     if (DEV) {
@@ -38,9 +37,8 @@ function readF32FixedArrayBe(bc: ByteCursor, len: number): Float32Array {
     return result
 }
 
-export const writeF32FixedArray = IS_LITTLE_ENDIAN_PLATFORM
-    ? writeF32FixedArrayLe
-    : writeF32FixedArrayBe
+export const writeF32FixedArray: (bc: ByteCursor, x: Float32Array) => void =
+    IS_LITTLE_ENDIAN_PLATFORM ? writeF32FixedArrayLe : writeF32FixedArrayBe
 
 function writeF32FixedArrayLe(bc: ByteCursor, x: Float32Array): void {
     writeU8FixedArray(bc, new Uint8Array(x.buffer, x.byteOffset, x.byteLength))
@@ -59,14 +57,13 @@ export function readF32Array(bc: ByteCursor): Float32Array {
 
 export function writeF32Array(bc: ByteCursor, x: Float32Array): void {
     writeUintSafe32(bc, x.length)
-    if (x.length !== 0) {
+    if (x.length > 0) {
         writeF32FixedArray(bc, x)
     }
 }
 
-export const readF64FixedArray = IS_LITTLE_ENDIAN_PLATFORM
-    ? readF64FixedArrayLe
-    : readF64FixedArrayBe
+export const readF64FixedArray: (bc: ByteCursor, len: number) => Float64Array =
+    IS_LITTLE_ENDIAN_PLATFORM ? readF64FixedArrayLe : readF64FixedArrayBe
 
 function readF64FixedArrayLe(bc: ByteCursor, len: number): Float64Array {
     if (DEV) {
@@ -89,9 +86,8 @@ function readF64FixedArrayBe(bc: ByteCursor, len: number): Float64Array {
     return result
 }
 
-export const writeF64FixedArray = IS_LITTLE_ENDIAN_PLATFORM
-    ? writeF64FixedArrayLe
-    : writeF64FixedArrayBe
+export const writeF64FixedArray: (bc: ByteCursor, x: Float64Array) => void =
+    IS_LITTLE_ENDIAN_PLATFORM ? writeF64FixedArrayLe : writeF64FixedArrayBe
 
 function writeF64FixedArrayLe(bc: ByteCursor, x: Float64Array): void {
     writeU8FixedArray(bc, new Uint8Array(x.buffer, x.byteOffset, x.byteLength))
@@ -110,7 +106,7 @@ export function readF64Array(bc: ByteCursor): Float64Array {
 
 export function writeF64Array(bc: ByteCursor, x: Float64Array): void {
     writeUintSafe32(bc, x.length)
-    if (x.length !== 0) {
+    if (x.length > 0) {
         writeF64FixedArray(bc, x)
     }
 }

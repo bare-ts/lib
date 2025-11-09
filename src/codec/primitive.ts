@@ -1,6 +1,6 @@
 import { BareError } from "../core/bare-error.js"
 import { type ByteCursor, check, reserve } from "../core/byte-cursor.js"
-import { DEV, assert } from "../util/assert.js"
+import { assert, DEV } from "../util/assert.js"
 import {
     INT_SAFE_MAX_BYTE_COUNT,
     NON_CANONICAL_REPRESENTATION,
@@ -26,7 +26,7 @@ export function readBool(bc: ByteCursor): boolean {
         bc.offset--
         throw new BareError(bc.offset, "a bool must be equal to 0 or 1")
     }
-    return val !== 0
+    return val > 0
 }
 
 export function writeBool(bc: ByteCursor, x: boolean): void {
@@ -182,7 +182,7 @@ export function readIntSafe(bc: ByteCursor): number {
     if (firstByte >= 0x80) {
         let shiftMul = /* 2**6 */ 0x40
         let byteCount = 1
-        let byte
+        let byte: number
         do {
             byte = readU8(bc)
             result += (byte & 0x7f) * shiftMul
@@ -322,7 +322,7 @@ export function readUint(bc: ByteCursor): bigint {
         low &= 0x7f
         let shiftMul = 0x80
         let byteCount = 1
-        let byte
+        let byte: number
         do {
             byte = readU8(bc)
             low += (byte & 0x7f) * shiftMul
@@ -361,7 +361,7 @@ function writeTruncatedUint(bc: ByteCursor, x: bigint): void {
     let tmp = Number(BigInt.asUintN(7 * 7, x))
     let rest = Number(x >> BigInt(7 * 7))
     let byteCount = 0
-    while (tmp >= 0x80 || rest !== 0) {
+    while (tmp >= 0x80 || rest > 0) {
         writeU8(bc, 0x80 | (tmp & 0x7f))
         tmp = Math.floor(tmp / /* 2**7 */ 0x80)
         byteCount++
@@ -379,7 +379,7 @@ export function readUintSafe32(bc: ByteCursor): number {
         result &= 0x7f
         let shift = 7
         let byteCount = 1
-        let byte
+        let byte: number
         do {
             byte = readU8(bc)
             result += ((byte & 0x7f) << shift) >>> 0
@@ -421,7 +421,7 @@ export function readUintSafe(bc: ByteCursor): number {
         result &= 0x7f
         let shiftMul = /* 2**7 */ 0x80
         let byteCount = 1
-        let byte
+        let byte: number
         do {
             byte = readU8(bc)
             result += (byte & 0x7f) * shiftMul
