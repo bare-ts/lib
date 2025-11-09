@@ -13,10 +13,17 @@ import {
 } from "./primitive.js"
 import { writeU8FixedArray } from "./u8-array.js"
 
-export const readF32FixedArray: (bc: ByteCursor, len: number) => Float32Array =
-    IS_LITTLE_ENDIAN_PLATFORM ? readF32FixedArrayLe : readF32FixedArrayBe
+export const readF32FixedArray: (
+    bc: ByteCursor,
+    len: number,
+) => Float32Array<ArrayBuffer> = IS_LITTLE_ENDIAN_PLATFORM
+    ? readF32FixedArrayLe
+    : readF32FixedArrayBe
 
-function readF32FixedArrayLe(bc: ByteCursor, len: number): Float32Array {
+function readF32FixedArrayLe(
+    bc: ByteCursor,
+    len: number,
+): Float32Array<ArrayBuffer> {
     if (DEV) {
         assert(isU32(len))
     }
@@ -25,7 +32,10 @@ function readF32FixedArrayLe(bc: ByteCursor, len: number): Float32Array {
     return result
 }
 
-function readF32FixedArrayBe(bc: ByteCursor, len: number): Float32Array {
+function readF32FixedArrayBe(
+    bc: ByteCursor,
+    len: number,
+): Float32Array<ArrayBuffer> {
     if (DEV) {
         assert(isU32(len))
     }
@@ -51,7 +61,7 @@ function writeF32FixedArrayBe(bc: ByteCursor, val: Float32Array): void {
     }
 }
 
-export function readF32Array(bc: ByteCursor): Float32Array {
+export function readF32Array(bc: ByteCursor): Float32Array<ArrayBuffer> {
     return readF32FixedArray(bc, readUintSafe32(bc))
 }
 
@@ -62,10 +72,17 @@ export function writeF32Array(bc: ByteCursor, x: Float32Array): void {
     }
 }
 
-export const readF64FixedArray: (bc: ByteCursor, len: number) => Float64Array =
-    IS_LITTLE_ENDIAN_PLATFORM ? readF64FixedArrayLe : readF64FixedArrayBe
+export const readF64FixedArray: (
+    bc: ByteCursor,
+    len: number,
+) => Float64Array<ArrayBuffer> = IS_LITTLE_ENDIAN_PLATFORM
+    ? readF64FixedArrayLe
+    : readF64FixedArrayBe
 
-function readF64FixedArrayLe(bc: ByteCursor, len: number): Float64Array {
+function readF64FixedArrayLe(
+    bc: ByteCursor,
+    len: number,
+): Float64Array<ArrayBuffer> {
     if (DEV) {
         assert(isU32(len))
     }
@@ -74,7 +91,10 @@ function readF64FixedArrayLe(bc: ByteCursor, len: number): Float64Array {
     return result
 }
 
-function readF64FixedArrayBe(bc: ByteCursor, len: number): Float64Array {
+function readF64FixedArrayBe(
+    bc: ByteCursor,
+    len: number,
+): Float64Array<ArrayBuffer> {
     if (DEV) {
         assert(isU32(len))
     }
@@ -100,7 +120,7 @@ function writeF64FixedArrayBe(bc: ByteCursor, x: Float64Array): void {
     }
 }
 
-export function readF64Array(bc: ByteCursor): Float64Array {
+export function readF64Array(bc: ByteCursor): Float64Array<ArrayBuffer> {
     return readF64FixedArray(bc, readUintSafe32(bc))
 }
 

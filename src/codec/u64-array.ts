@@ -14,15 +14,18 @@ import { writeU8FixedArray } from "./u8-array.js"
 export const readU64FixedArray: (
     bc: ByteCursor,
     len: number,
-) => BigUint64Array = IS_LITTLE_ENDIAN_PLATFORM
+) => BigUint64Array<ArrayBuffer> = IS_LITTLE_ENDIAN_PLATFORM
     ? readU64FixedArrayLe
     : readU64FixedArrayBe
 
-export function readU64Array(bc: ByteCursor): BigUint64Array {
+export function readU64Array(bc: ByteCursor): BigUint64Array<ArrayBuffer> {
     return readU64FixedArray(bc, readUintSafe32(bc))
 }
 
-function readU64FixedArrayLe(bc: ByteCursor, len: number): BigUint64Array {
+function readU64FixedArrayLe(
+    bc: ByteCursor,
+    len: number,
+): BigUint64Array<ArrayBuffer> {
     if (DEV) {
         assert(isU32(len))
     }
@@ -30,7 +33,10 @@ function readU64FixedArrayLe(bc: ByteCursor, len: number): BigUint64Array {
     return new BigUint64Array(readFixedData(bc, byteCount))
 }
 
-function readU64FixedArrayBe(bc: ByteCursor, len: number): BigUint64Array {
+function readU64FixedArrayBe(
+    bc: ByteCursor,
+    len: number,
+): BigUint64Array<ArrayBuffer> {
     if (DEV) {
         assert(isU32(len))
     }

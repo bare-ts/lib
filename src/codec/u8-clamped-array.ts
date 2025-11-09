@@ -5,7 +5,9 @@ import { readFixedData } from "./data.js"
 import { readUintSafe32, writeUintSafe32 } from "./primitive.js"
 import { writeU8FixedArray } from "./u8-array.js"
 
-export function readU8ClampedArray(bc: ByteCursor): Uint8ClampedArray {
+export function readU8ClampedArray(
+    bc: ByteCursor,
+): Uint8ClampedArray<ArrayBuffer> {
     return readU8ClampedFixedArray(bc, readUintSafe32(bc))
 }
 
@@ -20,7 +22,7 @@ export function writeU8ClampedArray(
 export function readU8ClampedFixedArray(
     bc: ByteCursor,
     len: number,
-): Uint8ClampedArray {
+): Uint8ClampedArray<ArrayBuffer> {
     if (DEV) {
         assert(isU32(len))
     }

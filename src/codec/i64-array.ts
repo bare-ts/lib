@@ -11,14 +11,21 @@ import {
 } from "./primitive.js"
 import { writeU8FixedArray } from "./u8-array.js"
 
-export const readI64FixedArray: (bc: ByteCursor, len: number) => BigInt64Array =
-    IS_LITTLE_ENDIAN_PLATFORM ? readI64FixedArrayLe : readI64FixedArrayBe
+export const readI64FixedArray: (
+    bc: ByteCursor,
+    len: number,
+) => BigInt64Array<ArrayBuffer> = IS_LITTLE_ENDIAN_PLATFORM
+    ? readI64FixedArrayLe
+    : readI64FixedArrayBe
 
-export function readI64Array(bc: ByteCursor): BigInt64Array {
+export function readI64Array(bc: ByteCursor): BigInt64Array<ArrayBuffer> {
     return readI64FixedArray(bc, readUintSafe32(bc))
 }
 
-function readI64FixedArrayLe(bc: ByteCursor, len: number): BigInt64Array {
+function readI64FixedArrayLe(
+    bc: ByteCursor,
+    len: number,
+): BigInt64Array<ArrayBuffer> {
     if (DEV) {
         assert(isU32(len))
     }
@@ -26,7 +33,10 @@ function readI64FixedArrayLe(bc: ByteCursor, len: number): BigInt64Array {
     return new BigInt64Array(readFixedData(bc, byteCount))
 }
 
-function readI64FixedArrayBe(bc: ByteCursor, len: number): BigInt64Array {
+function readI64FixedArrayBe(
+    bc: ByteCursor,
+    len: number,
+): BigInt64Array<ArrayBuffer> {
     if (DEV) {
         assert(isU32(len))
     }

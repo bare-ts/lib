@@ -3,7 +3,7 @@ import { assert, DEV } from "../util/assert.js"
 import { isU32 } from "../util/validator.js"
 import { readUintSafe32, writeUintSafe32 } from "./primitive.js"
 
-export function readU8Array(bc: ByteCursor): Uint8Array {
+export function readU8Array(bc: ByteCursor): Uint8Array<ArrayBuffer> {
     return readU8FixedArray(bc, readUintSafe32(bc))
 }
 
@@ -12,7 +12,10 @@ export function writeU8Array(bc: ByteCursor, x: Uint8Array): void {
     writeU8FixedArray(bc, x)
 }
 
-export function readU8FixedArray(bc: ByteCursor, len: number): Uint8Array {
+export function readU8FixedArray(
+    bc: ByteCursor,
+    len: number,
+): Uint8Array<ArrayBuffer> {
     return readUnsafeU8FixedArray(bc, len).slice()
 }
 

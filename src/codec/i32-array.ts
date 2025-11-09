@@ -11,14 +11,21 @@ import {
 } from "./primitive.js"
 import { writeU8FixedArray } from "./u8-array.js"
 
-export const readI32FixedArray: (bc: ByteCursor, len: number) => Int32Array =
-    IS_LITTLE_ENDIAN_PLATFORM ? readI32FixedArrayLe : readI32FixedArrayBe
+export const readI32FixedArray: (
+    bc: ByteCursor,
+    len: number,
+) => Int32Array<ArrayBuffer> = IS_LITTLE_ENDIAN_PLATFORM
+    ? readI32FixedArrayLe
+    : readI32FixedArrayBe
 
-export function readI32Array(bc: ByteCursor): Int32Array {
+export function readI32Array(bc: ByteCursor): Int32Array<ArrayBuffer> {
     return readI32FixedArray(bc, readUintSafe32(bc))
 }
 
-function readI32FixedArrayLe(bc: ByteCursor, len: number): Int32Array {
+function readI32FixedArrayLe(
+    bc: ByteCursor,
+    len: number,
+): Int32Array<ArrayBuffer> {
     if (DEV) {
         assert(isU32(len))
     }
@@ -26,7 +33,10 @@ function readI32FixedArrayLe(bc: ByteCursor, len: number): Int32Array {
     return new Int32Array(readFixedData(bc, byteCount))
 }
 
-function readI32FixedArrayBe(bc: ByteCursor, len: number): Int32Array {
+function readI32FixedArrayBe(
+    bc: ByteCursor,
+    len: number,
+): Int32Array<ArrayBuffer> {
     if (DEV) {
         assert(isU32(len))
     }

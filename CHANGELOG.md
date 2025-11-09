@@ -8,6 +8,25 @@ New entries must be placed in a section entitled `Unreleased`.
 
 ## Unreleased
 
+-   BREAKING CHANGES: require TypeScript 5.7 or above
+
+    JavaScript has two buffer types: `ArrayBuffer` and `SharedArrayBuffer`.
+    Before ES2024, TypeScript treated them as a single type.
+    ES2024 introduced distinct features for `ArrayBuffer` and `SharedArrayBuffer`.
+    To take this divergence into account, TypeScript 5.7 added a generic parameter to buffer views.
+    By default, it is set to `ArrayBufferLike` that is a supertype to `ArrayBuffer` and `SharedArrayBuffer`.
+    This change is backward compatible.
+
+    TypeScript 5.9 went beyond and introduced a breaking change:
+    Buffer's views no longer extend `ArrayBuffer`.
+    Moreover, `ArrayBufferLike` cannot be assigned to `ArrayBuffer`.
+
+    To accommodate with this change, all BARE `read` functions now return a view parametrized with `ArrayBuffer`.
+    For example, `readU8Array` returns `Uint8Array<ArrayBuffer>`.
+    Because we now use parametrized views like `Uint8Array<ArrayBuffer>`, you have to use TypeScript 5.7 or above.
+
+    BARE `write` functions still accept view with any buffer types.
+
 -   Export the default bare configuration
 
     ```js
