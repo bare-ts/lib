@@ -4,7 +4,7 @@ set -eu
 . scripts/build.sh
 
 # unit tests
-env NODE_ENV=development oletus tests/*/*.test.js
+env NODE_ENV=development node --test
 
 # lint
 biome ci .

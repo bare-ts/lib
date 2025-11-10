@@ -1,43 +1,44 @@
 //! Copyright (c) 2022 Victorien Elvinger
 //! Licensed under the MIT License (https://mit-license.org/)
 
+import * as assert from "node:assert/strict"
+import { test } from "node:test"
 import * as bare from "@bare-ts/lib"
-import { default as test } from "oletus"
 
 import { fromBytes, toBytes } from "./_util.js"
 
-test("bare.readData", (t) => {
+test("bare.readData", () => {
     let bc = fromBytes(/* length */ 2, 42, 21)
-    t.deepEqual(bare.readData(bc), Uint8Array.of(42, 21).buffer)
+    assert.deepEqual(bare.readData(bc), Uint8Array.of(42, 21).buffer)
 
     bc = fromBytes(/* length */ 3, 42, 21)
-    t.throws(
+    assert.throws(
         () => bare.readData(bc),
         { name: "BareError", issue: "missing bytes", offset: 1 },
         "missing bytes",
     )
 })
 
-test("bare.writeData", (t) => {
+test("bare.writeData", () => {
     const bc = fromBytes()
     bare.writeData(bc, Uint8Array.of(42, 21).buffer)
-    t.deepEqual(toBytes(bc), [/* length */ 2, 42, 21])
+    assert.deepEqual(toBytes(bc), [/* length */ 2, 42, 21])
 })
 
-test("bare.readFixedData", (t) => {
+test("bare.readFixedData", () => {
     let bc = fromBytes(42, 21)
-    t.deepEqual(bare.readFixedData(bc, 2), Uint8Array.of(42, 21).buffer)
+    assert.deepEqual(bare.readFixedData(bc, 2), Uint8Array.of(42, 21).buffer)
 
     bc = fromBytes(0x42)
-    t.throws(
+    assert.throws(
         () => bare.readFixedData(bc, 2),
         { name: "BareError", issue: "missing bytes", offset: 0 },
         "missing bytes",
     )
 })
 
-test("bare.writeFixedData", (t) => {
+test("bare.writeFixedData", () => {
     const bc = fromBytes()
     bare.writeFixedData(bc, Uint8Array.of(42, 21).buffer)
-    t.deepEqual(toBytes(bc), [42, 21])
+    assert.deepEqual(toBytes(bc), [42, 21])
 })

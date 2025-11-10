@@ -1,15 +1,16 @@
 //! Copyright (c) 2022 Victorien Elvinger
 //! Licensed under the MIT License (https://mit-license.org/)
 
+import * as assert from "node:assert/strict"
+import { test } from "node:test"
 import * as bare from "@bare-ts/lib"
-import { default as test } from "oletus"
 
-test("ByteCursor", (t) => {
+test("ByteCursor", () => {
     const config = bare.Config({
         initialBufferLength: 0,
         maxBufferLength: 3,
     })
-    t.throws(
+    assert.throws(
         () => {
             new bare.ByteCursor(new Uint8Array(6), config)
         },
@@ -20,21 +21,21 @@ test("ByteCursor", (t) => {
         },
         "too large buffer",
     )
-    t.doesNotThrow(() => {
+    assert.doesNotThrow(() => {
         new bare.ByteCursor(new Uint8Array(6).subarray(0, 3), config)
     })
 
     const bc = new bare.ByteCursor(new Uint8Array(6).subarray(2, 5), config)
-    t.deepEqual(bc.bytes.byteOffset, bc.view.byteOffset)
-    t.deepEqual(bc.bytes.byteLength, bc.view.byteLength)
-    t.deepEqual(bc.bytes.byteOffset, 2)
-    t.deepEqual(bc.bytes.byteLength, 3)
+    assert.deepEqual(bc.bytes.byteOffset, bc.view.byteOffset)
+    assert.deepEqual(bc.bytes.byteLength, bc.view.byteLength)
+    assert.deepEqual(bc.bytes.byteOffset, 2)
+    assert.deepEqual(bc.bytes.byteLength, 3)
 })
 
-test("bare.check", (t) => {
+test("bare.check", () => {
     const bc = new bare.ByteCursor(new Uint8Array(5), bare.Config({}))
-    t.doesNotThrow(() => bare.check(bc, 5), "enough bytes")
-    t.throws(
+    assert.doesNotThrow(() => bare.check(bc, 5), "enough bytes")
+    assert.throws(
         () => bare.check(bc, 6),
         {
             name: "BareError",
@@ -45,7 +46,7 @@ test("bare.check", (t) => {
     )
 })
 
-test("bare.reserve", (t) => {
+test("bare.reserve", () => {
     let bc = new bare.ByteCursor(
         new Uint8Array(0),
         bare.Config({
@@ -53,10 +54,10 @@ test("bare.reserve", (t) => {
             maxBufferLength: 10,
         }),
     )
-    t.doesNotThrow(() => bare.reserve(bc, 5), "reservable bytes")
-    t.doesNotThrow(() => bare.check(bc, 5), "reserved bytes")
-    t.doesNotThrow(() => bare.reserve(bc, 10), "max reservable bytes")
-    t.throws(
+    assert.doesNotThrow(() => bare.reserve(bc, 5), "reservable bytes")
+    assert.doesNotThrow(() => bare.check(bc, 5), "reserved bytes")
+    assert.doesNotThrow(() => bare.reserve(bc, 10), "max reservable bytes")
+    assert.throws(
         () => bare.reserve(bc, 15),
         {
             name: "BareError",
@@ -70,6 +71,6 @@ test("bare.reserve", (t) => {
         new Uint8Array(new ArrayBuffer(20), 5, 10),
         bare.Config({}),
     )
-    t.doesNotThrow(() => bare.check(bc, 10), "enough room")
-    t.doesNotThrow(() => bare.reserve(bc, 15))
+    assert.doesNotThrow(() => bare.check(bc, 10), "enough room")
+    assert.doesNotThrow(() => bare.reserve(bc, 15))
 })
