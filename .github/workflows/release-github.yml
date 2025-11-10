@@ -10,28 +10,28 @@ jobs:
         # based on esbuild release script (MIT licensed):
         # https://github.com/evanw/esbuild/blob/master/.github/workflows/release.yml
         needs: test
+        environment: release-github
+        runs-on: ubuntu-latest
         permissions:
             contents: write
-        runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v3
-            - uses: actions/setup-node@v3
+            - uses: actions/checkout@v5.0.0
               with:
-                  node-version: "14.18"
-                  cache: npm
-            - name: Build
+                  persist-credentials: false
+            - uses: actions/setup-node@v5.0.0
+              with:
+                  node-version-file: ".node-version"
+            - name: Install dependencies amd build
               run: |
                   npm ci
                   npm run build
             - name: Extract changelog
               run: |
                   VERSION="${GITHUB_REF_NAME#v}"
-                  CHANGELOG="$(awk -v ver="$VERSION" '/^## / { if (p) { exit }; if ($2 == ver) { p=1; next} } p' CHANGELOG.md)"
-                  echo "CHANGELOG<<EOF" >> $GITHUB_ENV
-                  echo "$CHANGELOG" >> $GITHUB_ENV
-                  echo "EOF" >> $GITHUB_ENV
+                  sh scripts/print-changelog.sh "$VERSION" >| ${{ github.workspace }}/RELEASE_NOTES
             - name: Create GitHub Release
-              uses: softprops/action-gh-release@v1
+              uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 #v2.4.1
               with:
-                  body: ${{ env.CHANGELOG }}
+                  body_path: ${{ github.workspace }}/RELEASE_NOTES
                   prerelease: true
+                  fail_on_unmatched_files: true
