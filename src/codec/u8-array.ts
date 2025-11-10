@@ -1,3 +1,6 @@
+//! Copyright (c) 2022 Victorien Elvinger
+//! Licensed under the MIT License (https://mit-license.org/)
+
 import { type ByteCursor, check, reserve } from "../core/byte-cursor.js"
 import { assert, DEV } from "../util/assert.js"
 import { isU32 } from "../util/validator.js"

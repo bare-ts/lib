@@ -1,3 +1,6 @@
+//! Copyright (c) 2022 Victorien Elvinger
+//! Licensed under the MIT License (https://mit-license.org/)
+
 // To make constants inlinable by bundlers like esbuild, we group them in this module.
 // The module must be without any imports.
 

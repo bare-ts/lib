@@ -1,3 +1,6 @@
+//! Copyright (c) 2022 Victorien Elvinger
+//! Licensed under the MIT License (https://mit-license.org/)
+
 import * as bare from "@bare-ts/lib"
 import { default as test } from "oletus"
 

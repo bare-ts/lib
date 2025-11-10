@@ -1,3 +1,6 @@
+//! Copyright (c) 2022 Victorien Elvinger
+//! Licensed under the MIT License (https://mit-license.org/)
+
 export * from "./codec/data.js"
 export * from "./codec/float-array.js"
 export * from "./codec/i8-array.js"
