@@ -10,8 +10,8 @@ import {
     TEXT_ENCODER_THRESHOLD,
 } from "../util/constants.ts"
 import { isU32 } from "../util/validator.ts"
-import { readUintSafe32, writeUintSafe32 } from "./primitive.ts"
 import { readUnsafeU8FixedArray, writeU8FixedArray } from "./u8-array.ts"
+import { readUintSafe32, writeUintSafe32 } from "./uint.ts"
 
 export function readString(bc: ByteCursor): string {
     return readFixedString(bc, readUintSafe32(bc))

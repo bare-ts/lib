@@ -6,13 +6,9 @@ import { assert, DEV } from "../util/assert.ts"
 import { IS_LITTLE_ENDIAN_PLATFORM } from "../util/constants.ts"
 import { isU32 } from "../util/validator.ts"
 import { readFixedData } from "./data.ts"
-import {
-    readI32,
-    readUintSafe32,
-    writeI32,
-    writeUintSafe32,
-} from "./primitive.ts"
+import { readI32, writeI32 } from "./fixed-primitive.ts"
 import { writeU8FixedArray } from "./u8-array.ts"
+import { readUintSafe32, writeUintSafe32 } from "./uint.ts"
 
 export const readI32FixedArray: (
     bc: ByteCursor,

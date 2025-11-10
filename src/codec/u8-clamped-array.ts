@@ -5,8 +5,8 @@ import type { ByteCursor } from "../core/byte-cursor.ts"
 import { assert, DEV } from "../util/assert.ts"
 import { isU32 } from "../util/validator.ts"
 import { readFixedData } from "./data.ts"
-import { readUintSafe32, writeUintSafe32 } from "./primitive.ts"
 import { writeU8FixedArray } from "./u8-array.ts"
+import { readUintSafe32, writeUintSafe32 } from "./uint.ts"
 
 export function readU8ClampedArray(
     bc: ByteCursor,
