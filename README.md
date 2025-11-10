@@ -1,9 +1,8 @@
 # bare-ts library
 
-[![CI status][ci-img]][ci-url]
-[![Coverage percentage][coveralls-img]][coveralls-url]
-[![minified and gzipped size][bundlephobia-img]][bundlephobia-url]
 [![NPM version][npm-img]][npm-url]
+[![minified and gzipped size][bundlephobia-img]][bundlephobia-url]
+[![Coverage percentage][coveralls-img]][coveralls-url]
 
 [BARE][bare] (Binary Application Record Encoding) is a schema-based binary format that favors compactness and simplicity.
 [bare-ts/lib](#) provides decoders and encoders for basic BARE types.
@@ -17,8 +16,6 @@ The binary format is fairly stable.
 
 [bare]: https://baremessages.org
 [bare-ts-bare]: https://github.com/bare-ts/bare
-[ci-img]: https://img.shields.io/github/workflow/status/bare-ts/lib/CI?label=CI&style=flat-square
-[ci-url]: https://github.com/bare-ts/lib/actions/workflows/ci.yml
 [npm-img]: https://img.shields.io/npm/v/@bare-ts/lib.svg?style=flat-square
 [npm-url]: https://www.npmjs.com/package/@bare-ts/lib
 [coveralls-img]: https://img.shields.io/coveralls/github/bare-ts/lib?style=flat-square
