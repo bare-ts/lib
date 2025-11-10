@@ -3,55 +3,56 @@
 
 import * as assert from "node:assert/strict"
 import { test } from "node:test"
-import * as bare from "@bare-ts/lib"
-
 import { fromBytes, toBytes } from "./_util.test.ts"
+import {
+    readU64Array,
+    readU64FixedArray,
+    writeU64Array,
+    writeU64FixedArray,
+} from "./u64-array.ts"
 
-test("bare.readU64Array", () => {
+test("readU64Array", () => {
     let bc = fromBytes(/* length */ 1, 0x31, 0, 0, 0, 0, 0, 0, 0)
-    assert.deepEqual(bare.readU64Array(bc), BigUint64Array.of(BigInt(0x31)))
+    assert.deepEqual(readU64Array(bc), BigUint64Array.of(BigInt(0x31)))
     assert.throws(
-        () => bare.readU64Array(bc),
+        () => readU64Array(bc),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 
     bc = fromBytes(/* length */ 2, 0x31, 0, 0, 0, 0, 0, 0, 0)
     assert.throws(
-        () => bare.readU64Array(bc),
+        () => readU64Array(bc),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 })
 
-test("bare.writeU64Array", () => {
+test("writeU64Array", () => {
     const bc = fromBytes()
-    bare.writeU64Array(bc, BigUint64Array.of(BigInt(0x31)))
+    writeU64Array(bc, BigUint64Array.of(BigInt(0x31)))
     assert.deepEqual(toBytes(bc), [/* length */ 1, 0x31, 0, 0, 0, 0, 0, 0, 0])
 })
 
-test("bare.readU64FixedArray", () => {
+test("readU64FixedArray", () => {
     let bc = fromBytes(0x31, 0, 0, 0, 0, 0, 0, 0)
-    assert.deepEqual(
-        bare.readU64FixedArray(bc, 1),
-        BigUint64Array.of(BigInt(0x31)),
-    )
+    assert.deepEqual(readU64FixedArray(bc, 1), BigUint64Array.of(BigInt(0x31)))
     assert.throws(
-        () => bare.readU64FixedArray(bc, 2),
+        () => readU64FixedArray(bc, 2),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 
     bc = fromBytes(0x31, 0, 0, 0, 0, 0, 0, 0)
     assert.throws(
-        () => bare.readU64FixedArray(bc, 2),
+        () => readU64FixedArray(bc, 2),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 })
 
-test("bare.writeU64FixedArray", () => {
+test("writeU64FixedArray", () => {
     const bc = fromBytes()
-    bare.writeU64FixedArray(bc, BigUint64Array.of(BigInt(0x31)))
+    writeU64FixedArray(bc, BigUint64Array.of(BigInt(0x31)))
     assert.deepEqual(toBytes(bc), [0x31, 0, 0, 0, 0, 0, 0, 0])
 })

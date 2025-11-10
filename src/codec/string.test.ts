@@ -3,11 +3,15 @@
 
 import * as assert from "node:assert/strict"
 import { test } from "node:test"
-import * as bare from "@bare-ts/lib"
-
 import { fromBytes, toBytes } from "./_util.test.ts"
+import {
+    readFixedString,
+    readString,
+    writeFixedString,
+    writeString,
+} from "./string.ts"
 
-test("bare.readFixedString", () => {
+test("readFixedString", () => {
     let bc = fromBytes(
         ..."b"
             .repeat(300)
@@ -15,21 +19,21 @@ test("bare.readFixedString", () => {
             .map((s) => s.charCodeAt(0)),
     )
     assert.deepEqual(
-        bare.readFixedString(bc, 300),
+        readFixedString(bc, 300),
         "b".repeat(300),
         "can natively read ASCII",
     )
 
     bc = fromBytes(98, 97, 114, 101)
-    assert.deepEqual(bare.readFixedString(bc, 4), "bare", "can read ASCII")
+    assert.deepEqual(readFixedString(bc, 4), "bare", "can read ASCII")
 })
 
-test("bare.readString", () => {
+test("readString", () => {
     let bc = fromBytes(/* byteLength */ 4, 98, 97, 114, 101)
-    assert.deepEqual(bare.readString(bc), "bare", "can read ASCII")
+    assert.deepEqual(readString(bc), "bare", "can read ASCII")
 
     bc = fromBytes(/* byteLength */ 6, 0xc3, 0xa9, 0xc3, 0xa0, 0xc3, 0xb9)
-    assert.deepEqual(bare.readString(bc), "éàù", "can decode 2-bytes chars")
+    assert.deepEqual(readString(bc), "éàù", "can decode 2-bytes chars")
 
     bc = fromBytes(
         /* byteLength */ 21,
@@ -55,7 +59,7 @@ test("bare.readString", () => {
         0xb8,
         0x8f,
     )
-    assert.deepEqual(bare.readString(bc), "🎈🏃🏿‍♂️", "can read surrogate chars")
+    assert.deepEqual(readString(bc), "🎈🏃🏿‍♂️", "can read surrogate chars")
 
     bc = fromBytes(
         /* byteLength */ 0x1b,
@@ -88,11 +92,11 @@ test("bare.readString", () => {
         0x81,
     )
     assert.deepEqual(
-        bare.readString(bc),
+        readString(bc),
         "\u3053\u3093\u306B\u3061\u306F\u3001\u4E16\u754C\uFF01",
     )
     assert.throws(
-        () => bare.readString(bc),
+        () => readString(bc),
         {
             name: "BareError",
             issue: "missing bytes",
@@ -102,85 +106,85 @@ test("bare.readString", () => {
 
     bc = fromBytes(0x1)
     assert.throws(
-        () => bare.readString(bc),
+        () => readString(bc),
         { name: "BareError", issue: "missing bytes" },
         "some chars are missing",
     )
 
     bc = fromBytes(0x1, 0xc0, 0x80)
     assert.throws(
-        () => bare.readString(bc),
+        () => readString(bc),
         { name: "BareError", issue: "invalid UTF-8 string" },
         "mal-formed string: too short byte length",
     )
 
     bc = fromBytes(0x1, 0x80)
     assert.throws(
-        () => bare.readString(bc),
+        () => readString(bc),
         { name: "BareError", issue: "invalid UTF-8 string" },
         "mal-formed string: invalid start tag",
     )
 
     bc = fromBytes(0x1, 0xf8)
     assert.throws(
-        () => bare.readString(bc),
+        () => readString(bc),
         { name: "BareError", issue: "invalid UTF-8 string" },
         "mal-formed string: invalid tag",
     )
 
     bc = fromBytes(0x1, 0xfc)
     assert.throws(
-        () => bare.readString(bc),
+        () => readString(bc),
         { name: "BareError", issue: "invalid UTF-8 string" },
         "mal-formed string: invalid tag",
     )
 
     bc = fromBytes(0x1, 0xfe)
     assert.throws(
-        () => bare.readString(bc),
+        () => readString(bc),
         { name: "BareError", issue: "invalid UTF-8 string" },
         "mal-formed string: invalid tag",
     )
 
     bc = fromBytes(0x1, 0xff)
     assert.throws(
-        () => bare.readString(bc),
+        () => readString(bc),
         { name: "BareError", issue: "invalid UTF-8 string" },
         "mal-formed string: invalid tag",
     )
 
     bc = fromBytes(0x2, 0xc0, 0x80)
     assert.throws(
-        () => bare.readString(bc),
+        () => readString(bc),
         { name: "BareError", issue: "invalid UTF-8 string" },
         "mal-formed string: overlong code point",
     )
 
     bc = fromBytes(0x3, 0xe0, 0x80, 0x80)
     assert.throws(
-        () => bare.readString(bc),
+        () => readString(bc),
         { name: "BareError", issue: "invalid UTF-8 string" },
         "mal-formed string: overlong code point",
     )
 
     bc = fromBytes(0x4, 0xf0, 0x80, 0x80, 0x80)
     assert.throws(
-        () => bare.readString(bc),
+        () => readString(bc),
         { name: "BareError", issue: "invalid UTF-8 string" },
         "mal-formed string: overlong code point",
     )
 
     bc = fromBytes(0x4, 0xf5, 0x80, 0x80, 0x80)
     assert.throws(
-        () => bare.readString(bc),
+        () => readString(bc),
         { name: "BareError", issue: "invalid UTF-8 string" },
         "mal-formed string: code point is grater than 10ffff",
     )
 })
 
-test("bare.writeFixedString", () => {
+test("writeFixedString", () => {
     let bc = fromBytes()
-    bare.writeFixedString(bc, "b".repeat(300))
+    writeFixedString(bc, "b".repeat(300))
     assert.deepEqual(
         toBytes(bc),
         "b"
@@ -191,13 +195,13 @@ test("bare.writeFixedString", () => {
     )
 
     bc = fromBytes()
-    bare.writeFixedString(bc, "bare")
+    writeFixedString(bc, "bare")
     assert.deepEqual(toBytes(bc), [98, 97, 114, 101], "can write ASCII")
 })
 
-test("bare.writeString", () => {
+test("writeString", () => {
     let bc = fromBytes()
-    bare.writeString(bc, "bare")
+    writeString(bc, "bare")
     assert.deepEqual(
         toBytes(bc),
         [/* byteLength */ 4, 98, 97, 114, 101],
@@ -205,7 +209,7 @@ test("bare.writeString", () => {
     )
 
     bc = fromBytes()
-    bare.writeString(bc, "é".repeat(42))
+    writeString(bc, "é".repeat(42))
     assert.deepEqual(
         toBytes(bc),
         Array.from(
@@ -222,7 +226,7 @@ test("bare.writeString", () => {
     )
 
     bc = fromBytes()
-    bare.writeString(bc, "é".repeat(60))
+    writeString(bc, "é".repeat(60))
     assert.deepEqual(
         toBytes(bc),
         Array.from(
@@ -239,7 +243,7 @@ test("bare.writeString", () => {
     )
 
     bc = fromBytes()
-    bare.writeString(bc, "é".repeat(128))
+    writeString(bc, "é".repeat(128))
     assert.deepEqual(
         toBytes(bc),
         Array.from(
@@ -257,7 +261,7 @@ test("bare.writeString", () => {
     )
 
     bc = fromBytes()
-    bare.writeString(bc, "éàù")
+    writeString(bc, "éàù")
     assert.deepEqual(
         toBytes(bc),
         [/* byteLength */ 6, 0xc3, 0xa9, 0xc3, 0xa0, 0xc3, 0xb9],
@@ -265,7 +269,7 @@ test("bare.writeString", () => {
     )
 
     bc = fromBytes()
-    bare.writeString(bc, "🎈🏃🏿‍♂️")
+    writeString(bc, "🎈🏃🏿‍♂️")
     assert.deepEqual(
         toBytes(bc),
         [
@@ -277,10 +281,7 @@ test("bare.writeString", () => {
     )
 
     bc = fromBytes()
-    bare.writeString(
-        bc,
-        "\u3053\u3093\u306B\u3061\u306F\u3001\u4E16\u754C\uFF01",
-    )
+    writeString(bc, "\u3053\u3093\u306B\u3061\u306F\u3001\u4E16\u754C\uFF01")
     assert.deepEqual(
         toBytes(bc),
         [

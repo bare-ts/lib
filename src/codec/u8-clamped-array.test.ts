@@ -3,58 +3,59 @@
 
 import * as assert from "node:assert/strict"
 import { test } from "node:test"
-import * as bare from "@bare-ts/lib"
-
 import { fromBytes, toBytes } from "./_util.test.ts"
+import {
+    readU8ClampedArray,
+    readU8ClampedFixedArray,
+    writeU8ClampedArray,
+    writeU8ClampedFixedArray,
+} from "./u8-clamped-array.ts"
 
-test("bare.readU8ClampedArray", () => {
+test("readU8ClampedArray", () => {
     let bc = fromBytes(/* length */ 2, 0x31, 0x42)
-    assert.deepEqual(
-        bare.readU8ClampedArray(bc),
-        Uint8ClampedArray.of(0x31, 0x42),
-    )
+    assert.deepEqual(readU8ClampedArray(bc), Uint8ClampedArray.of(0x31, 0x42))
     assert.throws(
-        () => bare.readU8ClampedArray(bc),
+        () => readU8ClampedArray(bc),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 
     bc = fromBytes(/* length */ 3, 0x31, 0x42)
     assert.throws(
-        () => bare.readU8ClampedArray(bc),
+        () => readU8ClampedArray(bc),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 })
 
-test("bare.writeU8ClampedArray", () => {
+test("writeU8ClampedArray", () => {
     const bc = fromBytes()
-    bare.writeU8ClampedArray(bc, Uint8ClampedArray.of(0x31, 0x42))
+    writeU8ClampedArray(bc, Uint8ClampedArray.of(0x31, 0x42))
     assert.deepEqual(toBytes(bc), [/* length */ 2, 0x31, 0x42])
 })
 
-test("bare.readU8FixedArray", () => {
+test("readU8FixedArray", () => {
     let bc = fromBytes(0x31, 0x42)
     assert.deepEqual(
-        bare.readU8ClampedFixedArray(bc, 2),
+        readU8ClampedFixedArray(bc, 2),
         Uint8ClampedArray.of(0x31, 0x42),
     )
     assert.throws(
-        () => bare.readU8ClampedFixedArray(bc, 2),
+        () => readU8ClampedFixedArray(bc, 2),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 
     bc = fromBytes(0x31, 0x42)
     assert.throws(
-        () => bare.readU8ClampedFixedArray(bc, 3),
+        () => readU8ClampedFixedArray(bc, 3),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 })
 
-test("bare.writeU8FixedArray", () => {
+test("writeU8FixedArray", () => {
     const bc = fromBytes()
-    bare.writeU8ClampedFixedArray(bc, Uint8ClampedArray.of(0x31, 0x42))
+    writeU8ClampedFixedArray(bc, Uint8ClampedArray.of(0x31, 0x42))
     assert.deepEqual(toBytes(bc), [0x31, 0x42])
 })

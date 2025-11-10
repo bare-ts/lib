@@ -10,6 +10,7 @@
 
     "noEmit": true,
 
+    "erasableSyntaxOnly": true,
     "libReplacement": false,
     "resolveJsonModule": true,
     "rewriteRelativeImportExtensions": true,

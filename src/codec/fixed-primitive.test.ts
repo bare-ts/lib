@@ -3,23 +3,49 @@
 
 import * as assert from "node:assert/strict"
 import { test } from "node:test"
-import * as bare from "@bare-ts/lib"
-
 import { fromBytes, toBytes } from "./_util.test.ts"
+import {
+    readBool,
+    readF32,
+    readF64,
+    readI8,
+    readI16,
+    readI32,
+    readI64,
+    readI64Safe,
+    readU8,
+    readU16,
+    readU32,
+    readU64,
+    readU64Safe,
+    writeBool,
+    writeF32,
+    writeF64,
+    writeI8,
+    writeI16,
+    writeI32,
+    writeI64,
+    writeI64Safe,
+    writeU8,
+    writeU16,
+    writeU32,
+    writeU64,
+    writeU64Safe,
+} from "./fixed-primitive.ts"
 
-test("bare.readBool", () => {
+test("readBool", () => {
     let bc = fromBytes(0, 0x1)
-    assert.deepEqual(bare.readBool(bc), false, "readd false")
-    assert.deepEqual(bare.readBool(bc), true, "readd true")
+    assert.deepEqual(readBool(bc), false, "readd false")
+    assert.deepEqual(readBool(bc), true, "readd true")
     assert.throws(
-        () => bare.readBool(bc),
+        () => readBool(bc),
         { name: "BareError", issue: "missing bytes", offset: 2 },
         "missing bytes",
     )
 
     bc = fromBytes(0x42)
     assert.throws(
-        () => bare.readBool(bc),
+        () => readBool(bc),
         {
             name: "BareError",
             issue: "a bool must be equal to 0 or 1",
@@ -29,163 +55,163 @@ test("bare.readBool", () => {
     )
 })
 
-test("bare.writeBool", () => {
+test("writeBool", () => {
     const bc = fromBytes()
-    bare.writeBool(bc, false)
-    bare.writeBool(bc, true)
+    writeBool(bc, false)
+    writeBool(bc, true)
     assert.deepEqual(bc.offset, 2)
     assert.deepEqual(toBytes(bc)[0], 0, "writed false")
     assert.deepEqual(toBytes(bc)[1], 1, "writed true")
 })
 
-test("bare.readF32", () => {
+test("readF32", () => {
     let bc = fromBytes(0, 0, 0xfa, 0x41)
-    assert.deepEqual(bare.readF32(bc), 1000 / 2 ** 5) // dyadic number
+    assert.deepEqual(readF32(bc), 1000 / 2 ** 5) // dyadic number
     assert.throws(
-        () => bare.readF32(bc),
+        () => readF32(bc),
         { name: "BareError", issue: "missing bytes", offset: 4 },
         "missing bytes",
     )
 
     bc = fromBytes(0, 0, 0xc0, 0x7f)
-    assert.deepEqual(Number.isNaN(bare.readF32(bc)), true)
+    assert.deepEqual(Number.isNaN(readF32(bc)), true)
 
     // test with a NaN payload
     bc = fromBytes(0, 1, 0xc0, 0x7f)
-    assert.deepEqual(Number.isNaN(bare.readF32(bc)), true)
+    assert.deepEqual(Number.isNaN(readF32(bc)), true)
 })
 
-test("bare.writeF32", () => {
+test("writeF32", () => {
     let bc = fromBytes()
-    bare.writeF32(bc, 1000 / 2 ** 5) // dyadic number
+    writeF32(bc, 1000 / 2 ** 5) // dyadic number
     assert.deepEqual(toBytes(bc), [0, 0, 0xfa, 0x41])
 
     bc = fromBytes()
-    bare.writeF32(bc, Number.NaN)
+    writeF32(bc, Number.NaN)
     // canonical quiet NaN emitted by v8
     assert.deepEqual(toBytes(bc), [0, 0, 0xc0, 0x7f])
 
     bc = fromBytes()
     assert.throws(
-        () => bare.writeF32(bc, 10 ** 20 / 2 ** 30),
+        () => writeF32(bc, 10 ** 20 / 2 ** 30),
         { name: "AssertionError", message: "too large number" },
         "too large number",
     )
 })
 
-test("bare.readF64", () => {
+test("readF64", () => {
     let bc = fromBytes(64, 140, 181, 120, 29, 175, 53, 66)
-    assert.deepEqual(bare.readF64(bc), 10 ** 20 / 2 ** 30) // dyadic number
+    assert.deepEqual(readF64(bc), 10 ** 20 / 2 ** 30) // dyadic number
     assert.throws(
-        () => bare.readF64(bc),
+        () => readF64(bc),
         { name: "BareError", issue: "missing bytes", offset: 8 },
         "missing bytes",
     )
 
     bc = fromBytes(0, 0, 0, 0, 0, 0, 0xf8, 0x7f)
-    assert.deepEqual(Number.isNaN(bare.readF64(bc)), true)
+    assert.deepEqual(Number.isNaN(readF64(bc)), true)
 
     // test with a NaN payload
     bc = fromBytes(0, 0, 0, 1, 0, 0, 0xf8, 0x7f)
-    assert.deepEqual(Number.isNaN(bare.readF64(bc)), true)
+    assert.deepEqual(Number.isNaN(readF64(bc)), true)
 })
 
-test("bare.writeF64", () => {
+test("writeF64", () => {
     let bc = fromBytes()
-    bare.writeF64(bc, 10 ** 20 / 2 ** 30) // dyadic number
+    writeF64(bc, 10 ** 20 / 2 ** 30) // dyadic number
     assert.deepEqual(toBytes(bc), [64, 140, 181, 120, 29, 175, 53, 66])
 
     bc = fromBytes()
-    bare.writeF64(bc, Number.NaN)
+    writeF64(bc, Number.NaN)
     // canonical quiet NaN emitted by v8
     assert.deepEqual(toBytes(bc), [0, 0, 0, 0, 0, 0, 0xf8, 0x7f])
 })
 
-test("bare.readI8", () => {
+test("readI8", () => {
     const bc = fromBytes(0xd6)
-    assert.deepEqual(bare.readI8(bc), -42)
+    assert.deepEqual(readI8(bc), -42)
     assert.throws(
-        () => bare.readI8(bc),
+        () => readI8(bc),
         { name: "BareError", issue: "missing bytes", offset: 1 },
         "missing bytes",
     )
 })
 
-test("bare.writeI8", () => {
+test("writeI8", () => {
     let bc = fromBytes()
-    bare.writeI8(bc, -42)
+    writeI8(bc, -42)
     assert.deepEqual(toBytes(bc), [0xd6])
 
     bc = fromBytes()
     assert.throws(
-        () => bare.writeI8(bc, 2 ** 7),
+        () => writeI8(bc, 2 ** 7),
         { name: "AssertionError", message: "too large number" },
         "too large number",
     )
 
     bc = fromBytes()
     assert.throws(
-        () => bare.writeI8(bc, -(2 ** 7 + 1)),
+        () => writeI8(bc, -(2 ** 7 + 1)),
         { name: "AssertionError", message: "too large number" },
         "too large negative",
     )
 })
 
-test("bare.readI16", () => {
+test("readI16", () => {
     const bc = fromBytes(0x2e, 0xfb)
-    assert.deepEqual(bare.readI16(bc), -1234)
+    assert.deepEqual(readI16(bc), -1234)
     assert.throws(
-        () => bare.readI16(bc),
+        () => readI16(bc),
         { name: "BareError", issue: "missing bytes", offset: 2 },
         "missing bytes",
     )
 })
 
-test("bare.writeI16", () => {
+test("writeI16", () => {
     let bc = fromBytes()
-    bare.writeI16(bc, -1234)
+    writeI16(bc, -1234)
     assert.deepEqual(toBytes(bc), [0x2e, 0xfb])
 
     bc = fromBytes()
     assert.throws(
-        () => bare.writeI16(bc, 2 ** 15),
+        () => writeI16(bc, 2 ** 15),
         { name: "AssertionError", message: "too large number" },
         "too large number",
     )
 
     bc = fromBytes()
     assert.throws(
-        () => bare.writeI16(bc, -(2 ** 15 + 1)),
+        () => writeI16(bc, -(2 ** 15 + 1)),
         { name: "AssertionError", message: "too large number" },
         "too large negative",
     )
 })
 
-test("bare.readI32", () => {
+test("readI32", () => {
     const bc = fromBytes(0xb2, 0x9e, 0x43, 0xff)
-    assert.deepEqual(bare.readI32(bc), -12345678)
+    assert.deepEqual(readI32(bc), -12345678)
     assert.throws(
-        () => bare.readI32(bc),
+        () => readI32(bc),
         { name: "BareError", issue: "missing bytes", offset: 4 },
         "missing bytes",
     )
 })
 
-test("bare.writeI32", () => {
+test("writeI32", () => {
     let bc = fromBytes()
-    bare.writeI32(bc, -12345678)
+    writeI32(bc, -12345678)
     assert.deepEqual(toBytes(bc), [0xb2, 0x9e, 0x43, 0xff])
 
     bc = fromBytes()
     assert.throws(
-        () => bare.writeI32(bc, 2 ** 31),
+        () => writeI32(bc, 2 ** 31),
         { name: "AssertionError", message: "too large number" },
         "too large number",
     )
 
     bc = fromBytes()
     assert.throws(
-        () => bare.writeI32(bc, -(2 ** 31 + 1)),
+        () => writeI32(bc, -(2 ** 31 + 1)),
         { name: "AssertionError", message: "too large number" },
         "too large negative",
     )
@@ -193,19 +219,19 @@ test("bare.writeI32", () => {
 
 const BIG_NEG_INT = -(BigInt(12345678) * BigInt(10 ** 9) + BigInt(987654321))
 
-test("bare.readI64", () => {
+test("readI64", () => {
     const bc = fromBytes(0x4f, 0x0b, 0x6e, 0x9d, 0xab, 0x23, 0xd4, 0xff)
-    assert.deepEqual(bare.readI64(bc), BIG_NEG_INT)
+    assert.deepEqual(readI64(bc), BIG_NEG_INT)
     assert.throws(
-        () => bare.readI64(bc),
+        () => readI64(bc),
         { name: "BareError", issue: "missing bytes", offset: 8 },
         "missing bytes",
     )
 })
 
-test("bare.writeI64", () => {
+test("writeI64", () => {
     let bc = fromBytes()
-    bare.writeI64(bc, BIG_NEG_INT)
+    writeI64(bc, BIG_NEG_INT)
     assert.deepEqual(
         toBytes(bc),
         [0x4f, 0x0b, 0x6e, 0x9d, 0xab, 0x23, 0xd4, 0xff],
@@ -213,21 +239,20 @@ test("bare.writeI64", () => {
 
     bc = fromBytes()
     assert.throws(
-        () => bare.writeI64(bc, BigInt(2 ** 31) * BigInt(2 ** 32)),
+        () => writeI64(bc, BigInt(2 ** 31) * BigInt(2 ** 32)),
         { name: "AssertionError", message: "too large number" },
         "too large number",
     )
 
     bc = fromBytes()
     assert.throws(
-        () =>
-            bare.writeI64(bc, -(BigInt(2 ** 31) * BigInt(2 ** 32) + BigInt(1))),
+        () => writeI64(bc, -(BigInt(2 ** 31) * BigInt(2 ** 32) + BigInt(1))),
         { name: "AssertionError", message: "too large number" },
         "too large negative",
     )
 })
 
-test("bare.readI64Safe", () => {
+test("readI64Safe", () => {
     let bc = fromBytes(
         0,
         0,
@@ -270,32 +295,32 @@ test("bare.readI64Safe", () => {
         0xe0,
         0xff,
     )
-    assert.deepEqual(bare.readI64Safe(bc), 0)
-    assert.deepEqual(bare.readI64Safe(bc), Number.MAX_SAFE_INTEGER)
-    assert.deepEqual(bare.readI64Safe(bc), -42)
-    assert.deepEqual(bare.readI64Safe(bc), -(2 ** 32))
-    assert.deepEqual(bare.readI64Safe(bc), Number.MIN_SAFE_INTEGER)
+    assert.deepEqual(readI64Safe(bc), 0)
+    assert.deepEqual(readI64Safe(bc), Number.MAX_SAFE_INTEGER)
+    assert.deepEqual(readI64Safe(bc), -42)
+    assert.deepEqual(readI64Safe(bc), -(2 ** 32))
+    assert.deepEqual(readI64Safe(bc), Number.MIN_SAFE_INTEGER)
     assert.throws(
-        () => bare.readI64Safe(bc),
+        () => readI64Safe(bc),
         { name: "BareError", issue: "missing bytes", offset: 5 * 8 },
         "missing bytes",
     )
 
     bc = fromBytes(0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x20, 0)
     assert.throws(
-        () => bare.readI64Safe(bc),
+        () => readI64Safe(bc),
         { name: "BareError", issue: "too large number", offset: 0 },
         "too large number",
     )
 })
 
-test("bare.writeI64Safe", () => {
+test("writeI64Safe", () => {
     let bc = fromBytes()
-    bare.writeI64Safe(bc, 0)
-    bare.writeI64Safe(bc, Number.MAX_SAFE_INTEGER)
-    bare.writeI64Safe(bc, -42)
-    bare.writeI64Safe(bc, -(2 ** 32))
-    bare.writeI64Safe(bc, Number.MIN_SAFE_INTEGER)
+    writeI64Safe(bc, 0)
+    writeI64Safe(bc, Number.MAX_SAFE_INTEGER)
+    writeI64Safe(bc, -42)
+    writeI64Safe(bc, -(2 ** 32))
+    writeI64Safe(bc, Number.MIN_SAFE_INTEGER)
     assert.deepEqual(
         toBytes(bc),
         [
@@ -307,83 +332,83 @@ test("bare.writeI64Safe", () => {
 
     bc = fromBytes()
     assert.throws(
-        () => bare.writeI64Safe(bc, Number.MAX_SAFE_INTEGER + 1),
+        () => writeI64Safe(bc, Number.MAX_SAFE_INTEGER + 1),
         { name: "AssertionError", message: "too large number" },
         "too large number",
     )
 
     bc = fromBytes()
     assert.throws(
-        () => bare.writeI64Safe(bc, Number.MIN_SAFE_INTEGER - 1),
+        () => writeI64Safe(bc, Number.MIN_SAFE_INTEGER - 1),
         { name: "AssertionError", message: "too large number" },
         "too large negative",
     )
 })
 
-test("bare.readU8", () => {
+test("readU8", () => {
     const bc = fromBytes(0x42)
-    assert.deepEqual(bare.readU8(bc), 0x42)
+    assert.deepEqual(readU8(bc), 0x42)
     assert.throws(
-        () => bare.readU8(bc),
+        () => readU8(bc),
         { name: "BareError", issue: "missing bytes", offset: 1 },
         "missing bytes",
     )
 })
 
-test("bare.writeU8", () => {
+test("writeU8", () => {
     let bc = fromBytes()
-    bare.writeU8(bc, 0x42)
+    writeU8(bc, 0x42)
     assert.deepEqual(toBytes(bc), [0x42])
 
     bc = fromBytes()
     assert.throws(
-        () => bare.writeU8(bc, 0x100),
+        () => writeU8(bc, 0x100),
         { name: "AssertionError", message: "too large number" },
         "too large number",
     )
 })
 
-test("bare.readU16", () => {
+test("readU16", () => {
     const bc = fromBytes(0xfe, 0xca)
-    assert.deepEqual(bare.readU16(bc), 0xcafe)
+    assert.deepEqual(readU16(bc), 0xcafe)
     assert.throws(
-        () => bare.readU16(bc),
+        () => readU16(bc),
         { name: "BareError", issue: "missing bytes", offset: 2 },
         "missing bytes",
     )
 })
 
-test("bare.writeU16", () => {
+test("writeU16", () => {
     let bc = fromBytes()
-    bare.writeU16(bc, 0xcafe)
+    writeU16(bc, 0xcafe)
     assert.deepEqual(toBytes(bc), [0xfe, 0xca])
 
     bc = fromBytes()
     assert.throws(
-        () => bare.writeU16(bc, 0x10000),
+        () => writeU16(bc, 0x10000),
         { name: "AssertionError", message: "too large number" },
         "too large number",
     )
 })
 
-test("bare.readU32", () => {
+test("readU32", () => {
     const bc = fromBytes(0xef, 0xbe, 0xad, 0xde)
-    assert.deepEqual(bare.readU32(bc), 0xdeadbeef)
+    assert.deepEqual(readU32(bc), 0xdeadbeef)
     assert.throws(
-        () => bare.readU32(bc),
+        () => readU32(bc),
         { name: "BareError", issue: "missing bytes", offset: 4 },
         "missing bytes",
     )
 })
 
-test("bare.writeU32", () => {
+test("writeU32", () => {
     let bc = fromBytes()
-    bare.writeU32(bc, 0xdeadbeef)
+    writeU32(bc, 0xdeadbeef)
     assert.deepEqual(toBytes(bc), [0xef, 0xbe, 0xad, 0xde])
 
     bc = fromBytes()
     assert.throws(
-        () => bare.writeU32(bc, 2 ** 32),
+        () => writeU32(bc, 2 ** 32),
         { name: "AssertionError", message: "too large number" },
         "too large number",
     )
@@ -392,19 +417,19 @@ test("bare.writeU32", () => {
 const CAFE_BABE_DEAD_BEEF =
     (BigInt(0xcafe_babe) << BigInt(32)) + BigInt(0xdead_beef)
 
-test("bare.readU64", () => {
+test("readU64", () => {
     const bc = fromBytes(0xef, 0xbe, 0xad, 0xde, 0xbe, 0xba, 0xfe, 0xca)
-    assert.deepEqual(bare.readU64(bc), CAFE_BABE_DEAD_BEEF)
+    assert.deepEqual(readU64(bc), CAFE_BABE_DEAD_BEEF)
     assert.throws(
-        () => bare.readU64(bc),
+        () => readU64(bc),
         { name: "BareError", issue: "missing bytes", offset: 8 },
         "missing bytes",
     )
 })
 
-test("bare.writeU64", () => {
+test("writeU64", () => {
     let bc = fromBytes()
-    bare.writeU64(bc, CAFE_BABE_DEAD_BEEF)
+    writeU64(bc, CAFE_BABE_DEAD_BEEF)
     assert.deepEqual(
         toBytes(bc),
         [0xef, 0xbe, 0xad, 0xde, 0xbe, 0xba, 0xfe, 0xca],
@@ -412,37 +437,37 @@ test("bare.writeU64", () => {
 
     bc = fromBytes()
     assert.throws(
-        () => bare.writeU64(bc, BigInt(2 ** 32) * BigInt(2 ** 32)),
+        () => writeU64(bc, BigInt(2 ** 32) * BigInt(2 ** 32)),
         { name: "AssertionError", message: "too large number" },
         "too large number",
     )
 })
 
-test("bare.readU64Safe", () => {
+test("readU64Safe", () => {
     let bc = fromBytes(0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x1f, 0)
-    assert.deepEqual(bare.readU64Safe(bc), Number.MAX_SAFE_INTEGER)
+    assert.deepEqual(readU64Safe(bc), Number.MAX_SAFE_INTEGER)
     assert.throws(
-        () => bare.readU64Safe(bc),
+        () => readU64Safe(bc),
         { name: "BareError", issue: "missing bytes", offset: 8 },
         "missing bytes",
     )
 
     bc = fromBytes(0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x20, 0)
     assert.throws(
-        () => bare.readU64Safe(bc),
+        () => readU64Safe(bc),
         { name: "BareError", issue: "too large number", offset: 0 },
         "too large number",
     )
 })
 
-test("bare.writeU64Safe", () => {
+test("writeU64Safe", () => {
     let bc = fromBytes()
-    bare.writeU64Safe(bc, Number.MAX_SAFE_INTEGER)
+    writeU64Safe(bc, Number.MAX_SAFE_INTEGER)
     assert.deepEqual(toBytes(bc), [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x1f, 0])
 
     bc = fromBytes()
     assert.throws(
-        () => bare.writeU64Safe(bc, 0xcafe_babe_dead_beef),
+        () => writeU64Safe(bc, 0xcafe_babe_dead_beef),
         { name: "AssertionError", message: "too large number" },
         "too large number",
     )

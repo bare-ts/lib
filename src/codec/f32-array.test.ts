@@ -3,60 +3,64 @@
 
 import * as assert from "node:assert/strict"
 import { test } from "node:test"
-import * as bare from "@bare-ts/lib"
-
 import { fromBytes, toBytes } from "./_util.test.ts"
+import {
+    readF32Array,
+    readF32FixedArray,
+    writeF32Array,
+    writeF32FixedArray,
+} from "./f32-array.ts"
 
-test("bare.readF32Array", () => {
+test("readF32Array", () => {
     let bc = fromBytes(/* length */ 1, 0, 0, 0, 0)
-    assert.deepEqual(bare.readF32Array(bc), Float32Array.of(0))
+    assert.deepEqual(readF32Array(bc), Float32Array.of(0))
     assert.throws(
-        () => bare.readF32Array(bc),
+        () => readF32Array(bc),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 
     bc = fromBytes(/* length */ 2, 0, 0, 0, 0)
     assert.throws(
-        () => bare.readF32Array(bc),
+        () => readF32Array(bc),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 })
 
-test("bare.writeF32Array", () => {
+test("writeF32Array", () => {
     let bc = fromBytes()
-    bare.writeF32Array(bc, Float32Array.of(0))
+    writeF32Array(bc, Float32Array.of(0))
     assert.deepEqual(toBytes(bc), [/* length */ 1, 0, 0, 0, 0])
 
     bc = fromBytes()
-    bare.writeF32Array(bc, Float32Array.of(Number.NaN))
+    writeF32Array(bc, Float32Array.of(Number.NaN))
     assert.deepEqual(toBytes(bc), [/* length */ 1, 0, 0, 0xc0, 0x7f])
 })
 
-test("bare.readF32FixedArray", () => {
+test("readF32FixedArray", () => {
     let bc = fromBytes(0, 0, 0, 0)
-    assert.deepEqual(bare.readF32FixedArray(bc, 1), Float32Array.of(0))
+    assert.deepEqual(readF32FixedArray(bc, 1), Float32Array.of(0))
     assert.throws(
-        () => bare.readF32FixedArray(bc, 1),
+        () => readF32FixedArray(bc, 1),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 
     bc = fromBytes(0, 0, 0, 0)
     assert.throws(
-        () => bare.readF32FixedArray(bc, 2),
+        () => readF32FixedArray(bc, 2),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 })
 
-test("bare.writeF32FixedArray", () => {
+test("writeF32FixedArray", () => {
     let bc = fromBytes()
-    bare.writeF32FixedArray(bc, Float32Array.of(0))
+    writeF32FixedArray(bc, Float32Array.of(0))
     assert.deepEqual(toBytes(bc), [0, 0, 0, 0])
 
     bc = fromBytes()
-    bare.writeF32FixedArray(bc, Float32Array.of(Number.NaN))
+    writeF32FixedArray(bc, Float32Array.of(Number.NaN))
     assert.deepEqual(toBytes(bc), [0, 0, 0xc0, 0x7f])
 })

@@ -3,10 +3,12 @@
   "compilerOptions": {
     "composite": true,
     "declaration": true,
-    "erasableSyntaxOnly": true,
     "isolatedDeclarations": true,
     "noEmit": false,
     "rootDir": ".",
     "outDir": "../dist"
-  }
+  },
+  "exclude": [
+    "**/*.test.ts"
+  ]
 }

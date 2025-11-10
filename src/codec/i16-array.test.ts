@@ -3,52 +3,56 @@
 
 import * as assert from "node:assert/strict"
 import { test } from "node:test"
-import * as bare from "@bare-ts/lib"
-
 import { fromBytes, toBytes } from "./_util.test.ts"
+import {
+    readI16Array,
+    readI16FixedArray,
+    writeI16Array,
+    writeI16FixedArray,
+} from "./i16-array.ts"
 
-test("bare.readI16Array", () => {
+test("readI16Array", () => {
     let bc = fromBytes(/* length */ 2, 0x31, 0, 0xff, 0xff)
-    assert.deepEqual(bare.readI16Array(bc), Int16Array.of(0x31, -1))
+    assert.deepEqual(readI16Array(bc), Int16Array.of(0x31, -1))
     assert.throws(
-        () => bare.readI16Array(bc),
+        () => readI16Array(bc),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 
     bc = fromBytes(/* length */ 3, 0x31, 0, 0xff, 0xff)
     assert.throws(
-        () => bare.readI16Array(bc),
+        () => readI16Array(bc),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 })
 
-test("bare.writeI16Array", () => {
+test("writeI16Array", () => {
     const bc = fromBytes()
-    bare.writeI16Array(bc, Int16Array.of(0x31, -1))
+    writeI16Array(bc, Int16Array.of(0x31, -1))
     assert.deepEqual(toBytes(bc), [/* length */ 2, 0x31, 0, 0xff, 0xff])
 })
 
-test("bare.readI16FixedArray", () => {
+test("readI16FixedArray", () => {
     let bc = fromBytes(0x31, 0, 0xff, 0xff)
-    assert.deepEqual(bare.readI16FixedArray(bc, 2), Int16Array.of(0x31, -1))
+    assert.deepEqual(readI16FixedArray(bc, 2), Int16Array.of(0x31, -1))
     assert.throws(
-        () => bare.readI16FixedArray(bc, 2),
+        () => readI16FixedArray(bc, 2),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 
     bc = fromBytes(0x31, 0, 0xff, 0xff)
     assert.throws(
-        () => bare.readI16FixedArray(bc, 3),
+        () => readI16FixedArray(bc, 3),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 })
 
-test("bare.writeI16FixedArray", () => {
+test("writeI16FixedArray", () => {
     const bc = fromBytes()
-    bare.writeI16FixedArray(bc, Int16Array.of(0x31, -1))
+    writeI16FixedArray(bc, Int16Array.of(0x31, -1))
     assert.deepEqual(toBytes(bc), [0x31, 0, 0xff, 0xff])
 })

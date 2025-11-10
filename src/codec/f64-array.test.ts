@@ -3,63 +3,67 @@
 
 import * as assert from "node:assert/strict"
 import { test } from "node:test"
-import * as bare from "@bare-ts/lib"
-
 import { fromBytes, toBytes } from "./_util.test.ts"
+import {
+    readF64Array,
+    readF64FixedArray,
+    writeF64Array,
+    writeF64FixedArray,
+} from "./f64-array.ts"
 
-test("bare.readF64Array", () => {
+test("readF64Array", () => {
     let bc = fromBytes(/* length */ 1, 0, 0, 0, 0, 0, 0, 0, 0)
-    assert.deepEqual(bare.readF64Array(bc), Float64Array.of(0))
+    assert.deepEqual(readF64Array(bc), Float64Array.of(0))
     assert.throws(
-        () => bare.readF64Array(bc),
+        () => readF64Array(bc),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 
     bc = fromBytes(/* length */ 2, 0, 0, 0, 0, 0, 0, 0, 0)
     assert.throws(
-        () => bare.readF64Array(bc),
+        () => readF64Array(bc),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 })
 
-test("bare.writeF64Array", () => {
+test("writeF64Array", () => {
     let bc = fromBytes()
-    bare.writeF64Array(bc, Float64Array.of(0))
+    writeF64Array(bc, Float64Array.of(0))
     assert.deepEqual(toBytes(bc), [/* length */ 1, 0, 0, 0, 0, 0, 0, 0, 0])
 
     bc = fromBytes()
-    bare.writeF64Array(bc, Float64Array.of(Number.NaN))
+    writeF64Array(bc, Float64Array.of(Number.NaN))
     assert.deepEqual(
         toBytes(bc),
         [/* length */ 1, 0, 0, 0, 0, 0, 0, 0xf8, 0x7f],
     )
 })
 
-test("bare.readF64FixedArray", () => {
+test("readF64FixedArray", () => {
     let bc = fromBytes(0, 0, 0, 0, 0, 0, 0, 0)
-    assert.deepEqual(bare.readF64FixedArray(bc, 1), Float64Array.of(0))
+    assert.deepEqual(readF64FixedArray(bc, 1), Float64Array.of(0))
     assert.throws(
-        () => bare.readF64FixedArray(bc, 1),
+        () => readF64FixedArray(bc, 1),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 
     bc = fromBytes(0, 0, 0, 0, 0, 0, 0, 0)
     assert.throws(
-        () => bare.readF64FixedArray(bc, 2),
+        () => readF64FixedArray(bc, 2),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 })
 
-test("bare.writeF64FixedArray", () => {
+test("writeF64FixedArray", () => {
     let bc = fromBytes()
-    bare.writeF64FixedArray(bc, Float64Array.of(0))
+    writeF64FixedArray(bc, Float64Array.of(0))
     assert.deepEqual(toBytes(bc), [0, 0, 0, 0, 0, 0, 0, 0])
 
     bc = fromBytes()
-    bare.writeF64FixedArray(bc, Float64Array.of(Number.NaN))
+    writeF64FixedArray(bc, Float64Array.of(Number.NaN))
     assert.deepEqual(toBytes(bc), [0, 0, 0, 0, 0, 0, 0xf8, 0x7f])
 })

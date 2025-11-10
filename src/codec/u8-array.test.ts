@@ -3,57 +3,63 @@
 
 import * as assert from "node:assert/strict"
 import { test } from "node:test"
-import * as bare from "@bare-ts/lib"
-
+import { ByteCursor } from "../core/byte-cursor.ts"
+import { Config } from "../core/config.ts"
 import { fromBytes, toBytes } from "./_util.test.ts"
+import {
+    readU8Array,
+    readU8FixedArray,
+    writeU8Array,
+    writeU8FixedArray,
+} from "./u8-array.ts"
 
-test("bare.readU8Array", () => {
+test("readU8Array", () => {
     let bc = fromBytes(/* length */ 2, 0x31, 0x42)
-    assert.deepEqual(bare.readU8Array(bc), Uint8Array.of(0x31, 0x42))
+    assert.deepEqual(readU8Array(bc), Uint8Array.of(0x31, 0x42))
     assert.throws(
-        () => bare.readU8Array(bc),
+        () => readU8Array(bc),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 
     bc = fromBytes(/* length */ 3, 0x31, 0x42)
     assert.throws(
-        () => bare.readU8Array(bc),
+        () => readU8Array(bc),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 })
 
-test("bare.writeU8Array", () => {
+test("writeU8Array", () => {
     const bc = fromBytes()
-    bare.writeU8Array(bc, Uint8Array.of(0x31, 0x42))
+    writeU8Array(bc, Uint8Array.of(0x31, 0x42))
     assert.deepEqual(toBytes(bc), [/* length */ 2, 0x31, 0x42])
 })
 
-test("bare.readU8FixedArray", () => {
+test("readU8FixedArray", () => {
     let bc = fromBytes(0x31, 0x42)
-    assert.deepEqual(bare.readU8FixedArray(bc, 2), Uint8Array.of(0x31, 0x42))
+    assert.deepEqual(readU8FixedArray(bc, 2), Uint8Array.of(0x31, 0x42))
     assert.throws(
-        () => bare.readU8FixedArray(bc, 2),
+        () => readU8FixedArray(bc, 2),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 
     bc = fromBytes(0x31, 0x42)
     assert.throws(
-        () => bare.readU8FixedArray(bc, 3),
+        () => readU8FixedArray(bc, 3),
         { name: "BareError", issue: "missing bytes" },
         "missing bytes",
     )
 })
 
-test("bare.writeU8FixedArray", () => {
+test("writeU8FixedArray", () => {
     let bc = fromBytes()
-    bare.writeU8FixedArray(bc, Uint8Array.of(0x31, 0x42))
+    writeU8FixedArray(bc, Uint8Array.of(0x31, 0x42))
     assert.deepEqual(toBytes(bc), [0x31, 0x42])
 
     const bytes = Uint8Array.of(42, 0)
-    bc = new bare.ByteCursor(bytes.subarray(1), bare.Config({}))
-    bare.writeU8FixedArray(bc, Uint8Array.of(24))
+    bc = new ByteCursor(bytes.subarray(1), Config({}))
+    writeU8FixedArray(bc, Uint8Array.of(24))
     assert.deepEqual(Array.from(bytes), [42, 24])
 })

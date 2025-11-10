@@ -51,9 +51,6 @@
     "dist/**/*.d.ts",
     "dist/**/*.js"
   ],
-  "directories": {
-    "test": "tests"
-  },
   "scripts": {
     "build": "sh ./scripts/build.sh",
     "clean": "rm -rf dist coverage",

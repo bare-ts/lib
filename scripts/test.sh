@@ -10,4 +10,4 @@ env NODE_ENV=development node --test
 biome ci .
 
 # type check
-tsc --build tests
+tsc --build src/tsconfig-test.json

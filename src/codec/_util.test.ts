@@ -1,7 +1,8 @@
 //! Copyright (c) 2022 Victorien Elvinger
 //! Licensed under the MIT License (https://mit-license.org/)
 
-import { ByteCursor, Config } from "@bare-ts/lib"
+import { ByteCursor } from "../core/byte-cursor.ts"
+import { Config } from "../core/config.ts"
 
 export function fromBytes(...rest: number[]): ByteCursor {
     return new ByteCursor(Uint8Array.from(rest), Config({}))
