@@ -5,8 +5,8 @@
     "declaration": true,
     "isolatedDeclarations": true,
     "noEmit": false,
-    "rootDir": ".",
-    "outDir": "../dist"
+    "outDir": "../dist",
+    "rootDir": "."
   },
   "exclude": [
     "**/*.test.ts"

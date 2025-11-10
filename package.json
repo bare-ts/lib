@@ -39,9 +39,9 @@
   },
   "imports": {
     "#dev": {
-      "development": "./dist/env/dev.development.js",
-      "node": "./dist/env/dev.node.js",
-      "default": "./dist/env/dev.js"
+      "development": "./imports/dev.development.js",
+      "node": "./imports/dev.node.js",
+      "default": "./imports/dev.js"
     }
   },
   "sideEffects": false,
@@ -49,16 +49,22 @@
     "dist/**/*.cjs",
     "dist/**/*.d.cts",
     "dist/**/*.d.ts",
-    "dist/**/*.js"
+    "dist/**/*.js",
+    "imports/**/*.d.ts",
+    "imports/**/*.js"
   ],
   "scripts": {
-    "build": "sh ./scripts/build.sh",
+    "build": "npm run build:esm && npm run build:d.cts && npm run build:cjs",
+    "build:d.cts": "cp -f dist/index.d.ts dist/index.d.cts",
+    "build:cjs": "esbuild src/index.ts --bundle --target=es2020 --platform=node > dist/index.cjs",
+    "build:esm": "tsc --build src/",
+    "check": "tsc --build --noEmit src/ && biome ci --error-on-warnings .",
     "clean": "rm -rf dist coverage",
     "coverage": "c8 --reporter=lcovonly npm test",
     "format": "biome check --linter-enabled=false --write .",
     "lint": "biome lint --error-on-warnings .",
-    "prepublishOnly": "npm run clean && npm test",
-    "test": "sh ./scripts/test.sh",
+    "prepublishOnly": "npm run clean && npm run build && npm test",
+    "test": "NODE_ENV=development node --test && npm run check",
     "version": "sh ./scripts/version.sh"
   },
   "devDependencies": {
