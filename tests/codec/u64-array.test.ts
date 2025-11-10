@@ -5,7 +5,7 @@ import * as assert from "node:assert/strict"
 import { test } from "node:test"
 import * as bare from "@bare-ts/lib"
 
-import { fromBytes, toBytes } from "./_util.js"
+import { fromBytes, toBytes } from "./_util.test.ts"
 
 test("bare.readU64Array", () => {
     let bc = fromBytes(/* length */ 1, 0x31, 0, 0, 0, 0, 0, 0, 0)

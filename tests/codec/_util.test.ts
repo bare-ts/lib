@@ -3,21 +3,11 @@
 
 import { ByteCursor, Config } from "@bare-ts/lib"
 
-/**
- *
- * @param  {...number} rest
- * @returns {ByteCursor}
- */
-export function fromBytes(...rest) {
+export function fromBytes(...rest: number[]): ByteCursor {
     return new ByteCursor(Uint8Array.from(rest), Config({}))
 }
 
-/**
- *
- * @param {ByteCursor} bc
- * @returns {number[]}
- */
-export function toBytes(bc) {
+export function toBytes(bc: ByteCursor): number[] {
     return Array.from(
         new Uint8Array(bc.view.buffer, bc.view.byteOffset, bc.offset),
     )

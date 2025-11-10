@@ -5,7 +5,7 @@ import * as assert from "node:assert/strict"
 import { test } from "node:test"
 import * as bare from "@bare-ts/lib"
 
-import { fromBytes, toBytes } from "./_util.js"
+import { fromBytes, toBytes } from "./_util.test.ts"
 
 const MAX_I64 = BigInt(2 ** 31) * BigInt(2 ** 32) - BigInt(1)
 const MIN_I64 = -(BigInt(2 ** 31) * BigInt(2 ** 32))
