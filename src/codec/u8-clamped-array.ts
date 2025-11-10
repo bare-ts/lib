@@ -1,12 +1,12 @@
 //! Copyright (c) 2022 Victorien Elvinger
 //! Licensed under the MIT License (https://mit-license.org/)
 
-import type { ByteCursor } from "../core/byte-cursor.js"
-import { assert, DEV } from "../util/assert.js"
-import { isU32 } from "../util/validator.js"
-import { readFixedData } from "./data.js"
-import { readUintSafe32, writeUintSafe32 } from "./primitive.js"
-import { writeU8FixedArray } from "./u8-array.js"
+import type { ByteCursor } from "../core/byte-cursor.ts"
+import { assert, DEV } from "../util/assert.ts"
+import { isU32 } from "../util/validator.ts"
+import { readFixedData } from "./data.ts"
+import { readUintSafe32, writeUintSafe32 } from "./primitive.ts"
+import { writeU8FixedArray } from "./u8-array.ts"
 
 export function readU8ClampedArray(
     bc: ByteCursor,

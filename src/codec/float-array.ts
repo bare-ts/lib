@@ -1,11 +1,11 @@
 //! Copyright (c) 2022 Victorien Elvinger
 //! Licensed under the MIT License (https://mit-license.org/)
 
-import { type ByteCursor, check, reserve } from "../core/byte-cursor.js"
-import { assert, DEV } from "../util/assert.js"
-import { IS_LITTLE_ENDIAN_PLATFORM } from "../util/constants.js"
-import { isU32 } from "../util/validator.js"
-import { readFixedData } from "./data.js"
+import { type ByteCursor, check, reserve } from "../core/byte-cursor.ts"
+import { assert, DEV } from "../util/assert.ts"
+import { IS_LITTLE_ENDIAN_PLATFORM } from "../util/constants.ts"
+import { isU32 } from "../util/validator.ts"
+import { readFixedData } from "./data.ts"
 import {
     readF32,
     readF64,
@@ -13,8 +13,8 @@ import {
     writeF32,
     writeF64,
     writeUintSafe32,
-} from "./primitive.js"
-import { writeU8FixedArray } from "./u8-array.js"
+} from "./primitive.ts"
+import { writeU8FixedArray } from "./u8-array.ts"
 
 export const readF32FixedArray: (
     bc: ByteCursor,

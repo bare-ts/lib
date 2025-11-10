@@ -1,16 +1,16 @@
 //! Copyright (c) 2022 Victorien Elvinger
 //! Licensed under the MIT License (https://mit-license.org/)
 
-import { BareError } from "../core/bare-error.js"
-import { type ByteCursor, check, reserve } from "../core/byte-cursor.js"
-import { assert, DEV } from "../util/assert.js"
+import { BareError } from "../core/bare-error.ts"
+import { type ByteCursor, check, reserve } from "../core/byte-cursor.ts"
+import { assert, DEV } from "../util/assert.ts"
 import {
     INT_SAFE_MAX_BYTE_COUNT,
     NON_CANONICAL_REPRESENTATION,
     TOO_LARGE_NUMBER,
     UINT_MAX_BYTE_COUNT,
     UINT_SAFE32_MAX_BYTE_COUNT,
-} from "../util/constants.js"
+} from "../util/constants.ts"
 import {
     isI8,
     isI16,
@@ -21,7 +21,7 @@ import {
     isU32,
     isU64,
     isU64Safe,
-} from "../util/validator.js"
+} from "../util/validator.ts"
 
 export function readBool(bc: ByteCursor): boolean {
     const val = readU8(bc)

@@ -1,15 +1,15 @@
 //! Copyright (c) 2022 Victorien Elvinger
 //! Licensed under the MIT License (https://mit-license.org/)
 
-import type { ByteCursor } from "../core/byte-cursor.js"
-import { assert, DEV } from "../util/assert.js"
-import { isU32 } from "../util/validator.js"
+import type { ByteCursor } from "../core/byte-cursor.ts"
+import { assert, DEV } from "../util/assert.ts"
+import { isU32 } from "../util/validator.ts"
 import {
     readU8Array,
     readU8FixedArray,
     writeU8Array,
     writeU8FixedArray,
-} from "./u8-array.js"
+} from "./u8-array.ts"
 
 export function readData(bc: ByteCursor): ArrayBuffer {
     return readU8Array(bc).buffer

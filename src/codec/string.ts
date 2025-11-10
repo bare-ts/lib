@@ -1,17 +1,17 @@
 //! Copyright (c) 2022 Victorien Elvinger
 //! Licensed under the MIT License (https://mit-license.org/)
 
-import { BareError } from "../core/bare-error.js"
-import { type ByteCursor, check, reserve } from "../core/byte-cursor.js"
-import { assert, DEV } from "../util/assert.js"
+import { BareError } from "../core/bare-error.ts"
+import { type ByteCursor, check, reserve } from "../core/byte-cursor.ts"
+import { assert, DEV } from "../util/assert.ts"
 import {
     INVALID_UTF8_STRING,
     TEXT_DECODER_THRESHOLD,
     TEXT_ENCODER_THRESHOLD,
-} from "../util/constants.js"
-import { isU32 } from "../util/validator.js"
-import { readUintSafe32, writeUintSafe32 } from "./primitive.js"
-import { readUnsafeU8FixedArray, writeU8FixedArray } from "./u8-array.js"
+} from "../util/constants.ts"
+import { isU32 } from "../util/validator.ts"
+import { readUintSafe32, writeUintSafe32 } from "./primitive.ts"
+import { readUnsafeU8FixedArray, writeU8FixedArray } from "./u8-array.ts"
 
 export function readString(bc: ByteCursor): string {
     return readFixedString(bc, readUintSafe32(bc))

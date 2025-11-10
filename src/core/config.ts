@@ -1,9 +1,9 @@
 //! Copyright (c) 2022 Victorien Elvinger
 //! Licensed under the MIT License (https://mit-license.org/)
 
-import { assert, DEV } from "../util/assert.js"
-import { TOO_LARGE_NUMBER } from "../util/constants.js"
-import { isU32 } from "../util/validator.js"
+import { assert, DEV } from "../util/assert.ts"
+import { TOO_LARGE_NUMBER } from "../util/constants.ts"
+import { isU32 } from "../util/validator.ts"
 
 export type Config = {
     readonly initialBufferLength: number

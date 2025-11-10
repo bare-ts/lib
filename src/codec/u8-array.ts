@@ -1,10 +1,10 @@
 //! Copyright (c) 2022 Victorien Elvinger
 //! Licensed under the MIT License (https://mit-license.org/)
 
-import { type ByteCursor, check, reserve } from "../core/byte-cursor.js"
-import { assert, DEV } from "../util/assert.js"
-import { isU32 } from "../util/validator.js"
-import { readUintSafe32, writeUintSafe32 } from "./primitive.js"
+import { type ByteCursor, check, reserve } from "../core/byte-cursor.ts"
+import { assert, DEV } from "../util/assert.ts"
+import { isU32 } from "../util/validator.ts"
+import { readUintSafe32, writeUintSafe32 } from "./primitive.ts"
 
 export function readU8Array(bc: ByteCursor): Uint8Array<ArrayBuffer> {
     return readU8FixedArray(bc, readUintSafe32(bc))
