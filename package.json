@@ -60,7 +60,6 @@
     "coverage": "c8 --reporter=lcovonly npm test",
     "format": "biome check --linter-enabled=false --write .",
     "lint": "biome lint --error-on-warnings .",
-    "prepare": "validate-commit-msg",
     "prepublishOnly": "npm run clean && npm test",
     "test": "sh ./scripts/test.sh",
     "version": "sh ./scripts/version.sh"
@@ -69,7 +68,6 @@
     "@biomejs/biome": "2.3.4",
     "@types/node": "20.19.21",
     "esbuild": "0.27.0",
-    "typescript": "5.9.3",
-    "validate-commit-message": "3.2.0"
+    "typescript": "5.9.3"
   }
 }
