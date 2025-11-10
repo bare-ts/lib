@@ -24,12 +24,11 @@
     "node": "^14.18.0 || >=16.0.0"
   },
   "type": "module",
-  "module": "./dist/index.js",
-  "main": "./dist/index.cjs",
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "module": "./dist/index.js",
+      "module-sync": "./dist/index.js",
       "require": {
         "types": "./dist/index.d.cts",
         "default": "./dist/index.cjs"

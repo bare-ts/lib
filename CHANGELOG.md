@@ -35,6 +35,21 @@ New entries must be placed in a section entitled `Unreleased`.
     const config: bare.Config = bare.DEFAULT_CONFIG
     ```
 
+-   Support `require(esm)` in Node.js v22.10 and above
+
+    This package now has the [new exports condition `module-sync`](https://nodejs.org/en/blog/release/v22.10.0#new-module-sync-exports-condition).
+    It allows users of Node.js v22.10 and above to import the ESM version of the package using `require`.
+    It avoids the issues of [dual-package hazard](https://nodejs.org/api/packages.html#dual-package-hazard).
+
+-   Remove `package.json` `main` and `module` fields
+
+    The `main` and `module` fields supplemented by the `exports` fields.
+    `exports` is supported since Node.js v12.7.0
+    Since we require a version above, we can safely remove `main`.
+
+    All major bundlers now support `exports`.
+    Hence, we can also remove the `module` field.
+
 ## 0.4.0 (2023-06-19)
 
 -   BREAKING CHANGES: remove `ByteCursor` methods
