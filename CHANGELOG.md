@@ -6,6 +6,32 @@ This project adheres to [Semantic Versioning][semver].
 The format of this changelog is [a variant][lib9-versionning] of [Keep a Changelog][keep-changelog].
 New entries must be placed in a section entitled `Unreleased`.
 
+## Unreleased
+
+-   Support resizable `ArrayBuffer` and growable `SharedArrayBuffer`
+
+    ES2024 introduced resizable `ArrayBuffer` and growable `SharedArrayBuffer`.
+    `@bare-ts/lib` now handle these new features by resizing and growing in-place the buffer
+    when it reserves space for writing.
+
+    Note that the library still respects the `maxBufferLength` configuration.
+
+    If `maxBufferLength` is greater than the buffer's `maxByteLength`, while a new
+    buffer is allocated once `maxByteLength` is exceeded.
+
+    In the following code, the buffer is resized in-place when `writeFixedString` is called.
+
+    ```js
+    import * as bare from "@bare-ts/lib"
+
+    const resizableBuffer = new ArrayBuffer(0, { maxByteLength: 10 })
+
+    const config = bare.Config({ initialBufferLength: 0, maxBufferLength: 10 })
+    const bc = new bare.ByteCursor(new Uint8Array(resizableBuffer), config)
+
+    bare.writeFixedString(bc, "bare")
+    ```
+
 ## 0.5.0 (2025-11-10)
 
 -   BREAKING CHANGES: require TypeScript 5.7 or above
