@@ -21,3 +21,6 @@ export * from "./codec/uint.ts"
 export * from "./core/bare-error.ts"
 export * from "./core/byte-cursor.ts"
 export * from "./core/config.ts"
+
+export * from "./util/assert.ts"
+export * from "./util/validator.ts"

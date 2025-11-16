@@ -32,6 +32,17 @@ New entries must be placed in a section entitled `Unreleased`.
     bare.writeFixedString(bc, "bare")
     ```
 
+-   Export `assert`, `DEV` and integer validators
+
+    `@bare-ts/lib` now exports an `assert` function and integer validators such as `isI32`.
+    We plan to use these functions in a future version of `@bare-ts/tools`.
+
+    The library also exports a `DEV` constant that is `true` if the `development` condition is passed,
+    or if `NODE_ENV` is set to `development` under the `node` condition.
+    Use the Node's CLI option [`--conditions`](https://nodejs.org/api/packages.html#resolving-user-conditions) to pass the `development` condition.
+
+    These functions should only be used for validating arguments of BARE decoders and encoders.
+
 ## 0.5.0 (2025-11-10)
 
 -   BREAKING CHANGES: require TypeScript 5.7 or above
@@ -152,7 +163,7 @@ New entries must be placed in a section entitled `Unreleased`.
 
     `read` and `write` feel more low-level than `decode` and `encode`.
     They are also more used among BARE implementations.
-    `decode` and `encode` are also used for high-level API such as `TextDEcoder` and `TextEncoder`.
+    `decode` and `encode` are also used for high-level API such as `TextDecoder` and `TextEncoder`.
 
     ```js
     - bare.decodeU8(bc)
