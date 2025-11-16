@@ -1,7 +1,7 @@
 # bare-ts library
 
 [![NPM version][npm-img]][npm-url]
-[![minified and gzipped size][bundlephobia-img]][bundlephobia-url]
+[![bundle size - minified and gzipped][bundlejs-img]][bundlejs]
 [![Coverage percentage][coveralls-img]][coveralls-url]
 
 [BARE][bare] (Binary Application Record Encoding) is a schema-based binary format that favors compactness and simplicity.
@@ -20,5 +20,5 @@ The binary format is fairly stable.
 [npm-url]: https://www.npmjs.com/package/@bare-ts/lib
 [coveralls-img]: https://img.shields.io/coveralls/github/bare-ts/lib?style=flat-square
 [coveralls-url]: https://coveralls.io/github/bare-ts/lib?branch=main
-[bundlephobia-img]: https://img.shields.io/bundlephobia/minzip/@bare-ts/lib?label=minzipped&style=flat-square
-[bundlephobia-url]: https://bundlephobia.com/package/@bare-ts/lib
+[bundlejs-img]: https://img.shields.io/badge/dynamic/json?style=flat-square&label=minzipped&query=$.size.compressedSize&url=https://deno.bundlejs.com/?q=@bare-ts/lib
+[bundlejs]: https://bundlejs.com/?q=%40bare-ts%2Flib
