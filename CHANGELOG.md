@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning][semver].
 The format of this changelog is [a variant][lib9-versionning] of [Keep a Changelog][keep-changelog].
 New entries must be placed in a section entitled `Unreleased`.
 
-## Unreleased
+## 0.6.0 (2025-11-16)
 
 -   Support resizable `ArrayBuffer` and growable `SharedArrayBuffer`
 
