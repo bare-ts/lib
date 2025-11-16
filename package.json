@@ -58,7 +58,7 @@
     "build:d.cts": "cp -f dist/index.d.ts dist/index.d.cts",
     "build:cjs": "esbuild src/index.ts --bundle --target=es2020 --platform=node > dist/index.cjs",
     "build:esm": "tsc --build src/",
-    "check": "tsc --build --noEmit src/ && biome ci --error-on-warnings .",
+    "check": "tsc --build src src/tsconfig-test.json && biome ci --error-on-warnings .",
     "clean": "rm -rf dist coverage",
     "coverage": "c8 --reporter=lcovonly npm test",
     "format": "biome check --linter-enabled=false --write .",
