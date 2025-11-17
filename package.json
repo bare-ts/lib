@@ -64,7 +64,9 @@
     "format": "biome check --linter-enabled=false --write .",
     "lint": "biome lint --error-on-warnings .",
     "prepublishOnly": "npm run clean && npm run build && npm test",
-    "test": "NODE_ENV=development node --test && npm run check",
+    "test": "npm run test:dev && npm run test:prod",
+    "test:dev": "NODE_ENV=development node --test && npm run check",
+    "test:prod": "node --test && npm run check",
     "version": "sh ./scripts/version.sh"
   },
   "devDependencies": {
