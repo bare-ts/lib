@@ -104,7 +104,7 @@ export function writeUintSafe32(bc: ByteCursor, x: number): void {
     // this is useful when assertions are skipped
     let zigZag = x >>> 0
     while (zigZag >= 0x80) {
-        writeU8(bc, 0x80 | (x & 0x7f))
+        writeU8(bc, 0x80 | (zigZag & 0x7f))
         zigZag >>>= 7
     }
     writeU8(bc, zigZag)
