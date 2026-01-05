@@ -20,11 +20,6 @@ New entries must be placed in a section entitled `Unreleased`.
     `@bare-ts/lib` now handle these new features by resizing and growing in-place the buffer
     when it reserves space for writing.
 
-    Note that the library still respects the `maxBufferLength` configuration.
-
-    If `maxBufferLength` is greater than the buffer's `maxByteLength`, while a new
-    buffer is allocated once `maxByteLength` is exceeded.
-
     In the following code, the buffer is resized in-place when `writeFixedString` is called.
 
     ```js
@@ -37,6 +32,10 @@ New entries must be placed in a section entitled `Unreleased`.
 
     bare.writeFixedString(bc, "bare")
     ```
+
+    Note that the library still respects the `maxBufferLength` configuration.
+    If `maxBufferLength` is greater than the buffer's `maxByteLength`,
+    then a new buffer is allocated once `maxByteLength` is exceeded.
 
 -   Export `assert`, `DEV` and integer validators
 
