@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning][semver].
 The format of this changelog is [a variant][lib9-versionning] of [Keep a Changelog][keep-changelog].
 New entries must be placed in a section entitled `Unreleased`.
 
-## Unreleased
+## 0.6.1 (2026-01-05)
 
 -   Fix `writeUintSafe32` that wrongly encoded numbers larger than 16383 (`2e14 - 1`)
 
