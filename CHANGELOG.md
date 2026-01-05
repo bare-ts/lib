@@ -2,6 +2,12 @@
 
 This project adheres to [Semantic Versioning][semver].
 
+## Unreleased
+
+-   Fix `writeUintSafe32` that wrongly encoded numbers larger than 16383 (`2e14 - 1`)
+
+    This bug affected the encoding of variable-length arrays with more than 16383 items.
+
 ## 0.4.0 (2023-06-19)
 
 -   BREAKING CHANGES: remove `ByteCursor` methods

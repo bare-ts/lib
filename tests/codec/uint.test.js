@@ -141,8 +141,12 @@ test("bare.writeUintSafe32", (t) => {
     bare.writeUintSafe32(bc, 0)
     bare.writeUintSafe32(bc, 0x7f)
     bare.writeUintSafe32(bc, 0x1337)
+    bare.writeUintSafe32(bc, 2 ** 14 + 1)
     bare.writeUintSafe32(bc, 2 ** 32 - 1)
-    t.deepEqual(toBytes(bc), [0, 0x7f, 0xb7, 0x26, 0xff, 0xff, 0xff, 0xff, 0xf])
+    t.deepEqual(
+        toBytes(bc),
+        [0, 0x7f, 0xb7, 0x26, 0x81, 0x80, 0x1, 0xff, 0xff, 0xff, 0xff, 0xf],
+    )
 
     bc = fromBytes()
     t.throws(
