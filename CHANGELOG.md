@@ -2,7 +2,7 @@
 
 This project adheres to [Semantic Versioning][semver].
 
-## Unreleased
+## 0.4.1 (2026-01-05)
 
 -   Fix `writeUintSafe32` that wrongly encoded numbers larger than 16383 (`2e14 - 1`)
 
