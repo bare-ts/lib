@@ -139,11 +139,18 @@ export function readUintSafe(bc: ByteCursor): number {
 }
 
 export function writeUintSafe(bc: ByteCursor, x: number): void {
-    if (DEV) {
-        assert(isU64Safe(x), TOO_LARGE_NUMBER)
+    let zigZag = x
+    if (!isU64Safe(x)) {
+        if (DEV) {
+            assert(false, TOO_LARGE_NUMBER)
+        }
+        // Truncate `zigZag` to 53 bits
+        // this is useful when assertions are skipped
+        const low = zigZag & 0x1fffff
+        const high = ((zigZag / 0x200000) >>> 0) * 0x200000
+        zigZag = high + low
     }
     let byteCount = 1
-    let zigZag = x
     while (zigZag >= 0x80 && byteCount < INT_SAFE_MAX_BYTE_COUNT) {
         writeU8(bc, 0x80 | (zigZag & 0x7f))
         zigZag = Math.floor(zigZag / /* 2**7 */ 0x80)

@@ -277,8 +277,18 @@ test("writeIntSafe", () => {
             assert.throws(action, { name: "AssertionError" }, "too big")
         } else {
             action()
-            // FIXME: should be `0` to ensure canonical encoding
-            assert.deepEqual(toBytes(bc), [0x80, 0])
+            assert.deepEqual(toBytes(bc), [0])
+        }
+    }
+
+    {
+        const bc = fromBytes()
+        const action = () => writeIntSafe(bc, Number.MAX_SAFE_INTEGER + 3)
+        if (DEV) {
+            assert.throws(action, { name: "AssertionError" }, "too big")
+        } else {
+            action()
+            assert.deepEqual(toBytes(bc), [4])
         }
     }
 

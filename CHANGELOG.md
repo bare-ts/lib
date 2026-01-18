@@ -6,6 +6,15 @@ This project adheres to [Semantic Versioning][semver].
 The format of this changelog is [a variant][lib9-versionning] of [Keep a Changelog][keep-changelog].
 New entries must be placed in a section entitled `Unreleased`.
 
+## Unreleased
+
+-   Fix  `writeUintSafe` and `writeIntSafe` by encoding too large numbers in a canonical way.
+
+    Although the library provides assertions that reject valid inputs, it allows users to disable them.
+    Even when assertions are disabled, the library must still provide valid encoded values.
+    Previously, `writeUintSafe` and `writeIntSafe` might output a non-canonical encoding for numbers that were too large.
+    It now robustly handles invalid input numbers that are too large.
+
 ## 0.6.1 (2026-01-05)
 
 -   Fix `writeUintSafe32` that wrongly encoded numbers larger than 16383 (`2e14 - 1`)

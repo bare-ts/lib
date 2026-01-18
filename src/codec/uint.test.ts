@@ -329,11 +329,22 @@ test("writeUintSafe", () => {
             )
         } else {
             action()
-            assert.deepEqual(
-                toBytes(bc),
-                // FIXME: should be `0` to ensure canonical encoding
-                [0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0],
+            assert.deepEqual(toBytes(bc), [0])
+        }
+    }
+
+    {
+        const bc = fromBytes()
+        const action = () => writeUintSafe(bc, Number.MAX_SAFE_INTEGER + 3)
+        if (DEV) {
+            assert.throws(
+                action,
+                { name: "AssertionError", message: "too large number" },
+                "too large number",
             )
+        } else {
+            action()
+            assert.deepEqual(toBytes(bc), [2])
         }
     }
 })

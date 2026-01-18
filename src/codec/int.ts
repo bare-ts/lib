@@ -60,22 +60,22 @@ export function writeIntSafe(bc: ByteCursor, x: number): void {
     let zigZag = x < 0 ? -(x + 1) : x
     let first7Bits = ((zigZag & 0x3f) << 1) | sign
     zigZag = Math.floor(zigZag / /* 2**6 */ 0x40)
-    if (zigZag > 0) {
-        if (!Number.isSafeInteger(x)) {
-            if (DEV) {
-                assert(false, TOO_LARGE_NUMBER)
-            }
-            // keep only the remaining 53 - 6 = 47 bits
-            // this is useful when assertions are skipped
-            const low = zigZag & 0x7fff
-            const high = ((zigZag / 0x8000) >>> 0) * 0x8000
-            if (first7Bits === 0x7f && low === 0x7fff && high === 0xffff_ffff) {
-                // maps -2**53 to Number.MIN_SAFE_INTEGER
-                // this is useful when assertions are skipped
-                first7Bits &= ~0b10
-            }
-            zigZag = high + low
+    if (!Number.isSafeInteger(x)) {
+        if (DEV) {
+            assert(false, TOO_LARGE_NUMBER)
         }
+        // keep only the remaining 53 - 6 = 47 bits
+        // this is useful when assertions are skipped
+        const low = zigZag & 0x7fff
+        const high = ((zigZag / 0x8000) >>> 0) * 0x8000
+        if (first7Bits === 0x7f && low === 0x7fff && high === 0xffff_ffff) {
+            // maps -2**53 to Number.MIN_SAFE_INTEGER
+            // this is useful when assertions are skipped
+            first7Bits &= ~0b10
+        }
+        zigZag = high + low
+    }
+    if (zigZag > 0) {
         writeU8(bc, 0x80 | first7Bits)
         writeUintSafe(bc, zigZag)
     } else {
