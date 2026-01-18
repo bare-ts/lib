@@ -102,12 +102,12 @@ export function writeUintSafe32(bc: ByteCursor, x: number): void {
     }
     // truncate to mimic other int encoders
     // this is useful when assertions are skipped
-    let zigZag = x >>> 0
-    while (zigZag >= 0x80) {
-        writeU8(bc, 0x80 | (zigZag & 0x7f))
-        zigZag >>>= 7
+    let rest = x >>> 0
+    while (rest >= 0x80) {
+        writeU8(bc, 0x80 | (rest & 0x7f))
+        rest >>>= 7
     }
-    writeU8(bc, zigZag)
+    writeU8(bc, rest)
 }
 
 export function readUintSafe(bc: ByteCursor): number {
@@ -139,27 +139,27 @@ export function readUintSafe(bc: ByteCursor): number {
 }
 
 export function writeUintSafe(bc: ByteCursor, x: number): void {
-    let zigZag = x
+    let rest = x
     if (!isU64Safe(x)) {
         if (DEV) {
             assert(false, TOO_LARGE_NUMBER)
         }
-        // Truncate `zigZag` to 53 bits
+        // Truncate `rest` to 53 bits
         // this is useful when assertions are skipped
-        const low = zigZag & 0x1fffff
-        const high = ((zigZag / 0x200000) >>> 0) * 0x200000
-        zigZag = high + low
+        const low = rest & 0x1fffff
+        const high = ((rest / 0x200000) >>> 0) * 0x200000
+        rest = high + low
     }
     let byteCount = 1
-    while (zigZag >= 0x80 && byteCount < INT_SAFE_MAX_BYTE_COUNT) {
-        writeU8(bc, 0x80 | (zigZag & 0x7f))
-        zigZag = Math.floor(zigZag / /* 2**7 */ 0x80)
+    while (rest >= 0x80 && byteCount < INT_SAFE_MAX_BYTE_COUNT) {
+        writeU8(bc, 0x80 | (rest & 0x7f))
+        rest = Math.floor(rest / /* 2**7 */ 0x80)
         byteCount++
     }
     if (byteCount === INT_SAFE_MAX_BYTE_COUNT) {
         // truncate to mimic other int encoders
         // this is useful when assertions are skipped
-        zigZag &= 0x0f
+        rest &= 0x0f
     }
-    writeU8(bc, zigZag)
+    writeU8(bc, rest)
 }
