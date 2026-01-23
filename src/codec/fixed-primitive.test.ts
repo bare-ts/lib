@@ -647,6 +647,7 @@ test("writeU64Safe", () => {
 
     {
         const bc = fromBytes()
+        // biome-ignore lint/correctness/noPrecisionLoss: the lost of precision is intended
         const action = () => writeU64Safe(bc, 0xcafe_babe_dead_beef)
         if (DEV) {
             assert.throws(
