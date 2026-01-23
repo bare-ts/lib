@@ -17,7 +17,7 @@ export function assert(test: boolean, message = ""): asserts test {
     }
 }
 
-interface V8ErrorConstructor extends ErrorConstructor {
+interface V8ErrorConstructor {
     readonly captureStackTrace?: (e: Error, f: unknown) => void
 }
 
