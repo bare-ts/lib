@@ -1,6 +1,8 @@
 #!/bin/sh
 set -eu
 
+# This script is run on `npm version` (See ./package.json).
+
 # check presence of 'Unreleased' string
 grep --quiet '^## Unreleased$' CHANGELOG.md
 

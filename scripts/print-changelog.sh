@@ -2,6 +2,7 @@
 set -eu
 
 # Print a changelog section (default: first section).
+# This script is used by our GitHub release workflow (./.github/workflows/release-github.yml)
 
 VERSION=''
 if test -n "${1:-}" && grep -Eq "^## $1($| )" CHANGELOG.md; then
