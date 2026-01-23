@@ -15,6 +15,10 @@ New entries must be placed in a section entitled `Unreleased`.
     Previously, `writeUintSafe` and `writeIntSafe` might output a non-canonical encoding for numbers that were too large.
     It now robustly handles invalid input numbers that are too large.
 
+-   BREAKING CHANGES: require Node.js 16.9.0 or above.
+
+    This allows us to remove code for `BareError#cause` which is now natively supported by `Error`.
+
 ## 0.6.1 (2026-01-05)
 
 -   Fix `writeUintSafe32` that wrongly encoded numbers larger than 16383 (`2e14 - 1`)

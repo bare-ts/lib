@@ -21,7 +21,7 @@
     "url": "https://github.com/bare-ts/lib/issues"
   },
   "engines": {
-    "node": "^14.18.0 || >=16.0.0"
+    "node": ">=16.9.0"
   },
   "type": "module",
   "exports": {
@@ -56,7 +56,7 @@
   "scripts": {
     "build": "npm run build:esm && npm run build:d.cts && npm run build:cjs",
     "build:d.cts": "cp -f dist/index.d.ts dist/index.d.cts",
-    "build:cjs": "esbuild src/index.ts --bundle --target=es2020 --platform=node > dist/index.cjs",
+    "build:cjs": "esbuild src/index.ts --bundle --target=es2022 --platform=node > dist/index.cjs",
     "build:esm": "tsc --build src/",
     "check": "tsc --build src src/tsconfig-test.json && biome ci --error-on-warnings .",
     "clean": "rm -rf dist coverage",

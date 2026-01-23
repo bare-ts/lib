@@ -7,16 +7,16 @@
 export class BareError extends Error {
     override name = "BareError"
 
-    readonly cause: unknown
-
     readonly issue: string
 
+    /**
+     * Byte offset in the read buffer where the error occurred.
+     */
     readonly offset: number
 
-    constructor(offset: number, issue: string, opts?: { cause: unknown }) {
-        super(`(byte:${offset}) ${issue}`)
+    constructor(offset: number, issue: string, options?: ErrorOptions) {
+        super(`(byte:${offset}) ${issue}`, options)
         this.issue = issue
         this.offset = offset
-        this.cause = opts?.cause
     }
 }
