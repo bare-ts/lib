@@ -143,9 +143,9 @@ export function writeI64Safe(bc: ByteCursor, x: number): void {
     let highest32 = (x / /* 2**32 */ 0x1_00_00_00_00) | 0
     if (x < 0) {
         // get two's complement representation of the highest 21bits
-        highest32 = ~(Math.abs(highest32) & /* 2**21-1 */ 0x1f_ffff) >>> 0
+        highest32 = ~(Math.abs(highest32) & /* 2**21-1 */ 0x1f_ff_ff) >>> 0
         if (lowest32 === 0) {
-            if (highest32 === 0x1f_ffff) {
+            if (highest32 === 0x1f_ff_ff) {
                 // maps -2**53 to Number.MIN_SAFE_INTEGER
                 // this is useful when assertions are skipped
                 lowest32 = 1
@@ -232,5 +232,5 @@ export function writeU64Safe(bc: ByteCursor, x: number): void {
         assert(isU64Safe(x), TOO_LARGE_NUMBER)
     }
     writeU32(bc, x >>> 0)
-    writeU32(bc, (x / /* 2**32 */ 0x1_00_00_00_00) & /* 2**21-1 */ 0x1f_ffff)
+    writeU32(bc, (x / /* 2**32 */ 0x1_00_00_00_00) & /* 2**21-1 */ 0x1f_ff_ff)
 }

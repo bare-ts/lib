@@ -258,7 +258,7 @@ test("writeI16", () => {
 
 test("readI32", () => {
     const bc = fromBytes(0xb2, 0x9e, 0x43, 0xff)
-    assert.deepEqual(readI32(bc), -12345678)
+    assert.deepEqual(readI32(bc), -12_345_678)
     assert.throws(
         () => readI32(bc),
         { name: "BareError", issue: "missing bytes", offset: 4 },
@@ -269,7 +269,7 @@ test("readI32", () => {
 test("writeI32", () => {
     {
         const bc = fromBytes()
-        writeI32(bc, -12345678)
+        writeI32(bc, -12_345_678)
         assert.deepEqual(toBytes(bc), [0xb2, 0x9e, 0x43, 0xff])
     }
 
@@ -304,7 +304,10 @@ test("writeI32", () => {
     }
 })
 
-const BIG_NEG_INT = -(BigInt(12345678) * BigInt(10 ** 9) + BigInt(987654321))
+const BIG_NEG_INT = -(
+    BigInt(12_345_678) * BigInt(10 ** 9) +
+    BigInt(987_654_321)
+)
 
 test("readI64", () => {
     const bc = fromBytes(0x4f, 0x0b, 0x6e, 0x9d, 0xab, 0x23, 0xd4, 0xff)
@@ -495,7 +498,7 @@ test("writeU8", () => {
 
     {
         const bc = fromBytes()
-        const action = () => writeU8(bc, 0x100)
+        const action = () => writeU8(bc, 0x1_00)
         if (DEV) {
             assert.throws(
                 action,
@@ -511,7 +514,7 @@ test("writeU8", () => {
 
 test("readU16", () => {
     const bc = fromBytes(0xfe, 0xca)
-    assert.deepEqual(readU16(bc), 0xcafe)
+    assert.deepEqual(readU16(bc), 0xca_fe)
     assert.throws(
         () => readU16(bc),
         { name: "BareError", issue: "missing bytes", offset: 2 },
@@ -522,13 +525,13 @@ test("readU16", () => {
 test("writeU16", () => {
     {
         const bc = fromBytes()
-        writeU16(bc, 0xcafe)
+        writeU16(bc, 0xca_fe)
         assert.deepEqual(toBytes(bc), [0xfe, 0xca])
     }
 
     {
         const bc = fromBytes()
-        const action = () => writeU16(bc, 0x10000)
+        const action = () => writeU16(bc, 0x1_00_00)
         if (DEV) {
             assert.throws(
                 action,
@@ -544,7 +547,7 @@ test("writeU16", () => {
 
 test("readU32", () => {
     const bc = fromBytes(0xef, 0xbe, 0xad, 0xde)
-    assert.deepEqual(readU32(bc), 0xdeadbeef)
+    assert.deepEqual(readU32(bc), 0xde_ad_be_ef)
     assert.throws(
         () => readU32(bc),
         { name: "BareError", issue: "missing bytes", offset: 4 },
@@ -555,7 +558,7 @@ test("readU32", () => {
 test("writeU32", () => {
     {
         const bc = fromBytes()
-        writeU32(bc, 0xdeadbeef)
+        writeU32(bc, 0xde_ad_be_ef)
         assert.deepEqual(toBytes(bc), [0xef, 0xbe, 0xad, 0xde])
     }
 
@@ -576,7 +579,7 @@ test("writeU32", () => {
 })
 
 const CAFE_BABE_DEAD_BEEF =
-    (BigInt(0xcafe_babe) << BigInt(32)) + BigInt(0xdead_beef)
+    (BigInt(0xca_fe_ba_be) << BigInt(32)) + BigInt(0xde_ad_be_ef)
 
 test("readU64", () => {
     const bc = fromBytes(0xef, 0xbe, 0xad, 0xde, 0xbe, 0xba, 0xfe, 0xca)
@@ -648,7 +651,7 @@ test("writeU64Safe", () => {
     {
         const bc = fromBytes()
         // biome-ignore lint/correctness/noPrecisionLoss: the lost of precision is intended
-        const action = () => writeU64Safe(bc, 0xcafe_babe_dead_beef)
+        const action = () => writeU64Safe(bc, 0xca_fe_ba_be_de_ad_be_ef)
         if (DEV) {
             assert.throws(
                 action,

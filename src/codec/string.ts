@@ -39,7 +39,7 @@ export function readFixedString(bc: ByteCursor, byteLen: number): string {
     }
     try {
         return UTF8_DECODER.decode(readUnsafeU8FixedArray(bc, byteLen))
-    } catch (_cause) {
+    } catch {
         throw new BareError(bc.offset, INVALID_UTF8_STRING)
     }
 }
@@ -100,8 +100,8 @@ function readUtf8Js(bc: ByteCursor, byteLen: number): string {
                     (byte4 & 0x3f)
                 malformed =
                     codePoint >> 16 === 0 || // non-canonical char or missing data
-                    codePoint > 0x10ffff || // too large code point
-                    byte1 >> 3 !== 0b11110 || // invalid tag
+                    codePoint > 0x10_ff_ff || // too large code point
+                    byte1 >> 3 !== 0b1_1110 || // invalid tag
                     byte2 >> 6 !== 0b10 || // invalid tag
                     byte3 >> 6 !== 0b10 || // invalid tag
                     byte4 >> 6 !== 0b10 // invalid tag
@@ -125,10 +125,10 @@ function writeUtf8Js(bc: ByteCursor, s: string): void {
         if (codePoint < 0x80) {
             bytes[offset++] = codePoint
         } else {
-            if (codePoint < 0x800) {
+            if (codePoint < 0x8_00) {
                 bytes[offset++] = 0xc0 | (codePoint >> 6)
             } else {
-                if (codePoint < 0x10_000) {
+                if (codePoint < 0x1_00_00) {
                     bytes[offset++] = 0xe0 | (codePoint >> 12)
                 } else {
                     bytes[offset++] = 0xf0 | (codePoint >> 18)
@@ -149,7 +149,7 @@ function utf8ByteLength(s: string): number {
         const codePoint = s.codePointAt(i) as number | 0 // i is a valid index
         if (codePoint > 0x7f) {
             result++
-            if (codePoint > 0x7ff) {
+            if (codePoint > 0x7_ff) {
                 result++
                 if (codePoint > 0xff_ff) {
                     i++ // surrogate pair encoded as two ucs2 chars

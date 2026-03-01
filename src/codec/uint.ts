@@ -146,8 +146,8 @@ export function writeUintSafe(bc: ByteCursor, x: number): void {
         }
         // Truncate `rest` to 53 bits
         // this is useful when assertions are skipped
-        const low = rest & 0x1fffff
-        const high = ((rest / 0x200000) >>> 0) * 0x200000
+        const low = rest & 0x1f_ff_ff
+        const high = ((rest / 0x20_00_00) >>> 0) * 0x20_00_00
         rest = high + low
     }
     let byteCount = 1

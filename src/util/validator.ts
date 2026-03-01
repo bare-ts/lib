@@ -40,7 +40,7 @@ export function isU8(val: number): boolean {
  * Can `val` be stored as an unsigned integer in 16 bits?
  */
 export function isU16(val: number): boolean {
-    return val === (val & 0xffff)
+    return val === (val & 0xff_ff)
 }
 
 /**

@@ -36,7 +36,7 @@ test("readUint", () => {
         )
         assert.deepEqual(readUint(bc), BigInt(0))
         assert.deepEqual(readUint(bc), BigInt(0x7f))
-        assert.deepEqual(readUint(bc), BigInt(0x1337))
+        assert.deepEqual(readUint(bc), BigInt(0x13_37))
         assert.deepEqual(readUint(bc), MAX_U64)
         assert.throws(
             () => readUint(bc),
@@ -110,7 +110,7 @@ test("writeUint", () => {
         const bc = fromBytes()
         writeUint(bc, BigInt(0))
         writeUint(bc, BigInt(0x7f))
-        writeUint(bc, BigInt(0x1337))
+        writeUint(bc, BigInt(0x13_37))
         writeUint(bc, BigInt(MAX_U64))
         assert.deepEqual(
             toBytes(bc),
@@ -142,7 +142,7 @@ test("readUintSafe32", () => {
         const bc = fromBytes(0, 0x7f, 0xb7, 0x26, 0xff, 0xff, 0xff, 0xff, 0xf)
         assert.deepEqual(readUintSafe32(bc), 0)
         assert.deepEqual(readUintSafe32(bc), 0x7f)
-        assert.deepEqual(readUintSafe32(bc), 0x1337)
+        assert.deepEqual(readUintSafe32(bc), 0x13_37)
         assert.deepEqual(readUintSafe32(bc), 2 ** 32 - 1)
         assert.throws(
             () => readUintSafe32(bc),
@@ -193,7 +193,7 @@ test("writeUintSafe32", () => {
         const bc = fromBytes()
         writeUintSafe32(bc, 0)
         writeUintSafe32(bc, 0x7f)
-        writeUintSafe32(bc, 0x1337)
+        writeUintSafe32(bc, 0x13_37)
         writeUintSafe32(bc, 2 ** 14 + 1)
         writeUintSafe32(bc, 2 ** 32 - 1)
         assert.deepEqual(
@@ -236,7 +236,7 @@ test("readUintSafe", () => {
         )
         assert.deepEqual(readUintSafe(bc), 0)
         assert.deepEqual(readUintSafe(bc), 0x7f)
-        assert.deepEqual(readUintSafe(bc), 0x1337)
+        assert.deepEqual(readUintSafe(bc), 0x13_37)
         assert.deepEqual(readUintSafe(bc), Number.MAX_SAFE_INTEGER)
         assert.throws(
             () => readUintSafe(bc),
@@ -307,7 +307,7 @@ test("writeUintSafe", () => {
         const bc = fromBytes()
         writeUintSafe(bc, 0)
         writeUintSafe(bc, 0x7f)
-        writeUintSafe(bc, 0x1337)
+        writeUintSafe(bc, 0x13_37)
         writeUintSafe(bc, Number.MAX_SAFE_INTEGER)
         assert.deepEqual(
             toBytes(bc),

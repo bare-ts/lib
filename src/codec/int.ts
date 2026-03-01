@@ -66,9 +66,9 @@ export function writeIntSafe(bc: ByteCursor, x: number): void {
         }
         // keep only the remaining 53 - 6 = 47 bits
         // this is useful when assertions are skipped
-        const low = zigZag & 0x7fff
-        const high = ((zigZag / 0x8000) >>> 0) * 0x8000
-        if (first7Bits === 0x7f && low === 0x7fff && high === 0xffff_ffff) {
+        const low = zigZag & 0x7f_ff
+        const high = ((zigZag / 0x80_00) >>> 0) * 0x80_00
+        if (first7Bits === 0x7f && low === 0x7f_ff && high === 0xff_ff_ff_ff) {
             // maps -2**53 to Number.MIN_SAFE_INTEGER
             // this is useful when assertions are skipped
             first7Bits &= ~0b10

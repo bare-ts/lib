@@ -1,34 +1,30 @@
 {
-  "$schema": "https://next.biomejs.dev/schemas/2.2.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.4/schema.json",
   "root": true,
   "files": {
     "ignoreUnknown": true
   },
   "formatter": {
-    "includes": [
-      "**",
-      "!tests-corpus/**"
-    ],
     "indentStyle": "space",
     "indentWidth": 4
   },
   "linter": {
     "domains": {
       "project": "recommended",
-      "test": "recommended"
+      "test": "recommended",
+      "types": "recommended"
     },
     "rules": {
       "complexity": {
         "noImplicitCoercions": "on",
-        "noUselessLoneBlockStatements": "off",
-        "noVoid": "on"
+        "noUselessCatchBinding": "on",
+        "noUselessLoneBlockStatements": "on",
+        "noUselessUndefined": "on",
+        "noVoid": "on",
+        "useWhile": "on"
       },
       "nursery": {
-        "noDeprecatedImports": "on",
-        "noDuplicateDependencies": "on",
-        "noImportCycles": "on",
-        "noUselessUndefined": "off",
-        "useExhaustiveSwitchCases": "off",
+        "useExhaustiveSwitchCases": "on",
         "useExplicitType": "off"
       },
       "performance": {
@@ -36,20 +32,26 @@
       },
       "style": {
         "noDefaultExport": "on",
+        "noExportedImports": "on",
         "noImplicitBoolean": "on",
         "noInferrableTypes": "on",
         "noNamespace": "on",
         "noNegationElse": "on",
         "noParameterAssign": "on",
         "noParameterProperties": "on",
+        "noSubstr": "on",
         "noUnusedTemplateLiteral": "on",
         "noUselessElse": "on",
         "noYodaExpression": "on",
         "useAsConstAssertion": "on",
         "useBlockStatements": "on",
         "useCollapsedElseIf": "on",
+        "useCollapsedIf": "on",
         "useConsistentArrayType": "on",
+        "useConsistentArrowReturn": "on",
         "useConsistentBuiltinInstantiation": "on",
+        "useConsistentMemberAccessibility": "on",
+        "useConsistentObjectDefinitions": "on",
         "useConst": "on",
         "useDefaultParameterLast": "on",
         "useEnumInitializers": "on",
@@ -93,12 +95,13 @@
         },
         "useNodeAssertStrict": "on",
         "useNumberNamespace": "on",
-        "useNumericSeparators": "off",
+        "useNumericSeparators": "on",
         "useReadonlyClassProperties": "on",
         "useShorthandAssign": "on",
         "useSingleVarDeclarator": "on",
         "useThrowNewError": "on",
         "useThrowOnlyError": "on",
+        "useTrimStartEnd": "on",
         "useUnifiedTypeSignatures": "on"
       },
       "suspicious": {
@@ -113,18 +116,18 @@
           }
         },
         "noConstantBinaryExpressions": "on",
+        "noDeprecatedImports": "on",
+        "noDuplicateDependencies": "on",
         "noEmptyBlockStatements": "on",
         "noEvolvingTypes": "on",
         "noExportsInTest": "on",
+        "noImportCycles": "on",
         "noUnassignedVariables": "on",
+        "noUnusedExpressions": "on",
         "noUselessEscapeInString": "on",
         "noVar": "on",
         "useErrorMessage": "on",
         "useNumberToFixedDigitsArgument": "on"
-      },
-      "correctness": {
-        "noInvalidUseBeforeDeclaration": "off",
-        "useJsonImportAttributes": "on"
       }
     }
   },
